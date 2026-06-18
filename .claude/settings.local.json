@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:claude.ai)",
+      "Bash(claude login *)",
+      "Bash(which claude-code *)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --yes)",
+      "Read(//Users/riaanbacker/Documents/**)",
+      "Bash(npx create-next-app@latest recurvweb-temp --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --yes)",
+      "Bash(cp -r /Users/riaanbacker/Documents/recurvweb-temp/. /Users/riaanbacker/Documents/RecruvwebV2/)",
+      "Bash(rm -rf /Users/riaanbacker/Documents/recurvweb-temp)",
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(npx --yes next@latest build)",
+      "Bash(node /Users/riaanbacker/Documents/RecruvwebV2/node_modules/next/dist/bin/next build)",
+      "Bash(node /Users/riaanbacker/Documents/RecruvwebV2/node_modules/next/dist/bin/next dev --port 3000)",
+      "Bash(curl -s http://localhost:3000)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(kill 9961)",
+      "Bash(git add *)"
+    ]
+  }
+}
