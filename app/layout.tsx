@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,7 +32,9 @@ export default function RootLayout({
       style={{ background: "#FFFFFF" }}
     >
       <body style={{ margin: 0, fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}>
+        <SiteHeader />
         {children}
+        <SiteFooter />
       </body>
     </html>
   );

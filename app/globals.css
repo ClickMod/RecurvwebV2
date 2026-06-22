@@ -1,8 +1,51 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0F0E14;
+  /* Surfaces */
+  --background:       #ffffff;
+  --foreground:       #0F0E14;
+  --surface:          #FFFFFF;
+  --surface-alt:      #F6F5F0;
+  --surface-deep:     #0F0E14;
+
+  /* Ink */
+  --ink:              #0F0E14;
+  --ink-soft:         #5B5969;
+  --ink-on-deep:      #F6F5F0;
+  --ink-on-deep-soft: rgba(246, 245, 240, 0.65);
+
+  /* Brand */
+  --primary:          #4F33D9;
+  --primary-hover:    #3D24BD;
+  --ink-hover:        #000000;
+  --on-primary:       #FFFFFF;
+  --soft-tint:        rgba(79, 51, 217, 0.08);
+
+  /* Semantic */
+  --success:          #1E7A4E;
+  --success-bg:       rgba(30, 122, 78, 0.10);
+  --warn:             #B45A1B;
+
+  /* Lines */
+  --line:             rgba(15, 14, 20, 0.10);
+  --line-strong:      rgba(15, 14, 20, 0.20);
+
+  /* Typography */
+  --font-display:     "Geist", system-ui, sans-serif;
+  --font-body:        "Geist", system-ui, sans-serif;
+  --font-mono:        "JetBrains Mono", ui-monospace, monospace;
+
+  /*
+   * Fluid type scale — use these for all heading font-sizes.
+   * clamp(min, preferred-vw, max)
+   * Never hardcode pixel font-sizes for headings in inline styles.
+   */
+  --fs-hero:     clamp(2.5rem, 6vw + 0.5rem, 4.875rem);   /* 40px → 78px */
+  --fs-display:  clamp(3rem, 14vw + 0.5rem, 17.875rem);   /* 48px → 286px (footer wordmark / contact hero) */
+  --fs-h2-xl:    clamp(2rem, 3.5vw + 0.75rem, 3.5rem);    /* 32px → 56px */
+  --fs-h2-lg:    clamp(1.75rem, 3vw + 0.5rem, 3rem);      /* 28px → 48px */
+  --fs-h2-md:    clamp(1.5rem, 2.5vw + 0.5rem, 2.75rem);  /* 24px → 44px */
+  --fs-h3:       clamp(1.25rem, 1.5vw + 0.5rem, 1.5rem);  /* 20px → 24px */
 }
 
 html, body {
@@ -12,8 +55,17 @@ html, body {
   color: #0F0E14;
 }
 
-* {
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: clip;
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
+  min-width: 0;
 }
 
 .mono {

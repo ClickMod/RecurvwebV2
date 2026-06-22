@@ -1,7 +1,21 @@
 import { theme } from './theme';
 
+export type IconName =
+  | 'mandate'
+  | 'schedule'
+  | 'wallet'
+  | 'graph'
+  | 'shield'
+  | 'cycle'
+  | 'plug'
+  | 'bolt'
+  | 'people'
+  | 'lock'
+  | 'split'
+  | 'globe';
+
 interface IconProps {
-  name: string;
+  name: IconName;
   color?: string;
   size?: number;
 }
@@ -82,7 +96,57 @@ export function CarbonIcon({ name, color = theme.primary, size = 48 }: IconProps
           <path d="M26 4L10 26h10L18 44l18-24H24z" />
         </svg>
       );
-    default:
-      return <svg {...props}><rect x="8" y="8" width="32" height="32" /></svg>;
+    case 'people':
+      return (
+        <svg {...props}>
+          {/* front person */}
+          <circle cx="19" cy="15" r="6" />
+          <path d="M7 40c0-8 5-13 12-13s12 5 12 13" />
+          {/* back person */}
+          <circle cx="31" cy="14" r="5" />
+          <path d="M29 27c1.5-0.5 3-0.5 4 0 5 2 8 7 8 13" />
+        </svg>
+      );
+    case 'lock':
+      return (
+        <svg {...props}>
+          <rect x="12" y="22" width="24" height="18" rx="2" />
+          <path d="M17 22v-6a7 7 0 0 1 14 0v6" />
+          <circle cx="24" cy="31" r="2" fill={color} stroke="none" />
+          <path d="M24 33v3" />
+        </svg>
+      );
+    case 'split':
+      return (
+        <svg {...props}>
+          <path d="M24 10v28" />
+          <path d="M10 24h28" />
+          <path d="M10 10l28 28M38 10L10 38" />
+        </svg>
+      );
+    case 'globe':
+      return (
+        <svg {...props}>
+          <circle cx="24" cy="24" r="18" />
+          <path d="M24 6c-5 6-8 12-8 18s3 12 8 18" />
+          <path d="M24 6c5 6 8 12 8 18s-3 12-8 18" />
+          <path d="M6 24h36" />
+          <path d="M8 14h28M8 34h28" />
+        </svg>
+      );
+    default: {
+      const _exhaustive: never = name;
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`CarbonIcon: icon "${_exhaustive}" is not implemented.`);
+      }
+      return (
+        <svg {...props}>
+          <rect x="8" y="8" width="32" height="32" strokeDasharray="4 3" />
+          <text x="24" y="28" fontSize="8" textAnchor="middle" stroke="none" fill={color} fontFamily="monospace">
+            {String(name).slice(0, 6)}
+          </text>
+        </svg>
+      );
+    }
   }
 }

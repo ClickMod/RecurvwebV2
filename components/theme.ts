@@ -9,6 +9,7 @@ export const theme = {
   inkOnDeepSoft: 'rgba(246,245,240,0.65)',
   primary: '#4F33D9',
   primaryHover: '#3D24BD',
+  inkHover: '#000000',
   onPrimary: '#FFFFFF',
   softTint: 'rgba(79,51,217,0.08)',
   success: '#1E7A4E',

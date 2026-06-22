@@ -51,6 +51,7 @@ function FinalCopyV2Homepage() {
           </p>
           <div style={{ display: 'flex', gap: 12, marginTop: 36 }}>
             <FinalCopyV2Button size="lg">Book a live demo</FinalCopyV2Button>
+            {/* Secondary CTA — border: t.lineStrong at rest → t.primary (purple) on hover */}
             <FinalCopyV2Button size="lg" variant="secondary" icon={<span>→</span>}>Speak to sales</FinalCopyV2Button>
           </div>
           <div className="mono" style={{ marginTop: 48, fontSize: 11, color: t.inkSoft, letterSpacing: 1, display: 'flex', gap: 24 }}>
@@ -124,6 +125,7 @@ function FinalCopyV2Homepage() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-start' }}>
             <FinalCopyV2Button size="lg">Book a live demo</FinalCopyV2Button>
+            {/* Secondary CTA — border: t.lineStrong at rest → t.primary (purple) on hover */}
             <FinalCopyV2Button size="lg" variant="secondary" icon={<span>→</span>}>Speak to sales</FinalCopyV2Button>
             <div style={{ marginTop: 12, fontSize: 13, color: t.inkSoft }}>
               Or email <span style={{ color: t.ink, fontWeight: 600 }}>sales@recurv.tech</span>

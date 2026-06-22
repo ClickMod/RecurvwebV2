@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { theme } from './theme';
 import { PhotoSlot } from './PhotoSlot';
 import type { Post } from './blogData';
@@ -9,7 +10,12 @@ interface BlogCardProps {
 export function BlogCard({ post }: BlogCardProps) {
   const t = theme;
   return (
+    <Link
+      href={`/blog/${post.slug}`}
+      style={{ textDecoration: 'none', color: 'inherit', display: 'block', height: '100%' }}
+    >
     <article
+      className="transition-[transform,border-color,box-shadow] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-[0_4px_24px_rgba(79,51,217,0.25)] hover:border-[#4F33D9]"
       style={{
         background: t.surface,
         border: `1px solid ${t.line}`,
@@ -20,6 +26,7 @@ export function BlogCard({ post }: BlogCardProps) {
         gap: 18,
         height: '100%',
         boxSizing: 'border-box',
+        cursor: 'pointer',
       }}
     >
       <PhotoSlot
@@ -49,20 +56,28 @@ export function BlogCard({ post }: BlogCardProps) {
         </h3>
         <p style={{ fontSize: 14, color: t.inkSoft, lineHeight: 1.55, margin: 0 }}>{post.excerpt}</p>
         <div
+          className="flex items-center justify-between"
           style={{
             marginTop: 'auto',
             paddingTop: 16,
             borderTop: `1px solid ${t.line}`,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            fontSize: 13,
           }}
         >
-          <span style={{ color: t.ink, fontWeight: 500 }}>{post.author}</span>
           <span className="mono" style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1 }}>{post.date}</span>
+          <span
+            className="mono transition-colors duration-[140ms]"
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: 1.5,
+              color: t.primary,
+            }}
+          >
+            VIEW →
+          </span>
         </div>
       </div>
     </article>
+    </Link>
   );
 }
