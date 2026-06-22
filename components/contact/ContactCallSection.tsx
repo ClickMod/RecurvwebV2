@@ -30,7 +30,7 @@ export function ContactCallSection() {
             </h2>
             <p className="mt-6 max-w-[440px]" style={{ fontSize: 17, color: t.inkOnDeepSoft, lineHeight: 1.6 }}>
               Pick up the phone. A specialist will answer within three rings,
-              between 08:00 and 18:00 SAST — no menu trees, no transfers.
+              between 08:00 and 17:00.No menu trees, no transfers, pure human support.
             </p>
           </div>
 
@@ -47,27 +47,27 @@ export function ContactCallSection() {
               lineHeight: 1,
               color: t.inkOnDeep,
             }}>
-              +27 21 200 4188
+              +27 61 586 2591
             </div>
             <div className="mt-3" style={{ fontSize: 13, color: t.inkOnDeepSoft }}>
               Or WhatsApp{" "}
               <a
-                href="https://wa.me/27821004188"
+                href="https://wa.me/27615862591"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ color: t.inkOnDeep, fontWeight: 600, textDecoration: "none" }}
               >
-                +27 82 100 4188
+                +27 61 586 2591
               </a>
             </div>
-            <div className="flex flex-wrap gap-3 mt-7">
-              <a href="tel:+27212004188" style={{ textDecoration: "none" }}>
-                <Button variant="primary" style={{ background: t.inkOnDeep, color: t.surfaceDeep, border: "none" }}>
+            <div className="flex flex-col sm:flex-row gap-3 mt-7">
+              <a href="tel:+27615862591" className="w-full sm:w-auto" style={{ textDecoration: "none" }}>
+                <Button variant="primary" className="w-full sm:w-auto justify-center" style={{ background: t.inkOnDeep, color: t.surfaceDeep, border: "none" }}>
                   Call now
                 </Button>
               </a>
-              <a href="https://wa.me/27821004188" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-                <Button variant="secondary" icon={<span>→</span>} style={{ borderColor: "rgba(246,245,240,0.25)", color: t.inkOnDeep }}>
+              <a href="https://wa.me/27615862591" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto" style={{ textDecoration: "none" }}>
+                <Button variant="secondary" icon={<span>→</span>} className="w-full sm:w-auto justify-center" style={{ borderColor: "rgba(246,245,240,0.25)", color: t.inkOnDeep }}>
                   Open WhatsApp
                 </Button>
               </a>

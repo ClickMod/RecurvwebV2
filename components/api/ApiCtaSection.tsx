@@ -48,16 +48,17 @@ export function ApiCtaSection() {
               and we'll issue sandbox keys, share the full reference, and put a
               solutions engineer on your build.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/contactus" style={{ textDecoration: "none" }}>
-                <Button size="lg" variant="accent">
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <Link href="/contactus" className="w-full sm:w-auto" style={{ textDecoration: "none" }}>
+                <Button size="lg" variant="accent" className="w-full sm:w-auto justify-center">
                   Request API access →
                 </Button>
               </Link>
-              <Link href="/contactus" style={{ textDecoration: "none" }}>
+              <Link href="/contactus" className="w-full sm:w-auto" style={{ textDecoration: "none" }}>
                 <Button
                   size="lg"
                   variant="secondary"
+                  className="w-full sm:w-auto justify-center"
                   style={{
                     color: t.inkOnDeep,
                     borderColor: "rgba(246,245,240,0.25)",

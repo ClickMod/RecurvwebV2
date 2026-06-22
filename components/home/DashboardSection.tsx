@@ -7,7 +7,7 @@ import { theme as t } from "@/components/theme";
 const BULLETS = [
   ["Live cashflow tracking", "Watch revenue land as it happens, across every plan and customer."],
   ["Retry intelligence", "Failed collections are retried at the right time, for the right reason. Automatically."],
-  ["Reconciled export", "One-click CSV that matches your bank statement, every time."],
+  ["Reconciled export", "One-click excel export that matches your bank statement, every time."],
 ] as const;
 
 export function DashboardSection() {
@@ -35,8 +35,8 @@ export function DashboardSection() {
             <Reveal delay={STAGGER}>
               <p className="mt-6" style={{ fontSize: 17, color: t.inkSoft, lineHeight: 1.6 }}>
                 Ditch the spreadsheets and the WhatsApp reminders. Recurv gives your finance team a single view
-                of every payment plan, subscription, and collection run — with real-time data to spot problems
-                early, forecast accurately, and act fast.
+                of every payment plan, subscription, and collection run with real-time data to spot problems
+                early, forecast accurately and act fast.
               </p>
             </Reveal>
 

@@ -45,10 +45,10 @@ export function HeroSection() {
               </p>
             </Reveal>
             <Reveal delay={STAGGER * 2}>
-              <div className="flex flex-wrap gap-3 mt-9">
-                <Button size="lg">Book a live demo</Button>
-                <Link href="/contactus" style={{ textDecoration: "none" }}>
-                  <Button size="lg" variant="secondary" icon={<span>→</span>}>Speak to sales</Button>
+              <div className="flex flex-col sm:flex-row gap-3 mt-9">
+                <Button size="lg" className="w-full sm:w-auto justify-center">Book a live demo</Button>
+                <Link href="/contactus" className="w-full sm:w-auto" style={{ textDecoration: "none" }}>
+                  <Button size="lg" variant="secondary" icon={<span>→</span>} className="w-full sm:w-auto justify-center">Speak to sales</Button>
                 </Link>
               </div>
             </Reveal>

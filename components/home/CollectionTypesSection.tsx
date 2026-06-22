@@ -105,7 +105,7 @@ export function CollectionTypesSection() {
               letterSpacing: "-0.035em",
               margin: 0,
             }}>
-              Card or EFT debit order —<br />
+              Card or EFT debit order,<br />
               <span style={{ color: "#A89BF0" }}>your customer&rsquo;s choice.</span>
             </h2>
             <p className="mt-6 max-w-[480px]" style={{ fontSize: 16, color: t.inkOnDeepSoft, lineHeight: 1.6 }}>

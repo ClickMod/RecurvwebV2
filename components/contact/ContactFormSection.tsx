@@ -10,13 +10,13 @@ const inputStyle: React.CSSProperties = {
   fontSize: 15,
   padding: "14px 16px",
   background: "var(--surface)",
-  border: `1px solid var(--line)`,
   borderRadius: 8,
   color: "var(--ink)",
-  outline: "none",
   width: "100%",
   boxSizing: "border-box",
 };
+
+const inputClass = "border border-[var(--line)] focus:border-[var(--primary)] outline-none transition-colors duration-150";
 
 const BULLET_POINTS = [
   "No slides — a live product demo against your billing pattern.",
@@ -25,7 +25,7 @@ const BULLET_POINTS = [
 ] as const;
 
 export function ContactFormSection() {
-  const [agreed, setAgreed] = useState(true);
+  const [agreed, setAgreed] = useState(false);
 
   return (
     <section className="pb-16 md:pb-20 lg:pb-24">
@@ -81,17 +81,17 @@ export function ContactFormSection() {
             <form className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <label className="flex flex-col gap-2">
                 <span className="mono" style={{ fontSize: 11, letterSpacing: 1.5, color: t.inkSoft }}>FULL NAME</span>
-                <input style={inputStyle} name="fullName" type="text" placeholder="Thandi Ngwenya" />
+                <input className={inputClass} style={inputStyle} name="fullName" type="text" placeholder="Thandi Ngwenya" required />
               </label>
 
               <label className="flex flex-col gap-2">
                 <span className="mono" style={{ fontSize: 11, letterSpacing: 1.5, color: t.inkSoft }}>WORK EMAIL</span>
-                <input style={inputStyle} name="email" type="email" placeholder="thandi@company.co.za" />
+                <input className={inputClass} style={inputStyle} name="email" type="email" placeholder="thandi@company.co.za" required />
               </label>
 
               <label className="flex flex-col gap-2">
                 <span className="mono" style={{ fontSize: 11, letterSpacing: 1.5, color: t.inkSoft }}>COMPANY</span>
-                <input style={inputStyle} name="company" type="text" placeholder="Royal Cape Town Golf Club" />
+                <input className={inputClass} style={inputStyle} name="company" type="text" placeholder="Royal Cape Town Golf Club" required />
               </label>
 
               <label className="flex flex-col gap-2">
@@ -99,12 +99,12 @@ export function ContactFormSection() {
                   <span>PHONE</span>
                   <span style={{ opacity: 0.7 }}>OPTIONAL</span>
                 </span>
-                <input style={inputStyle} name="phone" type="tel" placeholder="+27 82 514 0908" />
+                <input className={inputClass} style={inputStyle} name="phone" type="tel" placeholder="+27 82 514 0908" />
               </label>
 
               <label className="flex flex-col gap-2">
                 <span className="mono" style={{ fontSize: 11, letterSpacing: 1.5, color: t.inkSoft }}>INDUSTRY</span>
-                <select name="industry" style={{ ...inputStyle, appearance: "none", cursor: "pointer" }}>
+                <select className={inputClass} name="industry" style={{ ...inputStyle, appearance: "none", cursor: "pointer" }} required>
                   <option value="">Select your industry</option>
                   <option>Golf &amp; sport clubs</option>
                   <option>Medical &amp; dental</option>
@@ -117,7 +117,7 @@ export function ContactFormSection() {
 
               <label className="flex flex-col gap-2">
                 <span className="mono" style={{ fontSize: 11, letterSpacing: 1.5, color: t.inkSoft }}>MONTHLY COLLECTIONS VOLUME</span>
-                <select name="volume" style={{ ...inputStyle, appearance: "none", cursor: "pointer" }}>
+                <select className={inputClass} name="volume" style={{ ...inputStyle, appearance: "none", cursor: "pointer" }} required>
                   <option value="">Select volume</option>
                   <option>Under R 100K / month</option>
                   <option>R 100K – R 500K / month</option>
@@ -130,10 +130,12 @@ export function ContactFormSection() {
               <label className="sm:col-span-2 flex flex-col gap-2">
                 <span className="mono" style={{ fontSize: 11, letterSpacing: 1.5, color: t.inkSoft }}>WHAT WOULD YOU LIKE TO DISCUSS?</span>
                 <textarea
+                  className={inputClass}
                   name="message"
                   rows={5}
                   style={{ ...inputStyle, resize: "vertical", lineHeight: 1.55 }}
                   placeholder="Tell us about your current collection setup and what's not working..."
+                  required
                 />
               </label>
 
@@ -170,9 +172,9 @@ export function ContactFormSection() {
                   </span>
                 </label>
 
-                <div className="flex gap-3 flex-wrap">
-                  <Button variant="secondary" type="reset">Clear form</Button>
-                  <Button variant="accent" icon={<span>→</span>} type="submit">Book a live demo</Button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button size="lg" variant="secondary" type="reset" className="w-full sm:w-auto justify-center">Clear form</Button>
+                  <Button size="lg" variant="accent" icon={<span>→</span>} type="submit" className="w-full sm:w-auto justify-center">Submit form</Button>
                 </div>
               </div>
             </form>

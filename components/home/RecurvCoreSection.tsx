@@ -5,11 +5,11 @@ import { STAGGER } from "@/components/motion";
 import { theme as t } from "@/components/theme";
 
 const FEATURES = [
-  { num: "01", icon: "mandate", title: "Cut the admin", desc: "Automate authorisation capture, payment scheduling, and bank reconciliation. What used to take your team hours happens in the background — with a single dashboard and complete audit-grade records." },
-  { num: "02", icon: "wallet", title: "Collect with confidence", desc: "Bank-grade rails with intelligent retry logic, automated reminders, and zero manual chasing. Whether you collect on the 1st, the 25th, or at the end of every term — Recurv handles it." },
-  { num: "03", icon: "plug", title: "Plug into any stack", desc: "Standalone dashboard, REST API, or both. Connect to Xero, Sage, and your existing CRM in minutes. No ripping out what already works." },
-  { num: "04", icon: "shield", title: "Secure by default", desc: "PCI DSS Level 1 certified. SARB-compliant rails. ISO-aligned data handling. Customer banking details are tokenised on capture and never stored in plaintext — by us, or by you." },
-  { num: "05", icon: "graph", title: "Built for insight", desc: "See exactly what's been collected, what's pending, and what needs attention. Forecast cashflow, monitor plan performance, and export a reconciled ledger in one click." },
+  { num: "01", icon: "mandate", title: "Cut the admin", desc: "Stop wrestling with spreadsheets, paperwork, and manual follow-ups. Recurv enables customers to authorise payments digitally and allows your team to create flexible collection schedules for any business model. Whether you bill once, monthly, indefinitely or based on changing amounts, we make revenue collection effortless." },
+  { num: "02", icon: "wallet", title: "Collect with confidence", desc: "Move beyond spreadsheets and batch files. Recurv automates recurring revenue collections from end to end, handling payment processing, status updates, retries and reconciliation in real time. Your team gets instant visibility into collection outcomes without lifting a finger." },
+  { num: "03", icon: "reconcile", title: "From reconciliation to resolution", desc: "Recurv automatically matches and reconciles collection outcomes, allowing your back-office team to focus on resolving failed payments instead of processing successful ones. Real-time dashboards provide complete visibility into collection performance without the spreadsheets and manual effort." },
+  { num: "04", icon: "shield", title: "Get Authorised Faster", desc: "Make it effortless for customers to approve payments. Send secure payment links via email, SMS, QR code, WhatsApp, or embed the experience directly into your website. Customers can authorise collections in minutes from any device, reducing paperwork, delays, and administrative overhead." },
+  { num: "05", icon: "graph", title: "Know your revenue", desc: "See upcoming collections, expected revenue, success rates, failed payments and collection trends in real time. Recurv gives your team complete visibility into future cash flow, helping you forecast accurately and act before revenue problems become cash flow problems." },
 ] as const;
 
 export function RecurvCoreSection() {

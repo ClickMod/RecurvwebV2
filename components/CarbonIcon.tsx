@@ -12,7 +12,8 @@ export type IconName =
   | 'people'
   | 'lock'
   | 'split'
-  | 'globe';
+  | 'globe'
+  | 'reconcile';
 
 interface IconProps {
   name: IconName;
@@ -132,6 +133,18 @@ export function CarbonIcon({ name, color = theme.primary, size = 48 }: IconProps
           <path d="M24 6c5 6 8 12 8 18s-3 12-8 18" />
           <path d="M6 24h36" />
           <path d="M8 14h28M8 34h28" />
+        </svg>
+      );
+    case 'reconcile':
+      return (
+        <svg {...props}>
+          {/* Two input lines converging — reconciliation */}
+          <path d="M4 14 L22 26" />
+          <path d="M4 38 L22 26" />
+          {/* Output shaft */}
+          <path d="M22 26 h8" />
+          {/* Checkmark — resolution */}
+          <path d="M29 19 l6 8 11-13" strokeWidth={2.2} />
         </svg>
       );
     default: {

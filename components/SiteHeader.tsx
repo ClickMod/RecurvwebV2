@@ -131,8 +131,8 @@ export function SiteHeader() {
             </span>
           </Link>
           <div className="flex flex-col gap-3 pt-4">
-            <span className="text-center cursor-pointer" style={{ fontSize: 14, color: t.ink }}>Sign in</span>
-            <Button size="md">Book a live demo</Button>
+            <Button size="md" variant="secondary" className="w-full justify-center">Sign in</Button>
+            <Button size="md" className="w-full justify-center">Book a live demo</Button>
           </div>
         </div>
       )}

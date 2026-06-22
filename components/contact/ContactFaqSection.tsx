@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { theme as t } from "@/components/theme";
 
 const FAQS = [
   {
     q: "How long does a typical Recurv deployment take?",
-    a: "Most teams are live within 5 business days. Mandate templates, retry rules and dashboard access are set up on day one; bank integrations and reconciliation imports usually wrap by end of week.",
+    a: "Most teams are live within 3 business days. Once training is complete, your team can start collecting revenue immediately.",
   },
   {
     q: "Do you support migrations from existing debit-order providers?",
@@ -24,11 +23,11 @@ const FAQS = [
   },
   {
     q: "Where is customer data stored?",
-    a: "All data is stored in South Africa on ISO 27001-aligned infrastructure. Banking details are tokenised on capture and never stored in plaintext — by us, or by you.",
+    a: "All data is stored in South Africa on ISO 27001-aligned infrastructure. Banking details are tokenised on capture and never stored in plaintext.",
   },
   {
     q: "Can I integrate Recurv into our existing CRM?",
-    a: "Yes. Recurv has a REST API and native connectors for Xero, Sage, and the most common South African CRMs. Custom integrations are scoped during onboarding.",
+    a: "Yes. Recurv has a REST API which allows you to integrate with your existing CRM. Custom integrations are scoped during onboarding.",
   },
 ];
 
@@ -61,12 +60,9 @@ export function ContactFaqSection() {
                 <span style={{ color: t.primary }}>questions we hear often.</span>
               </h2>
               <p className="mt-5 max-w-[300px]" style={{ fontSize: 15, color: t.inkSoft, lineHeight: 1.6 }}>
-                Couldn&rsquo;t find what you needed? The form above goes straight to a human — usually
-                one with strong opinions about debit orders.
+                Couldn&rsquo;t find what you needed? The form above goes straight to a human,usually
+                one with strong opinions about revenue collection.
               </p>
-              <div className="mt-7">
-                <Button variant="secondary" icon={<span>→</span>}>Full help centre</Button>
-              </div>
             </div>
 
             {/* Right — accordion */}

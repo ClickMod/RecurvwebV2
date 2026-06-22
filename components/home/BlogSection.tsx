@@ -35,8 +35,8 @@ export function BlogSection() {
             </p>
           </Reveal>
           <Reveal delay={STAGGER}>
-            <div className="flex flex-row md:flex-col items-center md:items-end gap-2.5">
-              <Button variant="secondary" icon={<span>→</span>}>View all articles</Button>
+            <div className="flex flex-col-reverse md:flex-col items-start md:items-end gap-2.5">
+              <Button variant="secondary" icon={<span>→</span>} className="w-full md:w-auto justify-center">View all articles</Button>
               <div className="mono" style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1 }}>
                 {ALL_POSTS.length} ARTICLES · UPDATED WEEKLY
               </div>

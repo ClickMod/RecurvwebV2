@@ -27,10 +27,10 @@ export function CtaSection() {
             </p>
           </Reveal>
           <Reveal delay={STAGGER}>
-            <div className="flex flex-col gap-3 items-start">
-              <Button size="lg">Book a live demo</Button>
-              <Link href="/contactus" style={{ textDecoration: "none" }}>
-                <Button size="lg" variant="secondary" icon={<span>→</span>}>Speak to sales</Button>
+            <div className="flex flex-col gap-3">
+              <Button size="lg" className="w-full justify-center">Book a live demo</Button>
+              <Link href="/contactus" className="w-full" style={{ textDecoration: "none" }}>
+                <Button size="lg" variant="secondary" icon={<span>→</span>} className="w-full justify-center">Speak to sales</Button>
               </Link>
               <div className="mt-3" style={{ fontSize: 13, color: t.inkSoft }}>
                 Or email <span style={{ color: t.ink, fontWeight: 600 }}>sales@recurv.tech</span>

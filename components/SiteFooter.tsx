@@ -64,12 +64,12 @@ export function SiteFooter() {
               </h2>
             </div>
             <div>
-              <div className="flex gap-2.5 items-stretch">
+              <div className="flex flex-col gap-2.5 sm:flex-row sm:items-stretch">
                 <input
                   ref={inputRef}
                   type="email"
                   placeholder="you@company.co.za"
-                  className="flex-1 px-4 outline-none bg-transparent focus:ring-0 transition-colors"
+                  className="w-full px-4 outline-none bg-transparent focus:ring-0 transition-colors"
                   style={{
                     border: `1px solid ${error ? "#EF4444" : focused ? "#7C3AED" : t.lineStrong}`,
                     borderRadius: 8,
@@ -81,7 +81,7 @@ export function SiteFooter() {
                   onBlur={() => setFocused(false)}
                   onChange={() => { if (error) setError(""); }}
                 />
-                <Button size="lg" onClick={handleSubscribe}>Subscribe</Button>
+                <Button size="lg" onClick={handleSubscribe} className="w-full justify-center sm:w-auto">Subscribe</Button>
               </div>
               {error && (
                 <p className="mt-1.5" style={{ fontSize: 12.5, color: "#EF4444" }}>{error}</p>

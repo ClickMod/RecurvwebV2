@@ -98,6 +98,234 @@ function CodeBlock({ code, language = 'json' }) {
   );
 }
 
+// ── TerminalHeroCard ──────────────────────────────────────────────────────────
+// Animated macOS-style terminal card: types a cURL request → sends → 201 response.
+const TC = {
+  kw:  '#A89BF0',
+  str: '#9BE7C4',
+  num: '#F4C77B',
+  txt: '#EDEAE0',
+  pun: 'rgba(246,245,240,0.70)',
+  dim: 'rgba(246,245,240,0.40)',
+};
+
+const THC_REQUEST = [
+  [ ['curl', TC.kw], [' -X ', TC.txt], ['POST', TC.kw], [' \\', TC.pun] ],
+  [ ['  https://api.recurv.tech/v1/mandates', TC.str], [' \\', TC.pun] ],
+  [ ['  -H ', TC.kw], ['"Authorization: Bearer sk_live_••••"', TC.str], [' \\', TC.pun] ],
+  [ ['  -H ', TC.kw], ['"Content-Type: application/json"', TC.str], [' \\', TC.pun] ],
+  [ ['  -d ', TC.kw], ["'{", TC.pun] ],
+  [ ['    ', TC.txt], ['"customer"', TC.txt], [': ', TC.pun], ['"sub_9fKn2xM"', TC.str], [',', TC.pun] ],
+  [ ['    ', TC.txt], ['"amount"', TC.txt],   [': ', TC.pun], ['49900', TC.num],          [',', TC.pun] ],
+  [ ['    ', TC.txt], ['"cadence"', TC.txt],  [': ', TC.pun], ['"monthly"', TC.str]                     ],
+  [ ["  }'", TC.pun] ],
+];
+
+const THC_RESPONSE = [
+  [],
+  [ ['# 201 Created', TC.dim] ],
+  [ ['{', TC.pun] ],
+  [ ['  ', TC.txt], ['"id"', TC.txt],     [': ', TC.pun], ['"mnd_3kQ9z"', TC.str], [',', TC.pun] ],
+  [ ['  ', TC.txt], ['"status"', TC.txt], [': ', TC.pun], ['"active"', TC.str]                    ],
+  [ ['}', TC.pun] ],
+];
+
+const THC_TOTAL = THC_REQUEST.reduce(
+  (s, line) => s + line.reduce((ls, [t]) => ls + t.length, 0), 0
+);
+
+function thcCaretLine(count) {
+  let rem = count;
+  for (let i = 0; i < THC_REQUEST.length; i++) {
+    const len = THC_REQUEST[i].reduce((s, [t]) => s + t.length, 0);
+    if (rem <= len) return i;
+    rem -= len;
+  }
+  return THC_REQUEST.length - 1;
+}
+
+function thcVisibleReq(count) {
+  let rem = count;
+  return THC_REQUEST.map((tokens) => {
+    if (rem <= 0) return [];
+    const out = [];
+    for (const [text, color] of tokens) {
+      if (rem >= text.length) { out.push([text, color]); rem -= text.length; }
+      else if (rem > 0)       { out.push([text.slice(0, rem), color]); rem = 0; }
+    }
+    return out;
+  });
+}
+
+function TerminalHeroCard() {
+  const reducedMotion = React.useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+    []
+  );
+
+  const [phase, setPhase]         = React.useState(reducedMotion ? 'response' : 'typing');
+  const [charCount, setCharCount] = React.useState(reducedMotion ? THC_TOTAL : 0);
+  const [respVis, setRespVis]     = React.useState(!!reducedMotion);
+  const [caretOn, setCaretOn]     = React.useState(true);
+
+  // State machine
+  React.useEffect(() => {
+    if (reducedMotion) return;
+    const timers = [];
+    if (phase === 'typing') {
+      if (charCount < THC_TOTAL) {
+        timers.push(setTimeout(() => setCharCount(c => Math.min(c + 2, THC_TOTAL)), 22));
+      } else {
+        timers.push(setTimeout(() => setPhase('sending'), 200));
+      }
+    } else if (phase === 'sending') {
+      timers.push(setTimeout(() => { setPhase('response'); setRespVis(true); }, 780));
+    } else if (phase === 'response') {
+      timers.push(setTimeout(() => setRespVis(false), 2800));
+      timers.push(setTimeout(() => { setPhase('typing'); setCharCount(0); }, 3350));
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [phase, charCount, reducedMotion]);
+
+  // Caret blink
+  React.useEffect(() => {
+    if (reducedMotion || phase !== 'typing') return;
+    const id = setInterval(() => setCaretOn(v => !v), 530);
+    return () => clearInterval(id);
+  }, [phase, reducedMotion]);
+
+  const visReq    = phase === 'typing' ? thcVisibleReq(charCount) : THC_REQUEST;
+  const caretLine = phase === 'typing' ? thcCaretLine(charCount)  : -1;
+
+  return (
+    <div style={{
+      background: '#15122B',
+      borderRadius: 12,
+      border: '1px solid rgba(255,255,255,0.08)',
+      boxShadow: '0 24px 64px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.3)',
+      overflow: 'hidden',
+      fontFamily: '"JetBrains Mono", ui-monospace, "Cascadia Code", monospace',
+    }}>
+      <style>{`@keyframes thc-spin { to { transform: rotate(360deg); } }`}</style>
+
+      {/* Header */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 10,
+        padding: '13px 18px',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        background: 'rgba(255,255,255,0.025)',
+      }}>
+        <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+          {['#FF5F57', '#FEBC2E', '#28C840'].map(c => (
+            <div key={c} style={{ width: 11, height: 11, borderRadius: 999, background: c }} />
+          ))}
+        </div>
+
+        <span style={{
+          flex: 1, textAlign: 'center',
+          fontSize: 11.5, color: 'rgba(246,245,240,0.42)', letterSpacing: 0.2,
+        }}>
+          create a debit-order mandate
+        </span>
+
+        {/* Status pill */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, minWidth: 130, justifyContent: 'flex-end' }}>
+          {phase === 'typing' && (
+            <>
+              <div style={{ width: 6, height: 6, borderRadius: 999, background: 'rgba(168,155,240,0.55)' }} />
+              <span style={{ fontSize: 10, color: 'rgba(246,245,240,0.32)', letterSpacing: 0.9 }}>READY</span>
+            </>
+          )}
+          {phase === 'sending' && (
+            <>
+              <div style={{
+                width: 10, height: 10, borderRadius: 999, flexShrink: 0,
+                border: '1.5px solid #FEBC2E', borderTopColor: 'transparent',
+                animation: 'thc-spin 0.65s linear infinite',
+              }} />
+              <span style={{ fontSize: 10, color: '#FEBC2E', letterSpacing: 0.9 }}>SENDING…</span>
+            </>
+          )}
+          {phase === 'response' && (
+            <>
+              <div style={{ width: 6, height: 6, borderRadius: 999, background: '#28C840', flexShrink: 0 }} />
+              <span style={{ fontSize: 10, color: '#28C840', letterSpacing: 0.9 }}>201 CREATED · 142 ms</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Code body */}
+      <pre style={{
+        margin: 0, padding: '18px 0 22px',
+        display: 'flex', flexDirection: 'column',
+        fontSize: 12.5, lineHeight: 1.72, color: TC.txt, overflowX: 'auto',
+      }}>
+        {/* Request rows */}
+        {THC_REQUEST.map((_, i) => {
+          const visible  = visReq[i];
+          const hasChars = visible && visible.length > 0;
+          const isCaret  = i === caretLine;
+          return (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'baseline',
+              minHeight: '1.72em', paddingLeft: 20, paddingRight: 20,
+            }}>
+              <span style={{
+                width: 22, minWidth: 22, fontSize: 11, textAlign: 'right',
+                marginRight: 18, flexShrink: 0, userSelect: 'none',
+                color: 'rgba(246,245,240,0.18)',
+                opacity: hasChars || isCaret ? 1 : 0,
+              }}>
+                {i + 1}
+              </span>
+              <span>
+                {visible && visible.map(([text, color], ti) => (
+                  <span key={ti} style={{ color }}>{text}</span>
+                ))}
+                {isCaret && (
+                  <span style={{
+                    display: 'inline-block', width: 7, height: '0.85em',
+                    background: caretOn ? TC.kw : 'transparent',
+                    verticalAlign: 'text-bottom', marginLeft: 1,
+                  }} />
+                )}
+              </span>
+            </div>
+          );
+        })}
+
+        {/* Response rows — always rendered, height reserved, opacity animated */}
+        {THC_RESPONSE.map((tokens, i) => (
+          <div key={`r${i}`} style={{
+            display: 'flex', alignItems: 'baseline',
+            minHeight: '1.72em', paddingLeft: 20, paddingRight: 20,
+            opacity: respVis ? 1 : 0,
+            transform: respVis ? 'translateY(0)' : 'translateY(6px)',
+            transition: reducedMotion
+              ? 'none'
+              : `opacity 0.45s ease ${i * 0.055}s, transform 0.45s ease ${i * 0.055}s`,
+          }}>
+            <span style={{
+              width: 22, minWidth: 22, fontSize: 11, textAlign: 'right',
+              marginRight: 18, flexShrink: 0, userSelect: 'none',
+              color: 'rgba(246,245,240,0.18)',
+              opacity: tokens.length > 0 ? 1 : 0,
+            }}>
+              {THC_REQUEST.length + i + 1}
+            </span>
+            <span>
+              {tokens.map(([text, color], ti) => (
+                <span key={ti} style={{ color }}>{text}</span>
+              ))}
+            </span>
+          </div>
+        ))}
+      </pre>
+    </div>
+  );
+}
+
 function ApiDocsPage({ onContact }) {
   const t = COMBINED_WHITE;
   const [activeEndpoint, setActiveEndpoint] = React.useState(0);
@@ -148,34 +376,7 @@ function ApiDocsPage({ onContact }) {
             </div>
           </div>
 
-          <div style={{ background: '#0F0E14', borderRadius: 16, padding: '28px', overflow: 'hidden' }}>
-            <div className="mono" style={{ fontSize: 11, color: 'rgba(201,199,212,0.5)', letterSpacing: 1.5, marginBottom: 20 }}>
-              QUICK START · Node.js
-            </div>
-            <div style={{
-              fontFamily: '"JetBrains Mono", ui-monospace, monospace', fontSize: 13,
-              lineHeight: 1.7, color: '#C9C7D4', whiteSpace: 'pre',
-            }}>{`import Recurv from '@recurv/node';
-
-const recurv = new Recurv({
-  apiKey: process.env.RECURV_API_KEY,
-});
-
-// Create a mandate
-const mandate = await recurv.mandates.create({
-  subscriberId: 'sub_9fKn2xM',
-  amount: 249900,          // in cents
-  frequency: 'monthly',
-  firstCollectionDate: '2026-02-01',
-  account: {
-    bankCode: '632005',
-    accountNumber: '••••••7821',
-    accountType: 'cheque',
-  },
-});
-
-console.log(mandate.status); // 'pending_authentication'`}</div>
-          </div>
+          <TerminalHeroCard />
         </div>
       </section>
 
@@ -299,4 +500,4 @@ console.log(mandate.status); // 'pending_authentication'`}</div>
   );
 }
 
-Object.assign(window, { ApiDocsPage });
+Object.assign(window, { ApiDocsPage, TerminalHeroCard });

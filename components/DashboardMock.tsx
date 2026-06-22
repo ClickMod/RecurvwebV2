@@ -142,9 +142,9 @@ export function DashboardMock() {
       >
         <Logo color={t.ink} accent={t.primary} size={18} />
         <div
+          className="hidden md:flex"
           style={{
             marginLeft: 16,
-            display: "flex",
             gap: 22,
             fontSize: 12,
             color: t.inkSoft,
