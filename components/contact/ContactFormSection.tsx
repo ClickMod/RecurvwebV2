@@ -7,7 +7,7 @@ import { theme as t } from "@/components/theme";
 
 const inputStyle: React.CSSProperties = {
   fontFamily: "var(--font-display)",
-  fontSize: 15,
+  fontSize: 16,
   padding: "14px 16px",
   background: "var(--surface)",
   borderRadius: 8,

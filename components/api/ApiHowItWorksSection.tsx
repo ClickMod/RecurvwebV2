@@ -51,7 +51,7 @@ export function ApiHowItWorksSection() {
           <p style={{ fontSize: 17, color: t.inkSoft, lineHeight: 1.65, margin: 0 }}>
             Authenticate with a secret key, create a mandate, then listen for webhooks as
             collections succeed, retry or fail. No SOAP, no batch files, no bank-specific
-            plumbing — Recurv normalises every rail behind one JSON interface.
+            plumbing. Recurv normalises every rail behind one JSON interface.
           </p>
         </div>
 

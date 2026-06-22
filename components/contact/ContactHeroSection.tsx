@@ -25,8 +25,8 @@ export function ContactHeroSection() {
           className="mt-8 max-w-[560px]"
           style={{ fontSize: 19, lineHeight: 1.55, color: t.inkSoft }}
         >
-          Tell us where you collect, who you collect from, and what&rsquo;s not working today —
-          and we&rsquo;ll come back with a plan, pricing, and a live demo within one business day.
+          Tell us where you collect, who you collect from, and what&rsquo;s not working today 
+          and we&rsquo;ll come back with a plan, pricing and a live demo within one business day.
         </p>
       </Container>
     </section>

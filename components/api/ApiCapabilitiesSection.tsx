@@ -13,7 +13,7 @@ const CAPABILITIES = [
   {
     icon: "schedule" as const,
     title: "Collections",
-    desc: "Schedule one-off or recurring collections, set retry logic, and track every status transition.",
+    desc: "Schedule one-off or recurring collections, set retry logic and track every status transition.",
     route: "/v1/collections",
   },
   {
@@ -25,7 +25,7 @@ const CAPABILITIES = [
   {
     icon: "wallet" as const,
     title: "Payouts",
-    desc: "Reconcile settled funds, fees and refunds — pulled straight into your own ledger.",
+    desc: "Reconcile settled funds, fees and refunds pulled straight into your own ledger.",
     route: "/v1/payouts",
   },
   {
