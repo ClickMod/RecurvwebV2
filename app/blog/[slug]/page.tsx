@@ -7,6 +7,7 @@ import { Section } from "@/components/Section";
 import { PhotoSlot } from "@/components/PhotoSlot";
 import { BlogCard } from "@/components/BlogCard";
 import { Button } from "@/components/Button";
+import { BlogShareRow } from "@/components/BlogShareRow";
 import { ContactCallSection } from "@/components/contact/ContactCallSection";
 
 interface Props {
@@ -169,12 +170,14 @@ export default async function BlogPostPage({ params }: Props) {
             style={{ fontSize: 13, color: t.inkSoft }}
           >
             <Link href="/" style={{ color: t.inkSoft, textDecoration: "none" }}>
-              Home
+              Resources
             </Link>
             <span style={{ opacity: 0.4 }}>/</span>
             <Link href="/blog" style={{ color: t.inkSoft, textDecoration: "none" }}>
               Blog
             </Link>
+            <span style={{ opacity: 0.4 }}>/</span>
+            <span style={{ color: t.inkSoft }}>{post.category.toUpperCase()}</span>
             <span style={{ opacity: 0.4 }}>/</span>
             <span
               style={{ color: t.ink, fontWeight: 500, maxWidth: 300 }}
@@ -229,79 +232,33 @@ export default async function BlogPostPage({ params }: Props) {
 
             </div>
 
-            {/* Right — tags + TOC on desktop */}
-            <div
-              className="hidden lg:flex flex-col gap-6 pt-2"
-            >
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2">
-                {content.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="mono"
-                    style={{
-                      fontSize: 11,
-                      letterSpacing: 1,
-                      padding: "5px 12px",
-                      borderRadius: 999,
-                      border: `1px solid ${t.line}`,
-                      color: t.inkSoft,
-                      background: t.surfaceAlt,
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
+            {/* Right — published + share */}
+            <div className="hidden lg:flex flex-col gap-8 pt-2">
+              {/* Published */}
+              <div className="flex flex-col gap-2">
+                <div
+                  className="mono"
+                  style={{ fontSize: 10, letterSpacing: 1.5, color: t.inkSoft }}
+                >
+                  PUBLISHED
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 500, color: t.ink }}>
+                  {content.dateLong}
+                </div>
               </div>
 
-              {/* TOC preview */}
-              <div
-                style={{
-                  border: `1px solid ${t.line}`,
-                  borderRadius: 12,
-                  overflow: "hidden",
-                }}
-              >
+              {/* Share */}
+              <div className="flex flex-col gap-3">
                 <div
-                  className="mono px-5 py-3"
-                  style={{
-                    fontSize: 10,
-                    letterSpacing: 1.5,
-                    color: t.inkSoft,
-                    borderBottom: `1px solid ${t.line}`,
-                    background: t.surfaceAlt,
-                  }}
+                  className="mono"
+                  style={{ fontSize: 10, letterSpacing: 1.5, color: t.inkSoft }}
                 >
-                  IN THIS ARTICLE
+                  SHARE
                 </div>
-                <ol className="flex flex-col" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                  {content.toc.map((item, i) => (
-                    <li key={i}>
-                      <a
-                        href={`#${item.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
-                        style={{
-                          display: "flex",
-                          alignItems: "baseline",
-                          gap: 12,
-                          padding: "10px 20px",
-                          fontSize: 13,
-                          color: t.inkSoft,
-                          textDecoration: "none",
-                          borderBottom: i < content.toc.length - 1 ? `1px solid ${t.line}` : "none",
-                        }}
-                        className="hover:bg-[#F6F5F0] transition-colors duration-100"
-                      >
-                        <span
-                          className="mono flex-shrink-0"
-                          style={{ fontSize: 10, color: t.primary, letterSpacing: 1, minWidth: 20 }}
-                        >
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        <span style={{ lineHeight: 1.4 }}>{item}</span>
-                      </a>
-                    </li>
-                  ))}
-                </ol>
+                <BlogShareRow
+                  url={`https://recurv.co.za/blog/${post.slug}`}
+                  title={post.title}
+                />
               </div>
             </div>
           </div>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/Button";
 import { PhotoSlot } from "@/components/PhotoSlot";
 import { Container } from "@/components/Container";
@@ -6,9 +7,9 @@ import { STAGGER } from "@/components/motion";
 import { theme as t } from "@/components/theme";
 
 const INDUSTRIES_COMPACT = [
-  { h: "Golf & country clubs", collect: "Membership dues & green fees", tint: "#3E6B47", bg: "#16241A" },
-  { h: "Medical & dental", collect: "Patient payment plans", tint: "#3D5C8A", bg: "#141E2E" },
-  { h: "Sport clubs & unions", collect: "Subs, term fees & event collections", tint: "#9A6B3E", bg: "#241A12" },
+  { h: "Golf & country clubs", collect: "Membership dues & green fees", tint: "#3E6B47", bg: "#16241A", href: "/industries" },
+  { h: "Medical & dental", collect: "Patient payment plans", tint: "#3D5C8A", bg: "#141E2E", href: "/industries" },
+  { h: "Sport clubs & unions", collect: "Subs, term fees & event collections", tint: "#9A6B3E", bg: "#241A12", href: "/industries" },
 ] as const;
 
 export function IndustriesSection() {
@@ -43,7 +44,7 @@ export function IndustriesSection() {
           <Reveal delay={STAGGER}>
             <div className="flex flex-col-reverse md:flex-col items-start md:items-end gap-3 pb-1">
               <div className="mono" style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1 }}>R 30.6M COLLECTED / MONTH</div>
-              <Button variant="secondary" className="w-full md:w-auto justify-center">All industries →</Button>
+              <Button variant="secondary" href="/industries" className="w-full md:w-auto justify-center">All industries →</Button>
             </div>
           </Reveal>
         </div>
@@ -52,38 +53,41 @@ export function IndustriesSection() {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.12fr_1fr] items-stretch min-w-0">
           {/* Featured tile — Property & Rentals */}
           <Reveal className="relative rounded-2xl overflow-hidden min-h-[360px] md:min-h-[520px]">
-            <div className="absolute inset-0">
-              <PhotoSlot tint="#6E4A2A" bg="#241813" variant="spotlight" rounded={0} style={{ height: "100%", aspectRatio: "auto" }}>
-                <span />
-              </PhotoSlot>
-            </div>
-            <div
-              className="absolute inset-0"
-              style={{ background: "linear-gradient(180deg, rgba(15,14,20,0.12) 0%, transparent 32%, rgba(15,14,20,0.55) 78%, rgba(15,14,20,0.82) 100%)" }}
-            />
-            <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8">
-              <div className="mono" style={{ fontSize: 10, letterSpacing: 1.5, color: "rgba(255,255,255,0.55)" }}>
-                TOWNHOUSE COMPLEX · DROP IMAGE
+            <Link href="/industries" style={{ textDecoration: "none", display: "block", height: "100%" }}>
+              <div className="absolute inset-0">
+                <PhotoSlot tint="#6E4A2A" bg="#241813" variant="spotlight" rounded={0} style={{ height: "100%", aspectRatio: "auto" }}>
+                  <span />
+                </PhotoSlot>
               </div>
-              <div>
-                <div className="mono mb-3" style={{ fontSize: 11, letterSpacing: 1.5, color: "#E9C9A6" }}>HIGHEST VOLUME</div>
-                <div style={{ fontFamily: t.fontDisplay, fontSize: "var(--fs-h2-md)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1, color: "#fff" }}>
-                  Property & rentals
+              <div
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(180deg, rgba(15,14,20,0.12) 0%, transparent 32%, rgba(15,14,20,0.55) 78%, rgba(15,14,20,0.82) 100%)" }}
+              />
+              <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8">
+                <div className="mono" style={{ fontSize: 10, letterSpacing: 1.5, color: "rgba(255,255,255,0.55)" }}>
+                  TOWNHOUSE COMPLEX · DROP IMAGE
                 </div>
-                <p className="mt-3 mb-5 max-w-[420px]" style={{ fontSize: 15, color: "rgba(255,255,255,0.82)", lineHeight: 1.5 }}>
-                  Rent collection, tenant onboarding & deposit management — automated end to end.
-                </p>
-                <div className="flex items-center pt-5" style={{ borderTop: "1px solid rgba(255,255,255,0.18)" }}>
-                  <span className="cursor-pointer underline underline-offset-4" style={{ fontSize: 14, color: "rgba(255,255,255,0.82)" }}>See Use Case →</span>
+                <div>
+                  <div className="mono mb-3" style={{ fontSize: 11, letterSpacing: 1.5, color: "#E9C9A6" }}>HIGHEST VOLUME</div>
+                  <div style={{ fontFamily: t.fontDisplay, fontSize: "var(--fs-h2-md)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1, color: "#fff" }}>
+                    Property & rentals
+                  </div>
+                  <p className="mt-3 mb-5 max-w-[420px]" style={{ fontSize: 15, color: "rgba(255,255,255,0.82)", lineHeight: 1.5 }}>
+                    Rent collection, tenant onboarding & deposit management — automated end to end.
+                  </p>
+                  <div className="flex items-center pt-5" style={{ borderTop: "1px solid rgba(255,255,255,0.18)" }}>
+                    <span className="cursor-pointer underline underline-offset-4" style={{ fontSize: 14, color: "rgba(255,255,255,0.82)" }}>See Use Case →</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           </Reveal>
 
           {/* Compact industry rows */}
           <div className="flex flex-col gap-4">
             {INDUSTRIES_COMPACT.map((ind, i) => (
               <Reveal key={ind.h} delay={i * STAGGER} className="flex-1">
+              <Link href={ind.href} style={{ textDecoration: "none", display: "block", height: "100%" }}>
               <div
                 className="h-full grid grid-cols-[100px_1fr] sm:grid-cols-[132px_1fr] gap-4 sm:gap-5 items-center rounded-[14px] p-3.5 transition-[border-color,box-shadow,transform] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-sm"
                 style={{
@@ -111,6 +115,7 @@ export function IndustriesSection() {
                   </div>
                 </div>
               </div>
+              </Link>
               </Reveal>
             ))}
           </div>

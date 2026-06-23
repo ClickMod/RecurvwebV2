@@ -3,7 +3,7 @@ import { theme as t } from "@/components/theme";
 
 export function ContactHeroSection() {
   return (
-    <section className="py-16 md:py-20 lg:py-24">
+    <section className="pt-4 pb-16 md:pt-6 md:pb-20 lg:pt-4 lg:pb-24">
       <Container>
         <div
           className="mono mb-7 flex flex-wrap gap-4"

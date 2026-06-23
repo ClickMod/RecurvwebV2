@@ -322,6 +322,28 @@ export const ALL_POSTS: Post[] = [
     date: '11 FEB 2026', dateSort: 20260211,
     imageDesc: 'Server rack, dim blue light', imageBg: '#0C1322',
   },
+  {
+    slug: 'school-fee-collection-term-vs-monthly',
+    industry: 'Schools',
+    category: 'SCHOOLS · BILLING',
+    readTime: 6,
+    title: 'Term billing vs monthly: what actually works for school cash flow',
+    excerpt: "Most schools default to term billing because that's how it's always been done. Here's what the numbers say when you smooth fees into monthly debit orders.",
+    author: 'Nomsa Khumalo', authorInitials: 'NK',
+    date: '18 MAR 2026', dateSort: 20260318,
+    imageDesc: 'Empty classroom, morning light through windows', imageBg: '#1A1F3A',
+  },
+  {
+    slug: 'bursar-arrears-before-they-grow',
+    industry: 'Schools',
+    category: 'SCHOOLS · OPERATIONS',
+    readTime: 5,
+    title: "How to catch fee arrears before the governing body asks about them",
+    excerpt: "One bounced debit order isn't a problem. Three months of silence after it is. A practical framework for bursars who'd rather prevent arrears than chase them.",
+    author: 'Dr. Lerato Mokoena', authorInitials: 'LM',
+    date: '05 MAR 2026', dateSort: 20260305,
+    imageDesc: 'School finance office, papers and a laptop', imageBg: '#1C2A1E',
+  },
 ];
 
 export const LATEST_POSTS = [...ALL_POSTS].sort((a, b) => b.dateSort - a.dateSort);
