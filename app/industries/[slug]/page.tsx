@@ -169,7 +169,7 @@ export default async function IndustryPage({ params }: Props) {
           href: normalizeUrl(industry.heroSecondaryCta?.url),
         }}
         stats={(industry.heroStats ?? []).map((s) => ({
-          label: [s.value, s.label].filter(Boolean).join(" "),
+          label: s.value,
         }))}
         actualImage={
           industry.heroImage
