@@ -46,7 +46,7 @@ export function HeroSection() {
             </Reveal>
             <Reveal delay={STAGGER * 2}>
               <div className="flex flex-col sm:flex-row gap-3 mt-9">
-                <Button size="lg" className="w-full sm:w-auto justify-center">Book a live demo</Button>
+                <Button size="lg" className="w-full sm:w-auto justify-center" href="https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv">Book a live demo</Button>
                 <Link href="/contactus" className="w-full sm:w-auto" style={{ textDecoration: "none" }}>
                   <Button size="lg" variant="secondary" icon={<span>→</span>} className="w-full sm:w-auto justify-center">Speak to sales</Button>
                 </Link>

@@ -1,7 +1,7 @@
 import { CarbonIcon } from "@/components/CarbonIcon";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
-import { theme as t } from "@/components/theme";
+import { theme as t, iconSize } from "@/components/theme";
 
 const STEPS = [
   {
@@ -71,7 +71,7 @@ export function ApiHowItWorksSection() {
             >
               {/* Icon row */}
               <div className="flex items-center justify-between">
-                <CarbonIcon name={step.icon} color={t.primary} size={36} />
+                <CarbonIcon name={step.icon} color={t.primary} size={iconSize.section} />
                 <span
                   className="mono"
                   style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1.5 }}

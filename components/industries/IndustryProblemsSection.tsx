@@ -1,13 +1,12 @@
 import { ReactNode } from "react";
-import { CarbonIcon, IconName } from "@/components/CarbonIcon";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
 import { theme as t } from "@/components/theme";
 
 export interface IndustryProblemItem {
-  /** CarbonIcon name */
-  icon: IconName;
+  /** Rendered icon — pass <CarbonIcon> for static pages, <DynamicIcon> for CMS pages. */
+  icon: ReactNode;
   /** Card heading — the problem in plain terms */
   heading: string;
   /** One or two sentences describing why this hurts */
@@ -46,7 +45,7 @@ export function IndustryProblemsSection({
         <div className="grid grid-cols-1 gap-8 mb-12 lg:grid-cols-2 lg:gap-16 lg:mb-14 items-end">
           <Reveal>
             <div
-              className="mono mb-5"
+              className="mono mb-5 uppercase"
               style={{ fontSize: 11, color: t.primary, letterSpacing: 1.5 }}
             >
               {eyebrow}
@@ -86,7 +85,7 @@ export function IndustryProblemsSection({
               >
                 {/* Icon + heading */}
                 <div className="flex items-center gap-3 mb-4">
-                  <CarbonIcon name={p.icon} color={t.primary} size={28} />
+                  {p.icon}
                   <h3
                     style={{
                       fontFamily: t.fontDisplay,

@@ -62,7 +62,7 @@ export function CallSection(props: CallSectionProps) {
           {/* Left */}
           <div>
             <div
-              className="mono mb-5"
+              className="mono mb-5 uppercase"
               style={{ fontSize: 11, color: ACCENT, letterSpacing: 1.5 }}
             >
               {p.eyebrow}
@@ -91,7 +91,7 @@ export function CallSection(props: CallSectionProps) {
           {/* Right */}
           <div>
             <div
-              className="mono mb-4"
+              className="mono mb-4 uppercase"
               style={{ fontSize: 11, color: ACCENT, letterSpacing: 1.5 }}
             >
               {p.phoneLabel}

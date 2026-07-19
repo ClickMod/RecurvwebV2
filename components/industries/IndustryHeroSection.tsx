@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { PhotoSlot } from "@/components/PhotoSlot";
@@ -61,7 +62,13 @@ export interface IndustryHeroProps {
    */
   stats: IndustryStatBadge[];
 
-  /** Image placeholder configuration */
+  /**
+   * Real image from the CMS (Strapi heroImage field).
+   * When provided, renders a next/image instead of the PhotoSlot placeholder.
+   */
+  actualImage?: { url: string; width: number; height: number; alt?: string };
+
+  /** Image placeholder configuration — used when actualImage is not set. */
   image?: IndustryHeroImage;
 }
 
@@ -73,6 +80,7 @@ export function IndustryHeroSection({
   primaryCta,
   secondaryCta,
   stats,
+  actualImage,
   image = {},
 }: IndustryHeroProps) {
   const headingLines = Array.isArray(headingBefore) ? headingBefore : [headingBefore];
@@ -129,12 +137,12 @@ export function IndustryHeroSection({
 
             {/* Body */}
             <Reveal delay={STAGGER}>
-              <p
+              <div
                 className="mt-8 max-w-[520px]"
                 style={{ fontSize: 18, lineHeight: 1.6, color: t.inkSoft }}
               >
                 {body}
-              </p>
+              </div>
             </Reveal>
 
             {/* CTAs */}
@@ -175,16 +183,32 @@ export function IndustryHeroSection({
             </Reveal>
           </div>
 
-          {/* ── Right: image placeholder ── */}
+          {/* ── Right: actual image or placeholder ── */}
           <Reveal delay={STAGGER} className="w-full">
-            <PhotoSlot
-              label={image.label ?? `Editorial photo — ${industryName.toLowerCase()} scene`}
-              caption={image.caption}
-              tint={image.tint ?? t.primary}
-              bg={image.bg ?? "#0F0E14"}
-              ratio="4 / 5"
-              variant="spotlight"
-            />
+            {actualImage ? (
+              <div
+                className="w-full overflow-hidden rounded-2xl"
+                style={{ aspectRatio: "4 / 5", position: "relative" }}
+              >
+                <Image
+                  src={actualImage.url}
+                  alt={actualImage.alt ?? industryName}
+                  width={actualImage.width}
+                  height={actualImage.height}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  priority
+                />
+              </div>
+            ) : (
+              <PhotoSlot
+                label={image.label ?? `Editorial photo — ${industryName.toLowerCase()} scene`}
+                caption={image.caption}
+                tint={image.tint ?? t.primary}
+                bg={image.bg ?? "#0F0E14"}
+                ratio="4 / 5"
+                variant="spotlight"
+              />
+            )}
           </Reveal>
         </div>
       </Container>

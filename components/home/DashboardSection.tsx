@@ -1,14 +1,39 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import { Button } from "@/components/Button";
 import { DashboardMock } from "@/components/DashboardMock";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
 import { theme as t } from "@/components/theme";
 
-const BULLETS = [
-  ["Live cashflow tracking", "Watch revenue land as it happens, across every plan and customer."],
-  ["Retry intelligence", "Failed collections are retried at the right time, for the right reason. Automatically."],
-  ["Reconciled export", "One-click excel export that matches your bank statement, every time."],
-] as const;
+const BULLETS: [string, ReactNode][] = [
+  [
+    "Billing cycle insights",
+    "See the outcome of every billing cycle at a glance, with failed transactions clearly prioritised so your team knows exactly where to take action.",
+  ],
+  [
+    "Automated reconciliation",
+    "Recurv automatically matches collections and payment outcomes, reducing manual back-office work and removing the need for spreadsheets and VLOOKUPs.",
+  ],
+  [
+    "Reports and integrations",
+    <>
+      Export collection data for your accounting or CRM system, or connect through our{" "}
+      <Link
+        href="/api-docs"
+        style={{ color: t.primary, textDecoration: "underline", textUnderlineOffset: 2 }}
+      >
+        API
+      </Link>{" "}
+      for real-time data synchronisation.
+    </>,
+  ],
+  [
+    "Mandate monitoring",
+    "Track mandate statuses and identify issues before collections are submitted, helping you avoid unnecessary rejections and banking penalty fees.",
+  ],
+];
 
 export function DashboardSection() {
   return (
@@ -18,7 +43,7 @@ export function DashboardSection() {
           <div className="min-w-0">
             <Reveal>
               <div className="mono mb-5" style={{ fontSize: 11, color: t.primary, letterSpacing: 1.5 }}>
-                UNIFIED DASHBOARD
+              BILLING CYCLE CONTROL
               </div>
               <h2 style={{
                 fontFamily: t.fontDisplay,
@@ -28,15 +53,18 @@ export function DashboardSection() {
                 letterSpacing: "-0.035em",
                 margin: 0,
               }}>
-                Every collection. Every customer.<br />
-                <span style={{ color: t.primary }}>In one place.</span>
+                Focus on what needs attention.<br />
+                <span style={{ color: t.primary }}>We handle the rest.</span>
               </h2>
             </Reveal>
             <Reveal delay={STAGGER}>
               <p className="mt-6" style={{ fontSize: 17, color: t.inkSoft, lineHeight: 1.6 }}>
-                Ditch the spreadsheets and the WhatsApp reminders. Recurv gives your finance team a single view
-                of every payment plan, subscription, and collection run with real-time data to spot problems
-                early, forecast accurately and act fast.
+              Recurv gives your team a complete view of every billing cycle
+                without forcing them to work through every successful
+                transaction to find the exceptions. Failed collections,
+                mandate issues and transactions requiring intervention are
+                surfaced immediately, while reconciliation and reporting happen
+                automatically in the background.
               </p>
             </Reveal>
 
@@ -64,6 +92,19 @@ export function DashboardSection() {
                 </Reveal>
               ))}
             </div>
+
+            <Reveal delay={STAGGER * 6}>
+              <div className="mt-8">
+                <Button
+                  href="/contactus"
+                  variant="secondary"
+                  icon={<span>→</span>}
+                  className="w-full sm:w-auto justify-center"
+                >
+                  Speak to sales
+                </Button>
+              </div>
+            </Reveal>
 
           </div>
 

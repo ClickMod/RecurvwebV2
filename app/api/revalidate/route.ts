@@ -6,10 +6,13 @@ import { revalidatePath, revalidateTag } from "next/cache";
  *
  * Called by the Strapi webhook on entry.publish / entry.update / entry.unpublish.
  * Strapi sends a JSON body with the shape:
- *   { model: "blog-post" | "industry", entry: { slug: string, ... } }
+ *   { model: "blog-post" | "blog-category" | "blog-tag" | "industry" | "legal-page", entry: { slug: string, ... } }
  *
- * The handler invalidates the affected route so the next request re-renders
+ * The handler invalidates the affected route(s) so the next request re-renders
  * from Strapi and the fresh result is cached.
+ *
+ * Note: Next.js 16 requires a `profile` second argument for revalidateTag.
+ * We pass `{ expire: 0 }` to force immediate expiration of the cached data.
  */
 export async function POST(req: NextRequest) {
   const secret = req.nextUrl.searchParams.get("secret");
@@ -30,23 +33,57 @@ export async function POST(req: NextRequest) {
   }
 
   const { model, entry } = body;
-  const slug = entry?.slug;
 
-  if (!model || !slug) {
-    return NextResponse.json({ error: "Missing model or entry.slug" }, { status: 400 });
+  if (!model) {
+    return NextResponse.json({ error: "Missing model" }, { status: 400 });
   }
 
+  // { expire: 0 } forces the cached data to expire immediately so the next
+  // request fetches fresh content from Strapi.
+  const NOW: { expire: number } = { expire: 0 };
+
   if (model === "blog-post") {
-    revalidatePath(`/blog/${slug}`);
-    revalidatePath("/blog");
-    revalidateTag("/blog-posts");
+    const slug = entry?.slug;
+    if (slug) {
+      revalidatePath(`/blog/${slug}`, "page");
+    }
+    revalidatePath("/blog", "page");
+    revalidatePath("/", "page");
+    // Industry pages embed posts filtered by category slug === industry slug
+    revalidatePath("/industries", "layout");
+    revalidateTag("blog-listing", NOW);
+    revalidateTag("/blog-posts", NOW);
+  } else if (model === "blog-category") {
+    revalidatePath("/blog", "page");
+    revalidatePath("/", "page");
+    revalidatePath("/industries", "layout");
+    revalidateTag("blog-listing", NOW);
+    revalidateTag("blog-categories", NOW);
+    revalidateTag("/blog-posts", NOW);
+  } else if (model === "blog-tag") {
+    revalidatePath("/blog", "page");
+    revalidateTag("blog-tags", NOW);
+    revalidateTag("blog-listing", NOW);
+    revalidateTag("/blog-posts", NOW);
   } else if (model === "industry") {
-    revalidatePath(`/industries/${slug}`);
-    revalidatePath("/industries");
-    revalidateTag("/industries");
+    const slug = entry?.slug;
+    if (!slug) {
+      return NextResponse.json({ error: "Missing entry.slug for industry model" }, { status: 400 });
+    }
+    revalidatePath(`/industries/${slug}`, "page");
+    revalidatePath("/industries", "page");
+    revalidateTag("/industries", NOW);
+    revalidateTag("industries-nav", NOW);
+    revalidateTag("industries-listing", NOW);
+  } else if (model === "legal-page") {
+    const slug = entry?.slug;
+    if (slug) {
+      revalidatePath(`/${slug}`, "page");
+    }
+    revalidateTag("/legal-pages", NOW);
   } else {
     return NextResponse.json({ error: `Unknown model: ${model}` }, { status: 400 });
   }
 
-  return NextResponse.json({ revalidated: true, model, slug });
+  return NextResponse.json({ revalidated: true, model, slug: entry?.slug ?? null });
 }

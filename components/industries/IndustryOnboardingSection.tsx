@@ -42,7 +42,7 @@ export function IndustryOnboardingSection({
         <div className="grid grid-cols-1 gap-6 mb-10 lg:grid-cols-[1fr_auto] lg:items-center lg:mb-12">
           <Reveal>
             <div
-              className="mono mb-5"
+              className="mono mb-5 uppercase"
               style={{ fontSize: 11, color: t.primary, letterSpacing: 1.5 }}
             >
               {eyebrow}

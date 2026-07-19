@@ -9,7 +9,7 @@ const FAQS = [
   },
   {
     q: "Do you support migrations from existing debit-order providers?",
-    a: "Yes — we handle the full migration, including porting active mandates and reconciling historical collections so there's no gap in your records.",
+    a: "Yes. We handle the full migration on your behalf.",
   },
   {
     q: "Is Recurv suitable for small clubs or single-practice operators?",
@@ -17,7 +17,7 @@ const FAQS = [
   },
   {
     q: "What does Recurv cost?",
-    a: "Pricing is based on monthly collection volume with no setup fees. Book a demo and we'll give you exact numbers on the call — no follow-up email, no surprises.",
+    a: "Pricing is based on monthly collection volume with no setup fees. Book a demo and we'll give you exact numbers on the call, no follow-up email, no surprises.",
   },
   {
     q: "Where is customer data stored?",

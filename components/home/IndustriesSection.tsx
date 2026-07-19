@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/Button";
 import { PhotoSlot } from "@/components/PhotoSlot";
@@ -5,14 +6,18 @@ import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
 import { theme as t } from "@/components/theme";
+import { strapiImageUrl } from "@/lib/strapi";
+import type { StrapiIndustryCard } from "@/lib/strapi";
 
-const INDUSTRIES_COMPACT = [
-  { h: "Golf & country clubs", collect: "Membership dues & green fees", tint: "#3E6B47", bg: "#16241A", href: "/industries" },
-  { h: "Medical & dental", collect: "Patient payment plans", tint: "#3D5C8A", bg: "#141E2E", href: "/industries" },
-  { h: "Sport clubs & unions", collect: "Subs, term fees & event collections", tint: "#9A6B3E", bg: "#241A12", href: "/industries" },
-] as const;
+interface IndustriesSectionProps {
+  industries: StrapiIndustryCard[];
+}
 
-export function IndustriesSection() {
+export function IndustriesSection({ industries }: IndustriesSectionProps) {
+  const featured = industries.find((i) => i.isFeatured) ?? industries[0];
+  // Show up to 3 non-featured entries sorted by name (already sorted by API)
+  const rest = industries.filter((i) => i !== featured).slice(0, 3);
+
   return (
     <section
       className="py-16 md:py-20 lg:py-24"
@@ -37,8 +42,8 @@ export function IndustriesSection() {
               <span style={{ color: t.primary }}>not just monthly debit orders.</span>
             </h2>
             <p className="mt-5 max-w-[560px]" style={{ fontSize: 16, color: t.inkSoft, lineHeight: 1.55 }}>
-              Membership dues, term fees, payment plans, or monthly rent — Recurv adapts
-              to your billing cycle, not the other way around.
+            No two industries collect revenue the same way.
+            Recurv gives every organisation the flexibility to automate collections around its own processes and billing rules.
             </p>
           </Reveal>
           <Reveal delay={STAGGER}>
@@ -49,77 +54,98 @@ export function IndustriesSection() {
           </Reveal>
         </div>
 
-        {/* Industry tiles */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.12fr_1fr] items-stretch min-w-0">
-          {/* Featured tile — Property & Rentals */}
-          <Reveal className="relative rounded-2xl overflow-hidden min-h-[360px] md:min-h-[520px]">
-            <Link href="/industries" style={{ textDecoration: "none", display: "block", height: "100%" }}>
-              <div className="absolute inset-0">
-                <PhotoSlot tint="#6E4A2A" bg="#241813" variant="spotlight" rounded={0} style={{ height: "100%", aspectRatio: "auto" }}>
-                  <span />
-                </PhotoSlot>
-              </div>
-              <div
-                className="absolute inset-0"
-                style={{ background: "linear-gradient(180deg, rgba(15,14,20,0.12) 0%, transparent 32%, rgba(15,14,20,0.55) 78%, rgba(15,14,20,0.82) 100%)" }}
-              />
-              <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8">
-                <div className="mono" style={{ fontSize: 10, letterSpacing: 1.5, color: "rgba(255,255,255,0.55)" }}>
-                  TOWNHOUSE COMPLEX · DROP IMAGE
-                </div>
-                <div>
-                  <div className="mono mb-3" style={{ fontSize: 11, letterSpacing: 1.5, color: "#E9C9A6" }}>HIGHEST VOLUME</div>
-                  <div style={{ fontFamily: t.fontDisplay, fontSize: "var(--fs-h2-md)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1, color: "#fff" }}>
-                    Property & rentals
-                  </div>
-                  <p className="mt-3 mb-5 max-w-[420px]" style={{ fontSize: 15, color: "rgba(255,255,255,0.82)", lineHeight: 1.5 }}>
-                    Rent collection, tenant onboarding & deposit management — automated end to end.
-                  </p>
-                  <div className="flex items-center pt-5" style={{ borderTop: "1px solid rgba(255,255,255,0.18)" }}>
-                    <span className="cursor-pointer underline underline-offset-4" style={{ fontSize: 14, color: "rgba(255,255,255,0.82)" }}>See Use Case →</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </Reveal>
-
-          {/* Compact industry rows */}
-          <div className="flex flex-col gap-4">
-            {INDUSTRIES_COMPACT.map((ind, i) => (
-              <Reveal key={ind.h} delay={i * STAGGER} className="flex-1">
-              <Link href={ind.href} style={{ textDecoration: "none", display: "block", height: "100%" }}>
-              <div
-                className="h-full grid grid-cols-[100px_1fr] sm:grid-cols-[132px_1fr] gap-4 sm:gap-5 items-center rounded-[14px] p-3.5 transition-[border-color,box-shadow,transform] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-sm"
-                style={{
-                  background: t.surface,
-                  border: `1px solid ${t.line}`,
-                }}
-              >
-                <div className="relative self-stretch min-h-[120px]">
-                  <div className="absolute inset-0">
-                    <PhotoSlot tint={ind.tint} bg={ind.bg} variant="spotlight" rounded={10} style={{ height: "100%", aspectRatio: "auto" }}>
+        {featured && (
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.12fr_1fr] items-stretch min-w-0">
+            {/* Featured tile */}
+            <Reveal className="relative rounded-2xl overflow-hidden min-h-[360px] md:min-h-[520px]">
+              <Link href={`/industries/${featured.slug}`} style={{ textDecoration: "none", display: "block", height: "100%" }}>
+                <div className="absolute inset-0">
+                  {featured.cardImage ? (
+                    <Image
+                      src={strapiImageUrl(featured.cardImage.url)!}
+                      alt={featured.cardImage.alternativeText || featured.industryName}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 60vw"
+                    />
+                  ) : (
+                    <PhotoSlot tint="#6E4A2A" bg="#241813" variant="spotlight" rounded={0} style={{ height: "100%", aspectRatio: "auto" }}>
                       <span />
                     </PhotoSlot>
+                  )}
+                </div>
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(180deg, rgba(15,14,20,0.12) 0%, transparent 32%, rgba(15,14,20,0.55) 78%, rgba(15,14,20,0.82) 100%)" }}
+                />
+                <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8">
+                  <div className="mono" style={{ fontSize: 10, letterSpacing: 1.5, color: "rgba(255,255,255,0.55)" }}>
+                    FEATURED INDUSTRY
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: t.fontDisplay, fontSize: "var(--fs-h2-md)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1, color: "#fff" }}>
+                      {featured.industryName}
+                    </div>
+                    {featured.cardTagline && (
+                      <p className="mt-3 mb-5 max-w-[420px]" style={{ fontSize: 15, color: "rgba(255,255,255,0.82)", lineHeight: 1.5 }}>
+                        {featured.cardTagline}
+                      </p>
+                    )}
+                    <div className="flex items-center pt-5" style={{ borderTop: "1px solid rgba(255,255,255,0.18)" }}>
+                      <span className="cursor-pointer underline underline-offset-4" style={{ fontSize: 14, color: "rgba(255,255,255,0.82)" }}>See Use Case →</span>
+                    </div>
                   </div>
                 </div>
-                <div className="flex flex-col gap-1 pr-2 min-w-0">
-                  <div style={{ fontFamily: t.fontDisplay, fontSize: 23, fontWeight: 500, letterSpacing: "-0.025em", lineHeight: 1.05 }}>
-                    {ind.h}
-                  </div>
-                  <div style={{ fontSize: 14, color: t.inkSoft, lineHeight: 1.4 }}>{ind.collect}</div>
-                  <div
-                    className="flex items-center mt-2.5 pt-3"
-                    style={{ borderTop: `1px solid ${t.line}` }}
-                  >
-                    <span className="cursor-pointer underline underline-offset-4" style={{ fontSize: 13, color: t.inkSoft }}>See Use Case →</span>
-                  </div>
-                </div>
-              </div>
               </Link>
-              </Reveal>
-            ))}
+            </Reveal>
+
+            {/* Compact industry rows */}
+            <div className="flex flex-col gap-4">
+              {rest.map((ind, i) => (
+                <Reveal key={ind.slug} delay={i * STAGGER} className="flex-1">
+                  <Link href={`/industries/${ind.slug}`} style={{ textDecoration: "none", display: "block", height: "100%" }}>
+                    <div
+                      className="h-full grid grid-cols-[100px_1fr] sm:grid-cols-[132px_1fr] gap-4 sm:gap-5 items-center rounded-[14px] p-3.5 transition-[border-color,box-shadow,transform] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-sm"
+                      style={{ background: t.surface, border: `1px solid ${t.line}` }}
+                    >
+                      <div className="relative self-stretch min-h-[120px] rounded-[10px] overflow-hidden">
+                        {ind.cardImage ? (
+                          <Image
+                            src={strapiImageUrl(ind.cardImage.url)!}
+                            alt={ind.cardImage.alternativeText || ind.industryName}
+                            fill
+                            className="object-cover"
+                            sizes="132px"
+                          />
+                        ) : (
+                          <div className="absolute inset-0">
+                            <PhotoSlot tint="#4A6E8A" bg="#141E2E" variant="spotlight" rounded={10} style={{ height: "100%", aspectRatio: "auto" }}>
+                              <span />
+                            </PhotoSlot>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex flex-col gap-1 pr-2 min-w-0">
+                        <div style={{ fontFamily: t.fontDisplay, fontSize: 23, fontWeight: 500, letterSpacing: "-0.025em", lineHeight: 1.05 }}>
+                          {ind.industryName}
+                        </div>
+                        {ind.cardTagline && (
+                          <div style={{ fontSize: 14, color: t.inkSoft, lineHeight: 1.4 }}>{ind.cardTagline}</div>
+                        )}
+                        <div
+                          className="flex items-center mt-2.5 pt-3"
+                          style={{ borderTop: `1px solid ${t.line}` }}
+                        >
+                          <span className="cursor-pointer underline underline-offset-4" style={{ fontSize: 13, color: t.inkSoft }}>See Use Case →</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </Container>
     </section>
   );

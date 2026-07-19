@@ -3,21 +3,33 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  getBlogPost,
-  getBlogPosts,
-  extractHeadings,
-  toPostCard,
-  type BlockNode,
-  type InlineNode,
-  type ListItemNode,
+  getBlogPostBySlug,
+  getAllBlogSlugsForStaticParams,
+  getRelatedBlogPosts,
+  strapiImageUrl,
 } from "@/lib/strapi";
+import {
+  extractTableOfContents,
+  calculateReadTime,
+} from "@/lib/blog-content";
+import { RichText } from "@/components/RichText";
 import { theme as t } from "@/components/theme";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
-import { BlogCard } from "@/components/BlogCard";
+import { CmsBlogPostCard } from "@/components/CmsBlogPostCard";
 import { Button } from "@/components/Button";
 import { BlogShareRow } from "@/components/BlogShareRow";
 import { ContactCallSection } from "@/components/contact/ContactCallSection";
+import { RevenueCtaSection } from "@/components/sections/RevenueCtaSection";
+
+/**
+ * Allow slugs that weren't pre-built to be rendered on first request (ISR).
+ * New blog posts published in Strapi appear immediately after the first visitor
+ * hits the URL — no redeploy needed.
+ */
+export const dynamicParams = true;
+
+const SITE_URL = "https://recurv.tech";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -25,10 +37,9 @@ interface Props {
 
 export async function generateStaticParams() {
   try {
-    const posts = await getBlogPosts();
-    return posts.map((p) => ({ slug: p.slug }));
+    const slugs = await getAllBlogSlugsForStaticParams();
+    return slugs.map((s) => ({ slug: s.slug }));
   } catch {
-    // Strapi may not be reachable at build time in local dev — return empty list
     return [];
   }
 }
@@ -36,191 +47,44 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const post = await getBlogPost(slug);
+    const post = await getBlogPostBySlug(slug);
     if (!post) return {};
+
+    const seo = post.seo;
+    const title = seo?.metaTitle ?? `${post.title} — Recurv Blog`;
+    const description = seo?.metaDescription ?? post.excerpt ?? undefined;
+    const ogImage =
+      seo?.metaSocial?.find((s) => s.socialNetwork === "OpenGraph")?.image?.url ??
+      strapiImageUrl(post.heroImage?.url ?? post.cardImage?.url);
+
     return {
-      title: post.metaTitle ?? post.title,
-      description: post.metaDescription ?? post.excerpt ?? undefined,
+      title,
+      description: description ?? undefined,
+      openGraph: {
+        title: seo?.metaSocial?.find((s) => s.socialNetwork === "OpenGraph")?.title ?? title,
+        description:
+          seo?.metaSocial?.find((s) => s.socialNetwork === "OpenGraph")?.description ??
+          description ??
+          undefined,
+        images: ogImage ? [{ url: ogImage }] : undefined,
+        type: "article",
+        publishedTime: post.publishedAt ?? undefined,
+      },
+      twitter: {
+        title: seo?.metaSocial?.find((s) => s.socialNetwork === "Twitter")?.title ?? title,
+        description:
+          seo?.metaSocial?.find((s) => s.socialNetwork === "Twitter")?.description ??
+          description ??
+          undefined,
+        images: (() => {
+          const twitterImg =
+            seo?.metaSocial?.find((s) => s.socialNetwork === "Twitter")?.image?.url;
+          return twitterImg ? [twitterImg] : undefined;
+        })(),
+      },
     };
   } catch {
     return {};
-  }
-}
-
-// ── Strapi Blocks renderer ────────────────────────────────────────────────────
-
-function renderInline(nodes: InlineNode[]): React.ReactNode {
-  return nodes.map((node, i) => {
-    let el: React.ReactNode = node.text;
-    if (node.bold) el = <strong key={i}>{el}</strong>;
-    if (node.italic) el = <em key={i}>{el}</em>;
-    if (node.underline) el = <u key={i}>{el}</u>;
-    if (node.code) el = <code key={i} style={{ fontFamily: "monospace", background: t.surfaceAlt, padding: "2px 5px", borderRadius: 4 }}>{el}</code>;
-    return <span key={i}>{el}</span>;
-  });
-}
-
-function renderListItem(node: ListItemNode, i: number): React.ReactNode {
-  return (
-    <li
-      key={i}
-      style={{
-        fontSize: 17,
-        lineHeight: 1.65,
-        color: t.inkSoft,
-        paddingLeft: 20,
-        position: "relative",
-      }}
-    >
-      <span
-        style={{
-          position: "absolute",
-          left: 0,
-          top: "0.55em",
-          width: 6,
-          height: 6,
-          borderRadius: "50%",
-          background: t.primary,
-          display: "block",
-        }}
-        aria-hidden="true"
-      />
-      {renderInline(node.children)}
-    </li>
-  );
-}
-
-function renderBlock(block: BlockNode, idx: number): React.ReactNode {
-  switch (block.type) {
-    case "heading": {
-      const text = block.children.map((c) => c.text).join("");
-      const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-      if (block.level === 2) {
-        return (
-          <h2
-            key={idx}
-            id={id}
-            style={{
-              fontFamily: t.fontDisplay,
-              fontSize: "var(--fs-h2-md)",
-              fontWeight: 500,
-              letterSpacing: "-0.03em",
-              lineHeight: 1.1,
-              margin: "2.5em 0 0.75em",
-              color: t.ink,
-            }}
-          >
-            {renderInline(block.children)}
-          </h2>
-        );
-      }
-      return (
-        <h3
-          key={idx}
-          id={id}
-          style={{
-            fontFamily: t.fontDisplay,
-            fontSize: 22,
-            fontWeight: 500,
-            letterSpacing: "-0.02em",
-            lineHeight: 1.2,
-            margin: "2em 0 0.5em",
-            color: t.ink,
-          }}
-        >
-          {renderInline(block.children)}
-        </h3>
-      );
-    }
-    case "quote":
-      return (
-        <blockquote
-          key={idx}
-          style={{
-            borderLeft: `3px solid ${t.primary}`,
-            paddingLeft: 24,
-            margin: "2em 0",
-            color: t.inkSoft,
-          }}
-        >
-          <p
-            style={{
-              fontFamily: t.fontDisplay,
-              fontSize: 20,
-              fontWeight: 400,
-              lineHeight: 1.5,
-              letterSpacing: "-0.015em",
-              fontStyle: "italic",
-              margin: 0,
-            }}
-          >
-            {renderInline(block.children)}
-          </p>
-        </blockquote>
-      );
-    case "list":
-      return (
-        <ul
-          key={idx}
-          style={{
-            paddingLeft: 0,
-            listStyle: "none",
-            margin: "1.5em 0",
-            display: "flex",
-            flexDirection: "column",
-            gap: 10,
-          }}
-        >
-          {block.children.map((item, i) => renderListItem(item, i))}
-        </ul>
-      );
-    case "image":
-      return (
-        <figure key={idx} style={{ margin: "2em 0" }}>
-          <Image
-            src={block.image.url}
-            alt={block.image.alternativeText ?? ""}
-            width={block.image.width}
-            height={block.image.height}
-            style={{ width: "100%", height: "auto", borderRadius: 8 }}
-          />
-        </figure>
-      );
-    case "code":
-      return (
-        <pre
-          key={idx}
-          style={{
-            background: t.surfaceAlt,
-            border: `1px solid ${t.line}`,
-            borderRadius: 8,
-            padding: "16px 20px",
-            overflowX: "auto",
-            margin: "1.5em 0",
-            fontSize: 14,
-            lineHeight: 1.6,
-          }}
-        >
-          <code style={{ fontFamily: "monospace" }}>
-            {block.children.map((c) => c.text).join("")}
-          </code>
-        </pre>
-      );
-    default:
-      // paragraph
-      return (
-        <p
-          key={idx}
-          style={{
-            fontSize: 17,
-            lineHeight: 1.75,
-            color: t.inkSoft,
-            margin: "1.25em 0",
-          }}
-        >
-          {renderInline((block as { type: "paragraph"; children: InlineNode[] }).children)}
-        </p>
-      );
   }
 }
 
@@ -228,26 +92,20 @@ function renderBlock(block: BlockNode, idx: number): React.ReactNode {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = await getBlogPost(slug);
+  const post = await getBlogPostBySlug(slug);
 
   if (!post) notFound();
 
-  // Fetch all posts for the related articles row
-  const allPosts = await getBlogPosts();
-  const relatedPosts = allPosts
-    .filter((p) => p.slug !== slug && p.industry === post.industry)
-    .slice(0, 3);
-  const morePosts =
-    relatedPosts.length < 3
-      ? [
-          ...relatedPosts,
-          ...allPosts
-            .filter((p) => p.slug !== slug && p.industry !== post.industry)
-            .slice(0, 3 - relatedPosts.length),
-        ]
-      : relatedPosts;
+  const relatedPosts = await getRelatedBlogPosts(
+    post.id,
+    post.category?.id ?? null,
+    3
+  ).catch(() => []);
 
-  const toc = extractHeadings(post.content);
+  const toc = extractTableOfContents(post.body);
+  const readTime = calculateReadTime(post.body);
+
+  const badge = post.category?.name?.toUpperCase() ?? "";
 
   const dateFormatted = post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString("en-ZA", {
@@ -257,8 +115,33 @@ export default async function BlogPostPage({ params }: Props) {
       })
     : "";
 
+  const heroImageUrl = strapiImageUrl(post.heroImage?.url);
+
+  // ── Article JSON-LD ────────────────────────────────────────────────────────
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt ?? undefined,
+    datePublished: post.publishedAt ?? undefined,
+    dateModified: post.updatedAt,
+    url: `${SITE_URL}/blog/${post.slug}`,
+    image: heroImageUrl ?? strapiImageUrl(post.cardImage?.url) ?? undefined,
+    publisher: {
+      "@type": "Organization",
+      name: "Recurv",
+      url: SITE_URL,
+    },
+  };
+
   return (
     <div>
+      {/* ── JSON-LD ─────────────────────────────────────────── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* ── Breadcrumb ─────────────────────────────────── */}
       <div style={{ borderBottom: `1px solid ${t.line}` }}>
         <Container>
@@ -273,8 +156,12 @@ export default async function BlogPostPage({ params }: Props) {
             <Link href="/blog" style={{ color: t.inkSoft, textDecoration: "none" }}>
               Blog
             </Link>
-            <span style={{ opacity: 0.4 }}>/</span>
-            <span style={{ color: t.inkSoft }}>{(post.category ?? "Article").toUpperCase()}</span>
+            {post.category && (
+              <>
+                <span style={{ opacity: 0.4 }}>/</span>
+                <span style={{ color: t.inkSoft }}>{post.category.name.toUpperCase()}</span>
+              </>
+            )}
             <span style={{ opacity: 0.4 }}>/</span>
             <span
               style={{ color: t.ink, fontWeight: 500, maxWidth: 300 }}
@@ -296,13 +183,9 @@ export default async function BlogPostPage({ params }: Props) {
                 className="mono mb-6 flex items-center gap-3 flex-wrap"
                 style={{ fontSize: 11, color: t.primary, letterSpacing: 1.5 }}
               >
-                <span>{post.category ?? "Article"}</span>
-                {post.readTime && (
-                  <>
-                    <span style={{ opacity: 0.4 }}>·</span>
-                    <span>{post.readTime} MIN READ</span>
-                  </>
-                )}
+                {badge && <span>{badge}</span>}
+                <span style={{ opacity: 0.4 }}>·</span>
+                <span>{readTime.toUpperCase()}</span>
               </div>
 
               <h1
@@ -358,24 +241,54 @@ export default async function BlogPostPage({ params }: Props) {
                   SHARE
                 </div>
                 <BlogShareRow
-                  url={`https://recurv.co.za/blog/${post.slug}`}
+                  url={`${SITE_URL}/blog/${post.slug}`}
                   title={post.title}
                 />
               </div>
+
+              {/* Tags */}
+              {post.tags && post.tags.length > 0 && (
+                <div className="flex flex-col gap-3">
+                  <div
+                    className="mono"
+                    style={{ fontSize: 10, letterSpacing: 1.5, color: t.inkSoft }}
+                  >
+                    TAGS
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag.id}
+                        className="mono"
+                        style={{
+                          fontSize: 10,
+                          padding: "4px 10px",
+                          borderRadius: 4,
+                          border: `1px solid ${t.line}`,
+                          color: t.inkSoft,
+                          letterSpacing: 1,
+                        }}
+                      >
+                        {tag.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </Container>
       </Section>
 
       {/* ── Hero image ─────────────────────────────────── */}
-      {post.featuredImage && (
+      {heroImageUrl && post.heroImage && (
         <div style={{ borderTop: `1px solid ${t.line}`, borderBottom: `1px solid ${t.line}` }}>
           <Container>
             <Image
-              src={post.featuredImage.url}
-              alt={post.featuredImage.alternativeText ?? post.title}
-              width={post.featuredImage.width}
-              height={post.featuredImage.height}
+              src={heroImageUrl}
+              alt={post.heroImage.alternativeText ?? post.title}
+              width={post.heroImage.width}
+              height={post.heroImage.height}
               className="w-full object-cover"
               style={{ maxHeight: 480, objectPosition: "center" }}
               priority
@@ -400,10 +313,10 @@ export default async function BlogPostPage({ params }: Props) {
                     IN THIS ARTICLE
                   </div>
                   <ol className="flex flex-col gap-1" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                    {toc.map((item, i) => (
-                      <li key={i}>
+                    {toc.map((item) => (
+                      <li key={item.id}>
                         <a
-                          href={`#${item.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
+                          href={`#${item.id}`}
                           className="flex items-baseline gap-2.5 py-1 group transition-colors duration-100"
                           style={{
                             fontSize: 13,
@@ -416,9 +329,9 @@ export default async function BlogPostPage({ params }: Props) {
                             className="mono flex-shrink-0"
                             style={{ fontSize: 10, color: t.primary, letterSpacing: 1 }}
                           >
-                            {String(i + 1).padStart(2, "0")}
+                            {String(item.order).padStart(2, "0")}
                           </span>
-                          <span className="group-hover:underline">{item}</span>
+                          <span className="group-hover:underline">{item.text}</span>
                         </a>
                       </li>
                     ))}
@@ -453,10 +366,10 @@ export default async function BlogPostPage({ params }: Props) {
                     <span style={{ color: t.primary }}>▾</span>
                   </summary>
                   <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                    {toc.map((item, i) => (
-                      <li key={i}>
+                    {toc.map((item) => (
+                      <li key={item.id}>
                         <a
-                          href={`#${item.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
+                          href={`#${item.id}`}
                           style={{
                             display: "flex",
                             alignItems: "baseline",
@@ -472,9 +385,9 @@ export default async function BlogPostPage({ params }: Props) {
                             className="mono flex-shrink-0"
                             style={{ fontSize: 10, color: t.primary, letterSpacing: 1 }}
                           >
-                            {String(i + 1).padStart(2, "0")}
+                            {String(item.order).padStart(2, "0")}
                           </span>
-                          {item}
+                          {item.text}
                         </a>
                       </li>
                     ))}
@@ -482,9 +395,47 @@ export default async function BlogPostPage({ params }: Props) {
                 </details>
               )}
 
-              {/* Body blocks */}
+              {/* Body blocks — RichText injects id attributes on H2 headings */}
               <div style={{ maxWidth: 740 }}>
-                {post.content?.map((block, idx) => renderBlock(block, idx))}
+                <RichText blocks={post.body} />
+              </div>
+
+              {/* Mobile: published date + share + tags */}
+              <div className="lg:hidden mt-10 flex flex-col gap-6" style={{ borderTop: `1px solid ${t.line}`, paddingTop: 24 }}>
+                {dateFormatted && (
+                  <div className="flex flex-col gap-1">
+                    <div className="mono" style={{ fontSize: 10, letterSpacing: 1.5, color: t.inkSoft }}>
+                      PUBLISHED
+                    </div>
+                    <div style={{ fontSize: 15, fontWeight: 500, color: t.ink }}>{dateFormatted}</div>
+                  </div>
+                )}
+                <div className="flex flex-col gap-3">
+                  <div className="mono" style={{ fontSize: 10, letterSpacing: 1.5, color: t.inkSoft }}>
+                    SHARE
+                  </div>
+                  <BlogShareRow url={`${SITE_URL}/blog/${post.slug}`} title={post.title} />
+                </div>
+                {post.tags && post.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag.id}
+                        className="mono"
+                        style={{
+                          fontSize: 10,
+                          padding: "4px 10px",
+                          borderRadius: 4,
+                          border: `1px solid ${t.line}`,
+                          color: t.inkSoft,
+                          letterSpacing: 1,
+                        }}
+                      >
+                        {tag.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Back link — mobile */}
@@ -502,8 +453,11 @@ export default async function BlogPostPage({ params }: Props) {
         </Container>
       </div>
 
+      {/* ── Platform CTA ──────────────────────────────── */}
+      <RevenueCtaSection />
+
       {/* ── Related articles ───────────────────────────── */}
-      {morePosts.length > 0 && (
+      {relatedPosts.length > 0 && (
         <Section className="pt-0" style={{ borderTop: `1px solid ${t.line}` }}>
           <Container>
             <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
@@ -534,8 +488,8 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {morePosts.map((p) => (
-                <BlogCard key={p.slug} post={toPostCard(p)} />
+              {relatedPosts.map((p) => (
+                <CmsBlogPostCard key={p.slug} post={p} />
               ))}
             </div>
           </Container>

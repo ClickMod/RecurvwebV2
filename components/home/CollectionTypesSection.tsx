@@ -2,14 +2,14 @@ import { CarbonIcon } from "@/components/CarbonIcon";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
-import { theme as t } from "@/components/theme";
+import { theme as t, iconSize } from "@/components/theme";
 
 const COLLECTION_TYPES = [
-  { icon: "bolt", title: "Once-off collection", desc: "Collect a single payment and close the instruction. Ideal for deposits, registration fees, or any charge that only needs to happen once.", use: "Deposit · registration fee" },
-  { icon: "schedule", title: "Fixed-term collections", desc: "Set a defined number of collections — say, 10 monthly instalments — and Recurv stops automatically when the term ends.", use: "10 monthly instalments" },
-  { icon: "cycle", title: "Ongoing collections", desc: "No end date. Collections continue until you cancel or the customer requests a stop. Built for memberships and subscriptions.", use: "Memberships · subscriptions" },
-  { icon: "wallet", title: "Ad hoc fees", desc: "Add a once-off charge to any active collection — for a callout fee, admin cost, or event ticket — without disrupting the schedule. It collects once, then drops off.", use: "Callout · admin · event fee" },
-  { icon: "graph", title: "Variable amounts", desc: "Collect a different amount each month. Set a variable rate and update it before each collection run. Useful for usage-based billing and levy adjustments.", use: "Levy adjustments · usage" },
+  { icon: "bolt", title: "Once-off collection", desc: "Collect a single payment and close the instruction. Ideal for deposits, registration fees or any charge that only needs to happen once.", use: "Deposit · registration fee" },
+  { icon: "schedule", title: "Fixed-term collections", desc: "Set a defined number of collections, say 10 monthly instalments and Recurv stops automatically when the term ends.", use: "10 monthly instalments" },
+  { icon: "cycle", title: "Ongoing collections", desc: "Set it once. Collect automatically. With no end date required, collections continue on schedule until cancelled, eliminating the need to recreate payment plans or manage renewals manually.", use: "Memberships · Rent" },
+  { icon: "wallet", title: "Ad hoc fees", desc: "Add a once-off charge to any active collection. For a callout fee, admin cost or event ticket without disrupting the schedule. It collects once, then drops off.", use: "admin fee · event fee" },
+  { icon: "graph", title: "Variable amounts", desc: "Collect a different amount each month. Set a variable rate and update it before each collection run. Useful for usage-based billing and levy adjustments.", use: "Levy adjustments · utilities" },
 ] as const;
 
 export function CollectionTypesSection() {
@@ -39,8 +39,9 @@ export function CollectionTypesSection() {
           </Reveal>
           <Reveal delay={STAGGER}>
             <p style={{ fontSize: 17, color: t.inkSoft, lineHeight: 1.6, margin: 0 }}>
-              Every business collects differently. Recurv is built around that reality, not against it.
-              Configure exactly how and when you collect, per customer, per plan with no workarounds required.
+            Every business has its own billing model, and no two customers are exactly the same. Recurv is built around that reality.
+            Whether you're collecting a once-off payment, fixed-term instalments, ongoing subscriptions, ad hoc charges or variable monthly amounts, you can configure every collection exactly the way your business needs it.
+            No custom development, spreadsheets or workarounds, just complete flexibility from a single platform.
             </p>
           </Reveal>
         </div>
@@ -58,7 +59,7 @@ export function CollectionTypesSection() {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="transition-transform duration-200 group-hover:scale-110">
-                    <CarbonIcon name={c.icon} color={t.primary} size={36} />
+                    <CarbonIcon name={c.icon} color={t.primary} size={iconSize.section} />
                   </div>
                   <div style={{ fontFamily: t.fontDisplay, fontSize: "var(--fs-h3)", fontWeight: 500, letterSpacing: "-0.025em", lineHeight: 1.05 }}>
                     {c.title}
@@ -117,7 +118,7 @@ export function CollectionTypesSection() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {([
               { icon: "wallet", title: "Card payments", desc: "Fast authorisation, broad customer reach. Customers authorise via card, revenue collected against card with intelligent retry logic." },
-              { icon: "mandate", title: "EFT Debit orders", desc: "The trusted South African standard. SARB-compliant debit order rails with DebiCheck support and intelligent retry logic." },
+              { icon: "mandate", title: "EFT Debit orders", desc: "The trusted South African standard. SARB-compliant debit order rails and intelligent retry logic." },
             ] as const).map((r) => (
               <div
                 key={r.title}
@@ -127,7 +128,7 @@ export function CollectionTypesSection() {
                   border: "1px solid rgba(246,245,240,0.14)",
                 }}
               >
-                <CarbonIcon name={r.icon} color="#A89BF0" size={40} />
+                <CarbonIcon name={r.icon} color="#A89BF0" size={iconSize.display} />
                 <div style={{ fontFamily: t.fontDisplay, fontSize: 19, fontWeight: 500, letterSpacing: "-0.02em" }}>
                   {r.title}
                 </div>

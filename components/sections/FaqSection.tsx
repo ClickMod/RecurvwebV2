@@ -55,7 +55,7 @@ export function FaqSection({
             {/* Left — label + heading */}
             <div>
               <div
-                className="mono mb-5"
+                className="mono mb-5 uppercase"
                 style={{ fontSize: 11, color: t.primary, letterSpacing: 1.5 }}
               >
                 {eyebrow}

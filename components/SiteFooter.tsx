@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { theme as t } from "@/components/theme";
+import type { StrapiIndustryNavItem } from "@/lib/strapi";
 
 const COLLECTION_TYPE_ITEMS = [
   "Once-off collection",
@@ -14,16 +15,13 @@ const COLLECTION_TYPE_ITEMS = [
   "Variable amounts",
 ];
 
-const FOOTER_LINKS: [string, string[]][] = [
-  ["Collection Types", COLLECTION_TYPE_ITEMS],
-  ["Solutions", ["Golf & sport", "Medical", "Property & rentals", "Subscriptions", "Payment plans"]],
-  ["Company", ["About", "Blog", "Contact"]],
-  ["Resources", ["API Docs", "Calculator", "Privacy", "Terms"]],
-];
+interface SiteFooterProps {
+  industryNavList: StrapiIndustryNavItem[];
+}
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function SiteFooter() {
+export function SiteFooter({ industryNavList }: SiteFooterProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
   const [focused, setFocused] = useState(false);
@@ -87,7 +85,7 @@ export function SiteFooter() {
                 <p className="mt-1.5" style={{ fontSize: 12.5, color: "#EF4444" }}>{error}</p>
               )}
               <div className="mt-3.5" style={{ fontSize: 12.5, color: t.inkSoft, lineHeight: 1.5 }}>
-                No spam. Unsubscribe anytime. Read by 2,400+ finance teams across South Africa.
+                No spam. Unsubscribe anytime. Read by 2,400+ finance teams across South Africa. Join our newsletter to get the latest updates and insights.
               </div>
             </div>
           </div>
@@ -98,6 +96,7 @@ export function SiteFooter() {
       <div className="py-10 md:py-12">
         <Container>
           <div className="grid grid-cols-2 gap-8 md:grid-cols-[1.4fr_repeat(4,1fr)] md:gap-12">
+            {/* Brand blurb */}
             <div className="col-span-2 md:col-span-1">
               <p className="mt-4 max-w-[280px]" style={{ fontSize: 13.5, color: t.inkSoft, lineHeight: 1.6 }}>
                 Payment collection infrastructure for South African businesses.
@@ -114,28 +113,78 @@ export function SiteFooter() {
                 ))}
               </div>
             </div>
-            {FOOTER_LINKS.map(([heading, items]) => (
-              <div key={heading}>
-                <div className="mono mb-3.5" style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1.5 }}>
-                  {heading.toUpperCase()}
-                </div>
-                <ul className="flex flex-col gap-2.5 p-0 list-none">
-                  {items.map((item) => (
-                    <li key={item} style={{ fontSize: 14, color: t.ink, cursor: "pointer" }}>
-                      {heading === "Collection Types" ? (
-                        <Link href="/#collection-types" style={{ color: "inherit", textDecoration: "none" }}>{item}</Link>
-                      ) : item === "Contact" ? (
-                        <Link href="/contactus" style={{ color: "inherit", textDecoration: "none" }}>{item}</Link>
-                      ) : item === "Blog" ? (
-                        <Link href="/blog" style={{ color: "inherit", textDecoration: "none" }}>{item}</Link>
-                      ) : item === "API Docs" ? (
-                        <Link href="/api-docs" style={{ color: "inherit", textDecoration: "none" }}>{item}</Link>
-                      ) : item}
-                    </li>
-                  ))}
-                </ul>
+
+            {/* Collection Types */}
+            <div>
+              <div className="mono mb-3.5" style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1.5 }}>
+                COLLECTION TYPES
               </div>
-            ))}
+              <ul className="flex flex-col gap-2.5 p-0 list-none">
+                {COLLECTION_TYPE_ITEMS.map((item) => (
+                  <li key={item} style={{ fontSize: 14, color: t.ink }}>
+                    <Link href="/#collection-types" style={{ color: "inherit", textDecoration: "none" }}>{item}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Industries — CMS-driven */}
+            <div>
+              <div className="mono mb-3.5" style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1.5 }}>
+                INDUSTRIES
+              </div>
+              <ul className="flex flex-col gap-2.5 p-0 list-none">
+                {industryNavList.map((item) => (
+                  <li key={item.slug} style={{ fontSize: 14, color: t.ink }}>
+                    <Link href={`/industries/${item.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
+                      {item.industryName}
+                    </Link>
+                  </li>
+                ))}
+                <li style={{ fontSize: 14 }}>
+                  <Link href="/industries" style={{ color: t.primary, textDecoration: "none", fontWeight: 500 }}>
+                    All industries →
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <div className="mono mb-3.5" style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1.5 }}>
+                COMPANY
+              </div>
+              <ul className="flex flex-col gap-2.5 p-0 list-none">
+                <li style={{ fontSize: 14, color: t.ink }}>
+                  <Link href="/blog" style={{ color: "inherit", textDecoration: "none" }}>Blog</Link>
+                </li>
+                <li style={{ fontSize: 14, color: t.ink }}>
+                  <Link href="/contactus" style={{ color: "inherit", textDecoration: "none" }}>Contact</Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Resources */}
+            <div>
+              <div className="mono mb-3.5" style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1.5 }}>
+                RESOURCES
+              </div>
+              <ul className="flex flex-col gap-2.5 p-0 list-none">
+                {(["API Docs", "Privacy", "Terms"] as const).map((item) => (
+                  <li key={item} style={{ fontSize: 14, color: t.ink }}>
+                    {item === "API Docs" ? (
+                      <Link href="/api-docs" style={{ color: "inherit", textDecoration: "none" }}>{item}</Link>
+                    ) : item === "Privacy" ? (
+                      <Link href="/privacy-policy" style={{ color: "inherit", textDecoration: "none" }}>{item}</Link>
+                    ) : item === "Terms" ? (
+                      <Link href="/terms" style={{ color: "inherit", textDecoration: "none" }}>{item}</Link>
+                    ) : (
+                      item
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </Container>
       </div>

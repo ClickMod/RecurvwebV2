@@ -23,3 +23,21 @@ export const theme = {
 } as const;
 
 export type Theme = typeof theme;
+
+/**
+ * Icon size tokens — single source of truth for icon dimensions site-wide.
+ * Change a value here to update every icon of that role in one edit.
+ *
+ *  compact  — dense list bullets, tight inline contexts
+ *  card     — icons inside cards, feature lists, problem/solution rows
+ *  section  — icons heading a section column or grid cell
+ *  display  — large hero / showcase icons
+ */
+export const iconSize = {
+  compact: 16,
+  card:    22,
+  section: 28,
+  display: 36,
+} as const;
+
+export type IconSize = typeof iconSize[keyof typeof iconSize];

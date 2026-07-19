@@ -36,9 +36,8 @@ export function SecuritySection() {
             </Reveal>
             <Reveal delay={STAGGER}>
               <p className="mt-6" style={{ fontSize: 17, color: t.inkOnDeepSoft, lineHeight: 1.6 }}>
-                We take data protection seriously — encryption at rest and in transit, regular internal audits, and
-                proactive monitoring. Customer banking details are tokenised on capture and never stored in
-                plaintext — by us, or by you.
+              Built with security, privacy and reliability at its core. 
+              Recurv protects sensitive customer and payment data using industry best practices, including encryption, secure tokenisation and continuous monitoring, helping your organisation meet the highest standards of data security.
               </p>
             </Reveal>
 

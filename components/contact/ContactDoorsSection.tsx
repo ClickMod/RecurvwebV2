@@ -1,6 +1,6 @@
 import { CarbonIcon } from "@/components/CarbonIcon";
 import { Container } from "@/components/Container";
-import { theme as t } from "@/components/theme";
+import { theme as t, iconSize } from "@/components/theme";
 
 const DOORS = [
   {
@@ -80,7 +80,7 @@ export function ContactDoorsSection() {
                 }}
               >
                 <div className="flex justify-between items-center">
-                  <CarbonIcon name={door.icon} color={t.primary} size={40} />
+                  <CarbonIcon name={door.icon} color={t.primary} size={iconSize.display} />
                   <span className="mono" style={{ fontSize: 10, color: t.inkSoft, letterSpacing: 1.5 }}>
                     {door.num} · {door.tag}
                   </span>

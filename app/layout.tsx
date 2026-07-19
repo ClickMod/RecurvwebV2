@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { getIndustryNavList } from "@/lib/strapi";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,11 +21,15 @@ export const metadata: Metadata = {
     "Recurv handles the full collection cycle — from payment authorisation to reconciliation — across membership dues, payment plans, rent, subscriptions, and more.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetched once here and passed down — avoids duplicate fetches from both
+  // SiteHeader and SiteFooter requesting the same data independently.
+  const industryNavList = await getIndustryNavList().catch(() => []);
+
   return (
     <html
       lang="en"
@@ -32,9 +37,9 @@ export default function RootLayout({
       style={{ background: "#FFFFFF" }}
     >
       <body style={{ margin: 0, fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}>
-        <SiteHeader />
+        <SiteHeader industryNavList={industryNavList} />
         {children}
-        <SiteFooter />
+        <SiteFooter industryNavList={industryNavList} />
       </body>
     </html>
   );

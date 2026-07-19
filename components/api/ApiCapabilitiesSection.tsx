@@ -1,7 +1,7 @@
 import { CarbonIcon } from "@/components/CarbonIcon";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
-import { theme as t } from "@/components/theme";
+import { theme as t, iconSize } from "@/components/theme";
 
 const CAPABILITIES = [
   {
@@ -89,7 +89,7 @@ export function ApiCapabilitiesSection() {
                 borderBottom: i < 3 ? `1px solid ${t.line}` : undefined,
               }}
             >
-              <CarbonIcon name={cap.icon} color={t.primary} size={32} />
+              <CarbonIcon name={cap.icon} color={t.primary} size={iconSize.section} />
               <div>
                 <div
                   style={{

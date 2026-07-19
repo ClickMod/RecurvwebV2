@@ -7,16 +7,22 @@ import { BlogSection } from "@/components/home/BlogSection";
 import { SecuritySection } from "@/components/home/SecuritySection";
 import { StatsSection } from "@/components/home/StatsSection";
 import { CtaSection } from "@/components/home/CtaSection";
+import { getFeaturedIndustriesForHomepage, getFeaturedBlogPostsForHomepage } from "@/lib/strapi";
 
-export default function Home() {
+export default async function Home() {
+  const [industries, blogPosts] = await Promise.all([
+    getFeaturedIndustriesForHomepage().catch(() => []),
+    getFeaturedBlogPostsForHomepage().catch(() => []),
+  ]);
+
   return (
     <>
       <HeroSection />
       <RecurvCoreSection />
       <CollectionTypesSection />
       <DashboardSection />
-      <IndustriesSection />
-      <BlogSection />
+      <IndustriesSection industries={industries} />
+      <BlogSection posts={blogPosts} />
       <SecuritySection />
       <StatsSection />
       <CtaSection />

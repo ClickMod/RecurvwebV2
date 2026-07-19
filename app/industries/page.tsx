@@ -1,131 +1,55 @@
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/Button";
+import { getAllIndustriesForListing, strapiImageUrl } from "@/lib/strapi";
 import { Container } from "@/components/Container";
-import { PhotoSlot } from "@/components/PhotoSlot";
 import { Reveal } from "@/components/Reveal";
+import { STAGGER } from "@/components/motion";
+import { Button } from "@/components/Button";
+import { PhotoSlot } from "@/components/PhotoSlot";
 import { CallSection } from "@/components/sections/CallSection";
 import { CtaSection } from "@/components/home/CtaSection";
-import { STAGGER } from "@/components/motion";
 import { theme as t } from "@/components/theme";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Industries — Recurv",
   description:
-    "Recurv adapts to every recurring billing pattern — from school fees and rent to membership dues and medical payment plans.",
+    "Recurv adapts to every recurring billing pattern, from school fees and rent to membership dues and medical payment plans.",
 };
 
-interface Industry {
-  name: string;
-  tagline: string;
-  collect: string;
-  href: string;
-  /** Whether a dedicated use-case page exists */
-  live: boolean;
-  tint: string;
-  bg: string;
-  badge?: string;
-}
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://recurv.tech";
 
-const INDUSTRIES: Industry[] = [
-  {
-    name: "Schools & Education",
-    tagline: "School fees shouldn't be chased.",
-    collect: "Term fees, levies, aftercare & bursaries",
-    href: "/industries/schools-and-education",
-    live: true,
-    tint: "#4A6E8A",
-    bg: "#141E2E",
-    badge: "USE CASE LIVE",
-  },
-  {
-    name: "Property & Rentals",
-    tagline: "Rent, on time, every month.",
-    collect: "Monthly rent, deposits & levies",
-    href: "/contactus",
-    live: false,
-    tint: "#6E4A2A",
-    bg: "#241813",
-  },
-  {
-    name: "Golf & Country Clubs",
-    tagline: "Membership dues without the admin.",
-    collect: "Membership dues & green fees",
-    href: "/contactus",
-    live: false,
-    tint: "#3E6B47",
-    bg: "#16241A",
-  },
-  {
-    name: "Medical & Dental",
-    tagline: "Payment plans that actually collect.",
-    collect: "Patient payment plans & co-payments",
-    href: "/contactus",
-    live: false,
-    tint: "#3D5C8A",
-    bg: "#141E2E",
-  },
-  {
-    name: "Sport Clubs & Unions",
-    tagline: "Subs collected before the season starts.",
-    collect: "Subs, term fees & event collections",
-    href: "/contactus",
-    live: false,
-    tint: "#9A6B3E",
-    bg: "#241A12",
-  },
-  {
-    name: "Body Corporates & HOAs",
-    tagline: "Levies on time, arrears resolved.",
-    collect: "Monthly levies, special levies & maintenance",
-    href: "/contactus",
-    live: false,
-    tint: "#5A3E8A",
-    bg: "#1A1428",
-  },
-  {
-    name: "Gyms & Fitness",
-    tagline: "Monthly billing that never misses.",
-    collect: "Monthly membership & class packages",
-    href: "/contactus",
-    live: false,
-    tint: "#8A3E5A",
-    bg: "#281420",
-  },
-  {
-    name: "Professional Services",
-    tagline: "Retainers collected without the chase.",
-    collect: "Monthly retainers & instalment plans",
-    href: "/contactus",
-    live: false,
-    tint: "#4A7A6E",
-    bg: "#14201E",
-  },
-  {
-    name: "Religious Organisations",
-    tagline: "Tithes and donations, automated with care.",
-    collect: "Tithes, pledges & recurring donations",
-    href: "/contactus",
-    live: false,
-    tint: "#7A6E3E",
-    bg: "#201E14",
-  },
-  {
-    name: "Non-Profits & NPOs",
-    tagline: "Donor billing that funds the mission.",
-    collect: "Recurring donations & membership dues",
-    href: "/contactus",
-    live: false,
-    tint: "#3E7A6E",
-    bg: "#14201E",
-  },
-];
+export default async function IndustriesPage() {
+  const industries = await getAllIndustriesForListing().catch(() => []);
 
-const FEATURED = INDUSTRIES[0];
-const REST = INDUSTRIES.slice(1);
+  const featured = industries.find((i) => i.isFeatured) ?? industries[0];
+  const rest = industries.filter((i) => i !== featured);
 
-export default function IndustriesPage() {
+  // JSON-LD: ItemList so search engines can understand this as a navigable
+  // list of distinct industry pages, improving crawlability and rich results.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Industries served by Recurv",
+    description:
+      "Recurring billing automation for every industry — schools, property, clubs, medical, and more.",
+    url: `${SITE_URL}/industries`,
+    numberOfItems: industries.length,
+    itemListElement: industries.map((ind, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      name: ind.industryName,
+      url: `${SITE_URL}/industries/${ind.slug}`,
+    })),
+  };
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* ── Hero ── */}
       <section className="pt-16 pb-14 md:pt-20 md:pb-18 lg:pt-24 lg:pb-20">
         <Container>
@@ -156,7 +80,7 @@ export default function IndustriesPage() {
               className="mt-7 max-w-[560px]"
               style={{ fontSize: 18, color: t.inkSoft, lineHeight: 1.6 }}
             >
-              Membership dues, term fees, rent, retainers, payment plans —
+              Membership dues, term fees, rent, retainers, payment plans.
               Recurv adapts to your billing cycle, not the other way around.
               Select your industry below to see exactly how it works.
             </p>
@@ -168,203 +92,208 @@ export default function IndustriesPage() {
             >
               <span>R 30.6M COLLECTED / MONTH</span>
               <span style={{ color: t.lineStrong }}>·</span>
-              <span>10 INDUSTRIES SERVED</span>
+              <span>{industries.length} INDUSTRIES SERVED</span>
               <span style={{ color: t.lineStrong }}>·</span>
-              <span>POPIA COMPLIANT</span>
+              <span>SARB COMPLIANT</span>
             </div>
           </Reveal>
         </Container>
       </section>
 
-      {/* ── Featured industry — Schools & Education ── */}
-      <section
-        className="py-0 pb-6"
-        style={{ borderTop: `1px solid ${t.line}` }}
-      >
-        <Container>
-          <Reveal className="mt-8">
-            <Link href={FEATURED.href} style={{ textDecoration: "none" }}>
-              <div
-                className="relative rounded-2xl overflow-hidden min-h-[420px] md:min-h-[520px] transition-[transform,box-shadow] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-lg"
-              >
-                <div className="absolute inset-0">
-                  <PhotoSlot
-                    tint={FEATURED.tint}
-                    bg={FEATURED.bg}
-                    variant="spotlight"
-                    rounded={0}
-                    style={{ height: "100%", aspectRatio: "auto" }}
-                  />
-                </div>
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(180deg, rgba(15,14,20,0.10) 0%, transparent 30%, rgba(15,14,20,0.55) 75%, rgba(15,14,20,0.85) 100%)",
-                  }}
-                />
-                <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-10">
-                  <div className="flex items-start justify-between">
-                    <div
-                      className="mono"
-                      style={{
-                        fontSize: 10,
-                        letterSpacing: 1.5,
-                        color: "rgba(255,255,255,0.55)",
-                      }}
-                    >
-                      FEATURED INDUSTRY
-                    </div>
-                    <div
-                      className="mono px-2 py-1 rounded"
-                      style={{
-                        fontSize: 10,
-                        letterSpacing: 1.5,
-                        background: "rgba(79,51,217,0.85)",
-                        color: "#fff",
-                      }}
-                    >
-                      {FEATURED.badge}
-                    </div>
-                  </div>
-                  <div>
-                    <div
-                      style={{
-                        fontFamily: t.fontDisplay,
-                        fontSize: "var(--fs-h2-md)",
-                        fontWeight: 500,
-                        letterSpacing: "-0.03em",
-                        lineHeight: 1,
-                        color: "#fff",
-                      }}
-                    >
-                      {FEATURED.name}
-                    </div>
-                    <p
-                      className="mt-3 mb-5 max-w-[480px]"
-                      style={{
-                        fontSize: 17,
-                        color: "rgba(255,255,255,0.82)",
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {FEATURED.tagline}
-                    </p>
-                    <div
-                      className="mono mb-6"
-                      style={{
-                        fontSize: 12,
-                        letterSpacing: 1,
-                        color: "rgba(255,255,255,0.55)",
-                      }}
-                    >
-                      {FEATURED.collect.toUpperCase()}
-                    </div>
-                    <div
-                      className="flex items-center pt-5"
-                      style={{ borderTop: "1px solid rgba(255,255,255,0.18)" }}
-                    >
-                      <span
-                        className="underline underline-offset-4"
-                        style={{ fontSize: 14, color: "rgba(255,255,255,0.9)" }}
-                      >
-                        View use case →
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </Reveal>
-        </Container>
-      </section>
-
-      {/* ── Industry grid ── */}
-      <section
-        className="py-10 md:py-14"
-        style={{ borderTop: `1px solid ${t.line}` }}
-      >
-        <Container>
-          <Reveal>
-            <div
-              className="mono mb-8"
-              style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1.5 }}
-            >
-              ALL INDUSTRIES
-            </div>
-          </Reveal>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {REST.map((ind, i) => (
-              <Reveal key={ind.name} delay={i * STAGGER}>
-                <Link href={ind.href} style={{ textDecoration: "none" }}>
-                  <div
-                    className="h-full rounded-[14px] overflow-hidden transition-[border-color,box-shadow,transform] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-sm"
-                    style={{
-                      border: `1px solid ${t.line}`,
-                      background: t.surface,
-                    }}
-                  >
-                    {/* Image */}
-                    <div className="relative h-[160px] md:h-[180px]">
+      {/* ── Featured industry card ── */}
+      {featured && (
+        <section
+          className="py-0 pb-6"
+          style={{ borderTop: `1px solid ${t.line}` }}
+        >
+          <Container>
+            <Reveal className="mt-8">
+              <Link href={`/industries/${featured.slug}`} style={{ textDecoration: "none" }}>
+                <div className="relative rounded-2xl overflow-hidden min-h-[420px] md:min-h-[520px] transition-[transform,box-shadow] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-lg">
+                  <div className="absolute inset-0">
+                    {featured.cardImage ? (
+                      <Image
+                        src={strapiImageUrl(featured.cardImage.url)!}
+                        alt={featured.cardImage.alternativeText || featured.industryName}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 90vw"
+                        priority
+                      />
+                    ) : (
                       <PhotoSlot
-                        tint={ind.tint}
-                        bg={ind.bg}
+                        tint="#4A6E8A"
+                        bg="#141E2E"
                         variant="spotlight"
                         rounded={0}
                         style={{ height: "100%", aspectRatio: "auto" }}
                       />
+                    )}
+                  </div>
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, rgba(15,14,20,0.10) 0%, transparent 30%, rgba(15,14,20,0.55) 75%, rgba(15,14,20,0.85) 100%)",
+                    }}
+                  />
+                  <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-10">
+                    <div className="flex items-start justify-between">
+                      <div
+                        className="mono"
+                        style={{
+                          fontSize: 10,
+                          letterSpacing: 1.5,
+                          color: "rgba(255,255,255,0.55)",
+                        }}
+                      >
+                        FEATURED INDUSTRY
+                      </div>
+                      <div
+                        className="mono px-2 py-1 rounded"
+                        style={{
+                          fontSize: 10,
+                          letterSpacing: 1.5,
+                          background: "rgba(79,51,217,0.85)",
+                          color: "#fff",
+                        }}
+                      >
+                        USE CASE LIVE
+                      </div>
                     </div>
-                    {/* Copy */}
-                    <div className="p-5">
+                    <div>
                       <div
                         style={{
                           fontFamily: t.fontDisplay,
-                          fontSize: 22,
+                          fontSize: "var(--fs-h2-md)",
                           fontWeight: 500,
-                          letterSpacing: "-0.025em",
-                          lineHeight: 1.1,
-                          color: t.ink,
+                          letterSpacing: "-0.03em",
+                          lineHeight: 1,
+                          color: "#fff",
                         }}
                       >
-                        {ind.name}
+                        {featured.industryName}
                       </div>
+                      {featured.cardTagline && (
+                        <p
+                          className="mt-3 mb-5 max-w-[480px]"
+                          style={{
+                            fontSize: 17,
+                            color: "rgba(255,255,255,0.82)",
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {featured.cardTagline}
+                        </p>
+                      )}
                       <div
-                        className="mt-1.5"
-                        style={{ fontSize: 14, color: t.inkSoft, lineHeight: 1.4 }}
-                      >
-                        {ind.collect}
-                      </div>
-                      <div
-                        className="flex items-center justify-between mt-4 pt-4"
-                        style={{ borderTop: `1px solid ${t.line}` }}
+                        className="flex items-center pt-5"
+                        style={{ borderTop: "1px solid rgba(255,255,255,0.18)" }}
                       >
                         <span
                           className="underline underline-offset-4"
-                          style={{ fontSize: 13, color: t.inkSoft }}
+                          style={{ fontSize: 14, color: "rgba(255,255,255,0.9)" }}
                         >
-                          Book a demo →
+                          View use case →
                         </span>
-                        <div
-                          className="mono px-2 py-0.5 rounded"
-                          style={{
-                            fontSize: 9,
-                            letterSpacing: 1.2,
-                            background: t.surfaceAlt,
-                            color: t.inkSoft,
-                            border: `1px solid ${t.line}`,
-                          }}
-                        >
-                          TALK TO SALES
-                        </div>
                       </div>
                     </div>
                   </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
+                </div>
+              </Link>
+            </Reveal>
+          </Container>
+        </section>
+      )}
+
+      {/* ── Industry grid ── */}
+      {rest.length > 0 && (
+        <section
+          className="py-10 md:py-14"
+          style={{ borderTop: `1px solid ${t.line}` }}
+        >
+          <Container>
+            <Reveal>
+              <div
+                className="mono mb-8"
+                style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1.5 }}
+              >
+                ALL INDUSTRIES
+              </div>
+            </Reveal>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {rest.map((ind, i) => (
+                <Reveal key={ind.slug} delay={i * STAGGER}>
+                  <Link href={`/industries/${ind.slug}`} style={{ textDecoration: "none" }}>
+                    <div
+                      className="h-full rounded-[14px] overflow-hidden transition-[border-color,box-shadow,transform] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-sm"
+                      style={{
+                        border: `1px solid ${t.line}`,
+                        background: t.surface,
+                      }}
+                    >
+                      {/* Card image */}
+                      <div className="relative h-[160px] md:h-[180px]">
+                        {ind.cardImage ? (
+                          <Image
+                            src={strapiImageUrl(ind.cardImage.url)!}
+                            alt={ind.cardImage.alternativeText || ind.industryName}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          />
+                        ) : (
+                          <PhotoSlot
+                            tint="#4A6E8A"
+                            bg="#141E2E"
+                            variant="spotlight"
+                            rounded={0}
+                            style={{ height: "100%", aspectRatio: "auto" }}
+                          />
+                        )}
+                      </div>
+                      {/* Card copy */}
+                      <div className="p-5">
+                        <div
+                          style={{
+                            fontFamily: t.fontDisplay,
+                            fontSize: 22,
+                            fontWeight: 500,
+                            letterSpacing: "-0.025em",
+                            lineHeight: 1.1,
+                            color: t.ink,
+                          }}
+                        >
+                          {ind.industryName}
+                        </div>
+                        {ind.cardTagline && (
+                          <div
+                            className="mt-1.5"
+                            style={{ fontSize: 14, color: t.inkSoft, lineHeight: 1.4 }}
+                          >
+                            {ind.cardTagline}
+                          </div>
+                        )}
+                        <div
+                          className="flex items-center justify-between mt-4 pt-4"
+                          style={{ borderTop: `1px solid ${t.line}` }}
+                        >
+                          <span
+                            className="underline underline-offset-4"
+                            style={{ fontSize: 13, color: t.inkSoft }}
+                          >
+                            View use case →
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </Container>
+        </section>
+      )}
 
       {/* ── Don't see your industry? ── */}
       <section
@@ -378,7 +307,7 @@ export default function IndustriesPage() {
                 className="mono mb-5"
                 style={{ fontSize: 11, color: t.primary, letterSpacing: 1.5 }}
               >
-                DON'T SEE YOUR INDUSTRY?
+                DON&apos;T SEE YOUR INDUSTRY?
               </div>
               <h2
                 style={{
@@ -398,10 +327,10 @@ export default function IndustriesPage() {
                 className="mt-6 max-w-[520px]"
                 style={{ fontSize: 17, color: t.inkSoft, lineHeight: 1.6 }}
               >
-                If your business collects money on a schedule — monthly,
-                termly, annually, or on any other cycle — Recurv can automate
+                If your business collects money on a schedule, monthly,
+                termly, annually or on any other cycle, Recurv can automate
                 it. Our sales team will walk you through exactly how the
-                platform handles your specific billing model, live, in under 30
+                platform handles your specific billing model, live in under 30
                 minutes.
               </p>
             </Reveal>
@@ -436,11 +365,11 @@ export default function IndustriesPage() {
                 </div>
                 <p style={{ fontSize: 14, color: t.inkSoft, lineHeight: 1.5 }}>
                   Tell us your billing cycle and we&apos;ll show you exactly how
-                  Recurv automates it — no obligation.
+                  Recurv automates it,no obligation.
                 </p>
                 <div className="flex flex-col gap-3 mt-1">
                   <Button
-                    href="/contactus"
+                    href="https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv"
                     variant="accent"
                     className="w-full justify-center"
                   >
@@ -466,7 +395,7 @@ export default function IndustriesPage() {
         eyebrow="PREFER TO TALK?"
         headingBefore="Our team is"
         headingAccent="one call away."
-        body="Speak to a Recurv specialist who knows your billing context. We'll walk you through the platform live and have your first collection running within a week."
+        body="Speak to a Recurv specialist who knows your billing context. We'll walk you through the platform live and have your first collection running within a day."
         phoneLabel="SALES TEAM"
         primaryLabel="Call us now"
         secondaryLabel="WhatsApp us"

@@ -1,15 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/Button";
 import { theme as t } from "@/components/theme";
+import type { StrapiIndustryNavItem } from "@/lib/strapi";
 
-const NAV_LINKS = ["Features", "Industries"] as const;
+interface SiteHeaderProps {
+  industryNavList: StrapiIndustryNavItem[];
+}
 
-export function SiteHeader() {
+export function SiteHeader({ industryNavList }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [industriesOpen, setIndustriesOpen] = useState(false);
+  const [mobileIndustriesOpen, setMobileIndustriesOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIndustriesOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <header
@@ -27,18 +44,63 @@ export function SiteHeader() {
 
         {/* Desktop nav — hidden below md */}
         <nav className="hidden md:flex items-center justify-center gap-7" style={{ fontSize: 14, color: t.ink }}>
-          {NAV_LINKS.map((name) => (
-            <span
-              key={name}
-              className="inline-flex items-center gap-1 cursor-pointer transition-[color,opacity] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:opacity-70"
-              style={{ fontWeight: 450 }}
+          {/* Industries dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              className="inline-flex items-center gap-1 cursor-pointer transition-[color,opacity] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:opacity-70 bg-transparent border-0 p-0"
+              style={{ fontSize: 14, fontWeight: 450, color: t.ink, fontFamily: "inherit" }}
+              aria-expanded={industriesOpen}
+              aria-haspopup="true"
+              onClick={() => setIndustriesOpen((v) => !v)}
             >
-              {name}
-              <svg width="10" height="10" viewBox="0 0 10 10">
+              Industries
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                style={{ transform: industriesOpen ? "rotate(180deg)" : "none", transition: "transform 140ms" }}
+              >
                 <path d="M2 4l3 3 3-3" stroke={t.inkSoft} strokeWidth="1.5" fill="none" />
               </svg>
-            </span>
-          ))}
+            </button>
+
+            {industriesOpen && (
+              <div
+                className="absolute left-0 top-full mt-2 rounded-xl overflow-hidden"
+                style={{
+                  minWidth: 300,
+                  background: "#fff",
+                  border: `1px solid ${t.line}`,
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.10)",
+                }}
+              >
+                <div className="py-1.5">
+                  {industryNavList.map((item) => (
+                    <Link
+                      key={item.slug}
+                      href={`/industries/${item.slug}`}
+                      style={{ textDecoration: "none", color: t.ink, display: "block" }}
+                      className="px-4 py-2.5 transition-colors duration-100 hover:bg-[rgba(79,51,217,0.06)]"
+                      onClick={() => setIndustriesOpen(false)}
+                    >
+                      <span style={{ fontSize: 13.5, fontWeight: 450 }}>{item.industryName}</span>
+                    </Link>
+                  ))}
+                  <div style={{ borderTop: `1px solid ${t.line}` }} className="mt-1 pt-1">
+                    <Link
+                      href="/industries"
+                      style={{ textDecoration: "none", color: t.primary, display: "block" }}
+                      className="px-4 py-2.5 transition-colors duration-100 hover:bg-[rgba(79,51,217,0.06)]"
+                      onClick={() => setIndustriesOpen(false)}
+                    >
+                      <span style={{ fontSize: 13, fontWeight: 500 }}>All industries →</span>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
           <Link href="/api-docs" style={{ textDecoration: "none", color: "inherit" }}>
             <span
               className="inline-flex items-center cursor-pointer transition-[color,opacity] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:opacity-70"
@@ -59,8 +121,8 @@ export function SiteHeader() {
 
         {/* Desktop CTA — hidden below md */}
         <div className="hidden md:flex items-center gap-3.5">
-          <Button size="sm" variant="secondary">Sign in</Button>
-          <Button size="sm">Book a live demo</Button>
+          <Button size="sm" variant="secondary" href="https://portal.recurv.tech/">Sign in</Button>
+          <Button size="sm" href="https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv">Book a live demo</Button>
         </div>
 
         {/* Mobile hamburger — visible below md */}
@@ -100,18 +162,48 @@ export function SiteHeader() {
           className="md:hidden flex flex-col px-4 pb-6 gap-1"
           style={{ borderTop: `1px solid ${t.line}` }}
         >
-          {NAV_LINKS.map((name) => (
-            <span
-              key={name}
-              className="py-3 cursor-pointer flex items-center justify-between"
-              style={{ fontSize: 16, fontWeight: 450, color: t.ink, borderBottom: `1px solid ${t.line}` }}
+          {/* Mobile Industries accordion */}
+          <div style={{ borderBottom: `1px solid ${t.line}` }}>
+            <button
+              className="w-full py-3 flex items-center justify-between bg-transparent border-0 p-0"
+              style={{ fontSize: 16, fontWeight: 450, color: t.ink, fontFamily: "inherit", cursor: "pointer" }}
+              onClick={() => setMobileIndustriesOpen((v) => !v)}
             >
-              {name}
-              <svg width="10" height="10" viewBox="0 0 10 10">
+              Industries
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                style={{ transform: mobileIndustriesOpen ? "rotate(180deg)" : "none", transition: "transform 140ms" }}
+              >
                 <path d="M2 4l3 3 3-3" stroke={t.inkSoft} strokeWidth="1.5" fill="none" />
               </svg>
-            </span>
-          ))}
+            </button>
+            {mobileIndustriesOpen && (
+              <div className="pb-2 flex flex-col gap-0.5">
+                {industryNavList.map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={`/industries/${item.slug}`}
+                    style={{ textDecoration: "none", color: t.ink }}
+                    className="py-2 pl-3 block hover:opacity-70 transition-opacity"
+                    onClick={() => { setMenuOpen(false); setMobileIndustriesOpen(false); }}
+                  >
+                    <span style={{ fontSize: 15, fontWeight: 400 }}>{item.industryName}</span>
+                  </Link>
+                ))}
+                <Link
+                  href="/industries"
+                  style={{ textDecoration: "none", color: t.primary }}
+                  className="py-2 pl-3 block"
+                  onClick={() => { setMenuOpen(false); setMobileIndustriesOpen(false); }}
+                >
+                  <span style={{ fontSize: 14, fontWeight: 500 }}>All industries →</span>
+                </Link>
+              </div>
+            )}
+          </div>
+
           <Link
             href="/api-docs"
             style={{ textDecoration: "none", color: t.ink, borderBottom: `1px solid ${t.line}` }}
@@ -131,8 +223,8 @@ export function SiteHeader() {
             </span>
           </Link>
           <div className="flex flex-col gap-3 pt-4">
-            <Button size="md" variant="secondary" className="w-full justify-center">Sign in</Button>
-            <Button size="md" className="w-full justify-center">Book a live demo</Button>
+            <Button size="md" variant="secondary" className="w-full justify-center" href="https://portal.recurv.tech/">Sign in</Button>
+            <Button size="md" className="w-full justify-center" href="https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv">Book a live demo</Button>
           </div>
         </div>
       )}

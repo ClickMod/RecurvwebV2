@@ -1,13 +1,12 @@
 import { ReactNode } from "react";
-import { CarbonIcon, IconName } from "@/components/CarbonIcon";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
 import { theme as t } from "@/components/theme";
 
 export interface IndustrySolutionFeature {
-  /** CarbonIcon name */
-  icon: IconName;
+  /** Rendered icon — pass <CarbonIcon> for static pages, <DynamicIcon> for CMS pages. */
+  icon: ReactNode;
   /** Feature heading */
   heading: string;
   /** One or two sentences describing the capability */
@@ -15,6 +14,8 @@ export interface IndustrySolutionFeature {
 }
 
 export interface IndustrySolutionSectionProps {
+  /** Small mono eyebrow above the heading, e.g. "WHAT RECURV DOES" */
+  eyebrow?: string;
   /** Heading text before the accent phrase */
   headingBefore: string;
   /** Accent phrase rendered in primary colour */
@@ -26,6 +27,7 @@ export interface IndustrySolutionSectionProps {
 }
 
 export function IndustrySolutionSection({
+  eyebrow,
   headingBefore,
   headingAccent,
   intro,
@@ -40,6 +42,14 @@ export function IndustrySolutionSection({
         {/* ── Section header ── */}
         <div className="grid grid-cols-1 gap-8 mb-14 lg:grid-cols-2 lg:gap-16 items-end">
           <Reveal>
+            {eyebrow && (
+              <div
+                className="mono mb-5 uppercase"
+                style={{ fontSize: 11, color: t.primary, letterSpacing: 1.5 }}
+              >
+                {eyebrow}
+              </div>
+            )}
             <h2
               style={{
                 fontFamily: t.fontDisplay,
@@ -96,7 +106,7 @@ export function IndustrySolutionSection({
               }}
             >
               {/* Icon */}
-              <CarbonIcon name={f.icon} color={t.primary} size={28} />
+              {f.icon}
 
               {/* Index */}
               <div

@@ -65,6 +65,26 @@ export function Button({
   );
 
   if (href) {
+    const isExternal =
+      href.startsWith("http://") ||
+      href.startsWith("https://") ||
+      href.startsWith("mailto:") ||
+      href.startsWith("tel:");
+
+    if (isExternal) {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={sharedClassName}
+          style={sharedStyle}
+        >
+          {content}
+        </a>
+      );
+    }
+
     return (
       <Link href={href} className={sharedClassName} style={sharedStyle}>
         {content}

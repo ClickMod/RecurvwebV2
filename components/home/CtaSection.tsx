@@ -22,13 +22,13 @@ export function CtaSection() {
               More revenue.<br /><span style={{ color: t.primary }}>Less admin.</span>
             </h2>
             <p className="mt-6 max-w-[540px]" style={{ fontSize: 19, color: t.inkSoft, lineHeight: 1.55 }}>
-              Connect with our team to see Recurv in action. We&rsquo;ll walk you through pricing, integrations,
-              and a tailored setup for your industry — usually in 30 minutes or less.
+              Connect with our team to see Recurv in action. We&rsquo;ll walk you through pricing, integrations
+              and a tailored setup for your industry, usually in 30 minutes or less.
             </p>
           </Reveal>
           <Reveal delay={STAGGER}>
             <div className="flex flex-col gap-3">
-              <Button size="lg" className="w-full justify-center">Book a live demo</Button>
+              <Button size="lg" className="w-full justify-center" href="https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv">Book a live demo</Button>
               <Link href="/contactus" className="w-full" style={{ textDecoration: "none" }}>
                 <Button size="lg" variant="secondary" icon={<span>→</span>} className="w-full justify-center">Speak to sales</Button>
               </Link>

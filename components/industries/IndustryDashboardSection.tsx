@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import Link from "next/link";
+import { Button } from "@/components/Button";
 import { DashboardMock } from "@/components/DashboardMock";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
@@ -7,6 +7,8 @@ import { STAGGER } from "@/components/motion";
 import { theme as t } from "@/components/theme";
 
 export interface IndustryDashboardBullet {
+  /** Optional rendered icon — shown above the heading when present. */
+  icon?: ReactNode;
   heading: string;
   description: string;
 }
@@ -48,7 +50,7 @@ export function IndustryDashboardSection({
           <div className="min-w-0">
             <Reveal>
               <div
-                className="mono mb-5"
+                className="mono mb-5 uppercase"
                 style={{ fontSize: 11, color: t.primary, letterSpacing: 1.5 }}
               >
                 {eyebrow}
@@ -83,30 +85,36 @@ export function IndustryDashboardSection({
               {bullets.map((b, i) => (
                 <Reveal key={b.heading} delay={STAGGER * (i + 2)}>
                   <div className="grid grid-cols-[20px_1fr] gap-3.5">
-                    {/* Circle bullet */}
-                    <div
-                      style={{
-                        width: 16,
-                        height: 16,
-                        borderRadius: 999,
-                        border: `2px solid ${t.primary}`,
-                        marginTop: 3,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <span
+                    {/* Circle bullet or icon */}
+                    {b.icon ? (
+                      <div style={{ marginTop: 2, flexShrink: 0, color: t.primary }}>
+                        {b.icon}
+                      </div>
+                    ) : (
+                      <div
                         style={{
-                          width: 6,
-                          height: 6,
-                          background: t.primary,
+                          width: 16,
+                          height: 16,
                           borderRadius: 999,
-                          display: "block",
+                          border: `2px solid ${t.primary}`,
+                          marginTop: 3,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
                         }}
-                      />
-                    </div>
+                      >
+                        <span
+                          style={{
+                            width: 6,
+                            height: 6,
+                            background: t.primary,
+                            borderRadius: 999,
+                            display: "block",
+                          }}
+                        />
+                      </div>
+                    )}
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.3 }}>
                         {b.heading}
@@ -127,23 +135,12 @@ export function IndustryDashboardSection({
               ))}
             </div>
 
-            {/* CTA link */}
+            {/* CTA */}
             <Reveal delay={STAGGER * (bullets.length + 2)}>
               <div className="mt-8" style={{ borderTop: `1px solid ${t.line}`, paddingTop: 20 }}>
-                <Link
-                  href={ctaHref}
-                  style={{
-                    fontSize: 14,
-                    color: t.ink,
-                    textDecoration: "none",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                  }}
-                  className="hover:text-[var(--primary)] transition-colors duration-150"
-                >
-                  {ctaLabel} →
-                </Link>
+                <Button variant="secondary" size="md" href={ctaHref} icon={<span>→</span>}>
+                  {ctaLabel}
+                </Button>
               </div>
             </Reveal>
           </div>

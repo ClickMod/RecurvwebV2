@@ -1,4 +1,4 @@
-import { theme } from './theme';
+import { theme, iconSize } from './theme';
 
 export type IconName =
   | 'mandate'
@@ -21,7 +21,7 @@ interface IconProps {
   size?: number;
 }
 
-export function CarbonIcon({ name, color = theme.primary, size = 48 }: IconProps) {
+export function CarbonIcon({ name, color = theme.primary, size = iconSize.card }: IconProps) {
   const props = {
     width: size,
     height: size,
