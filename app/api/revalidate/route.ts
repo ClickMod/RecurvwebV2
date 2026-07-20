@@ -72,6 +72,9 @@ export async function POST(req: NextRequest) {
     }
     revalidatePath(`/industries/${slug}`, "page");
     revalidatePath("/industries", "page");
+    // Homepage Industries section + root layout nav/footer use the same industry data
+    revalidatePath("/", "page");
+    revalidatePath("/", "layout");
     revalidateTag("/industries", NOW);
     revalidateTag("industries-nav", NOW);
     revalidateTag("industries-listing", NOW);
