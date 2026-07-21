@@ -70,7 +70,7 @@ function renderListItem(node: ListItemNode, i: number): React.ReactNode {
 function renderBlock(block: BlockNode, idx: number): React.ReactNode {
   switch (block.type) {
     case "heading": {
-      const text = block.children.map((c) => c.text).join("");
+      const text = block.children.map((c) => c.text ?? "").join("");
       const id = text
         .toLowerCase()
         .replace(/\s+/g, "-")

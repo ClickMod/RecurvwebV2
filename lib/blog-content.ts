@@ -21,6 +21,11 @@ export function slugifyHeading(text: string): string {
     .replace(/[^a-z0-9-]/g, "");
 }
 
+/** Safely joins inline node text — Strapi may omit `text` on empty formatting nodes. */
+function inlineText(nodes: Array<{ text?: string | null }>): string {
+  return nodes.map((c) => c.text ?? "").join("");
+}
+
 // ── Table of Contents ─────────────────────────────────────────────────────────
 
 export interface TocItem {
@@ -45,10 +50,14 @@ export function extractTableOfContents(
     (b): b is Extract<BlockNode, { type: "heading" }> =>
       b.type === "heading" && levels.includes(b.level)
   );
-  return headingBlocks.map((b, i) => {
-    const text = b.children.map((c) => c.text).join("");
-    return { id: slugifyHeading(text), text, order: i + 1 };
-  });
+  return headingBlocks
+    .map((b) => {
+      const text = inlineText(b.children);
+      if (!text.trim()) return null;
+      return { id: slugifyHeading(text), text };
+    })
+    .filter((item): item is Pick<TocItem, "id" | "text"> => item !== null)
+    .map((item, i) => ({ ...item, order: i + 1 }));
 }
 
 // ── Read time ─────────────────────────────────────────────────────────────────
@@ -64,7 +73,8 @@ export function calculateReadTime(
 
   let wordCount = 0;
 
-  function countInText(text: string) {
+  function countInText(text: string | null | undefined) {
+    if (!text) return;
     wordCount += text.split(/\s+/).filter(Boolean).length;
   }
 
@@ -73,20 +83,12 @@ export function calculateReadTime(
       case "paragraph":
       case "heading":
       case "quote":
-        for (const child of block.children) {
-          if ("text" in child) countInText(child.text);
-        }
-        break;
       case "code":
-        for (const child of block.children) {
-          if ("text" in child) countInText(child.text);
-        }
+        countInText(inlineText(block.children));
         break;
       case "list":
         for (const item of block.children) {
-          for (const child of item.children) {
-            countInText(child.text);
-          }
+          countInText(inlineText(item.children));
         }
         break;
       default:

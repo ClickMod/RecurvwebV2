@@ -746,5 +746,5 @@ export function extractHeadings(blocks: BlockNode[] | null | undefined): string[
   if (!blocks) return [];
   return blocks
     .filter((b): b is Extract<BlockNode, { type: "heading" }> => b.type === "heading" && b.level === 2)
-    .map((b) => b.children.map((c) => c.text).join(""));
+    .map((b) => b.children.map((c) => c.text ?? "").join(""));
 }
