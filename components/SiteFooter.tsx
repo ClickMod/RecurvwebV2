@@ -1,8 +1,4 @@
-"use client";
-
-import { useRef, useState } from "react";
 import Link from "next/link";
-import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { theme as t } from "@/components/theme";
 import type { StrapiIndustryNavItem } from "@/lib/strapi";
@@ -19,79 +15,9 @@ interface SiteFooterProps {
   industryNavList: StrapiIndustryNavItem[];
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export function SiteFooter({ industryNavList }: SiteFooterProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState("");
-  const [focused, setFocused] = useState(false);
-
-  function handleSubscribe() {
-    const val = inputRef.current?.value.trim() ?? "";
-    if (!EMAIL_RE.test(val)) {
-      setError("Please enter a valid email address.");
-      inputRef.current?.focus();
-    } else {
-      setError("");
-      // TODO: submit subscription
-    }
-  }
-
   return (
     <footer style={{ borderTop: `1px solid ${t.line}` }}>
-      {/* Newsletter */}
-      <div
-        className="py-14 md:py-16 lg:py-[72px]"
-        style={{ borderBottom: `1px solid ${t.line}` }}
-      >
-        <Container>
-          <div className="grid grid-cols-1 gap-10 items-end md:grid-cols-[1.2fr_1fr] md:gap-16">
-            <div>
-              <div className="mono mb-5" style={{ fontSize: 11, color: t.primary, letterSpacing: 1.5 }}>STAY IN THE LOOP</div>
-              <h2 style={{
-                fontFamily: t.fontDisplay,
-                fontWeight: 500,
-                fontSize: "var(--fs-h2-xl)",
-                lineHeight: 0.98,
-                letterSpacing: "-0.035em",
-                margin: 0,
-                maxWidth: 560,
-              }}>
-                Payment operations insights,{" "}
-                <span style={{ color: t.primary }}>once a month.</span>
-              </h2>
-            </div>
-            <div>
-              <div className="flex flex-col gap-2.5 sm:flex-row sm:items-stretch">
-                <input
-                  ref={inputRef}
-                  type="email"
-                  placeholder="you@company.co.za"
-                  className="w-full px-4 outline-none bg-transparent focus:ring-0 transition-colors"
-                  style={{
-                    border: `1px solid ${error ? "#EF4444" : focused ? "#7C3AED" : t.lineStrong}`,
-                    borderRadius: 8,
-                    fontSize: 15,
-                    color: t.inkSoft,
-                    height: 52,
-                  }}
-                  onFocus={() => setFocused(true)}
-                  onBlur={() => setFocused(false)}
-                  onChange={() => { if (error) setError(""); }}
-                />
-                <Button size="lg" onClick={handleSubscribe} className="w-full justify-center sm:w-auto">Subscribe</Button>
-              </div>
-              {error && (
-                <p className="mt-1.5" style={{ fontSize: 12.5, color: "#EF4444" }}>{error}</p>
-              )}
-              <div className="mt-3.5" style={{ fontSize: 12.5, color: t.inkSoft, lineHeight: 1.5 }}>
-                No spam. Unsubscribe anytime. Read by 2,400+ finance teams across South Africa. Join our newsletter to get the latest updates and insights.
-              </div>
-            </div>
-          </div>
-        </Container>
-      </div>
-
       {/* Link columns */}
       <div className="py-10 md:py-12">
         <Container>
