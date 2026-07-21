@@ -6,12 +6,15 @@ import {
   getBlogPostBySlug,
   getAllBlogSlugsForStaticParams,
   getRelatedBlogPosts,
+  getIndustryNavList,
   strapiImageUrl,
 } from "@/lib/strapi";
 import {
   extractTableOfContents,
   calculateReadTime,
 } from "@/lib/blog-content";
+import { getShareImageUrl, buildBreadcrumbListJsonLd, sanitizeTitle } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 import { RichText } from "@/components/RichText";
 import { theme as t } from "@/components/theme";
 import { Container } from "@/components/Container";
@@ -19,6 +22,7 @@ import { Section } from "@/components/Section";
 import { CmsBlogPostCard } from "@/components/CmsBlogPostCard";
 import { Button } from "@/components/Button";
 import { BlogShareRow } from "@/components/BlogShareRow";
+import { BlogPostBreadcrumb } from "@/components/blog/BlogPostBreadcrumb";
 import { ContactCallSection } from "@/components/contact/ContactCallSection";
 import { RevenueCtaSection } from "@/components/sections/RevenueCtaSection";
 
@@ -28,8 +32,6 @@ import { RevenueCtaSection } from "@/components/sections/RevenueCtaSection";
  * hits the URL — no redeploy needed.
  */
 export const dynamicParams = true;
-
-const SITE_URL = "https://recurv.tech";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -51,36 +53,34 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!post) return {};
 
     const seo = post.seo;
-    const title = seo?.metaTitle ?? `${post.title} — Recurv Blog`;
+    const title = sanitizeTitle(seo?.metaTitle ?? post.title);
     const description = seo?.metaDescription ?? post.excerpt ?? undefined;
-    const ogImage =
-      seo?.metaSocial?.find((s) => s.socialNetwork === "OpenGraph")?.image?.url ??
-      strapiImageUrl(post.heroImage?.url ?? post.cardImage?.url);
+    // Strapi metaSocial uses "Facebook" for Open Graph (plugin enum).
+    const facebook = seo?.metaSocial?.find((s) => s.socialNetwork === "Facebook");
+    const twitter = seo?.metaSocial?.find((s) => s.socialNetwork === "Twitter");
+
+    const shareImage = getShareImageUrl({
+      seo,
+      heroImage: post.heroImage,
+      cardImage: post.cardImage,
+    });
 
     return {
       title,
       description: description ?? undefined,
+      alternates: { canonical: `/blog/${slug}` },
       openGraph: {
-        title: seo?.metaSocial?.find((s) => s.socialNetwork === "OpenGraph")?.title ?? title,
-        description:
-          seo?.metaSocial?.find((s) => s.socialNetwork === "OpenGraph")?.description ??
-          description ??
-          undefined,
-        images: ogImage ? [{ url: ogImage }] : undefined,
+        title: facebook?.title ?? title,
+        description: facebook?.description ?? description ?? undefined,
+        images: [{ url: shareImage }],
         type: "article",
         publishedTime: post.publishedAt ?? undefined,
       },
       twitter: {
-        title: seo?.metaSocial?.find((s) => s.socialNetwork === "Twitter")?.title ?? title,
-        description:
-          seo?.metaSocial?.find((s) => s.socialNetwork === "Twitter")?.description ??
-          description ??
-          undefined,
-        images: (() => {
-          const twitterImg =
-            seo?.metaSocial?.find((s) => s.socialNetwork === "Twitter")?.image?.url;
-          return twitterImg ? [twitterImg] : undefined;
-        })(),
+        card: "summary_large_image",
+        title: twitter?.title ?? title,
+        description: twitter?.description ?? description ?? undefined,
+        images: [shareImage],
       },
     };
   } catch {
@@ -92,9 +92,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+
+  let post: Awaited<ReturnType<typeof getBlogPostBySlug>> = null;
+  try {
+    post = await getBlogPostBySlug(slug);
+  } catch (error) {
+    console.error(`Failed to load blog post "${slug}":`, error);
+    notFound();
+  }
+
+  const industryNavList = await getIndustryNavList().catch(() => []);
 
   if (!post) notFound();
+
+  const matchedIndustry = post.category?.slug
+    ? industryNavList.find((ind) => ind.slug === post.category!.slug)
+    : undefined;
 
   const relatedPosts = await getRelatedBlogPosts(
     post.id,
@@ -134,6 +147,20 @@ export default async function BlogPostPage({ params }: Props) {
     },
   };
 
+  const breadcrumbJsonLd = buildBreadcrumbListJsonLd([
+    { name: "Resources", url: SITE_URL },
+    { name: "Blog", url: `${SITE_URL}/blog` },
+    ...(post.category
+      ? [
+          {
+            name: post.category.name,
+            url: `${SITE_URL}/blog?category=${post.category.slug}`,
+          },
+        ]
+      : []),
+    { name: post.title, url: `${SITE_URL}/blog/${post.slug}` },
+  ]);
+
   return (
     <div>
       {/* ── JSON-LD ─────────────────────────────────────────── */}
@@ -141,37 +168,12 @@ export default async function BlogPostPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
 
-      {/* ── Breadcrumb ─────────────────────────────────── */}
-      <div style={{ borderBottom: `1px solid ${t.line}` }}>
-        <Container>
-          <div
-            className="mono flex items-center gap-2 py-5"
-            style={{ fontSize: 13, color: t.inkSoft }}
-          >
-            <Link href="/" style={{ color: t.inkSoft, textDecoration: "none" }}>
-              Resources
-            </Link>
-            <span style={{ opacity: 0.4 }}>/</span>
-            <Link href="/blog" style={{ color: t.inkSoft, textDecoration: "none" }}>
-              Blog
-            </Link>
-            {post.category && (
-              <>
-                <span style={{ opacity: 0.4 }}>/</span>
-                <span style={{ color: t.inkSoft }}>{post.category.name.toUpperCase()}</span>
-              </>
-            )}
-            <span style={{ opacity: 0.4 }}>/</span>
-            <span
-              style={{ color: t.ink, fontWeight: 500, maxWidth: 300 }}
-              className="truncate"
-            >
-              {post.title}
-            </span>
-          </div>
-        </Container>
-      </div>
+      <BlogPostBreadcrumb title={post.title} category={post.category} />
 
       {/* ── Article header ─────────────────────────────── */}
       <Section className="pb-10 lg:pb-12">
@@ -213,6 +215,18 @@ export default async function BlogPostPage({ params }: Props) {
                   }}
                 >
                   {post.excerpt}
+                </p>
+              )}
+
+              {matchedIndustry && (
+                <p className="mt-6 mb-0" style={{ fontSize: 15, color: t.inkSoft }}>
+                  Related industry:{" "}
+                  <Link
+                    href={`/industries/${matchedIndustry.slug}`}
+                    style={{ color: t.primary, textDecoration: "none", fontWeight: 500 }}
+                  >
+                    {matchedIndustry.industryName} →
+                  </Link>
                 </p>
               )}
             </div>
@@ -284,15 +298,25 @@ export default async function BlogPostPage({ params }: Props) {
       {heroImageUrl && post.heroImage && (
         <div style={{ borderTop: `1px solid ${t.line}`, borderBottom: `1px solid ${t.line}` }}>
           <Container>
-            <Image
-              src={heroImageUrl}
-              alt={post.heroImage.alternativeText ?? post.title}
-              width={post.heroImage.width}
-              height={post.heroImage.height}
-              className="w-full object-cover"
-              style={{ maxHeight: 480, objectPosition: "center" }}
-              priority
-            />
+            <div
+              className="relative w-full overflow-hidden"
+              style={{
+                maxHeight: 480,
+                aspectRatio:
+                  post.heroImage.width && post.heroImage.height
+                    ? `${post.heroImage.width} / ${post.heroImage.height}`
+                    : "16 / 9",
+              }}
+            >
+              <Image
+                src={heroImageUrl}
+                alt={post.heroImage.alternativeText ?? post.title}
+                fill
+                sizes="100vw"
+                className="object-cover object-center"
+                priority
+              />
+            </div>
           </Container>
         </div>
       )}
@@ -399,6 +423,25 @@ export default async function BlogPostPage({ params }: Props) {
               <div style={{ maxWidth: 740 }}>
                 <RichText blocks={post.body} />
               </div>
+
+              {matchedIndustry && (
+                <div
+                  className="mt-10 pt-8"
+                  style={{ borderTop: `1px solid ${t.line}`, maxWidth: 740 }}
+                >
+                  <p style={{ fontSize: 16, color: t.inkSoft, margin: "0 0 12px", lineHeight: 1.5 }}>
+                    See how Recurv handles recurring billing for{" "}
+                    {matchedIndustry.industryName.toLowerCase()}.
+                  </p>
+                  <Link
+                    href={`/industries/${matchedIndustry.slug}`}
+                    className="underline underline-offset-4"
+                    style={{ fontSize: 15, color: t.primary, fontWeight: 500, textDecoration: "none" }}
+                  >
+                    View {matchedIndustry.industryName} use case →
+                  </Link>
+                </div>
+              )}
 
               {/* Mobile: published date + share + tags */}
               <div className="lg:hidden mt-10 flex flex-col gap-6" style={{ borderTop: `1px solid ${t.line}`, paddingTop: 24 }}>

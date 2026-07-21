@@ -39,7 +39,7 @@ export function SiteHeader({ industryNavList }: SiteHeaderProps) {
       {/* Desktop + mobile top bar */}
       <div className="flex items-center justify-between gap-8 px-4 py-[22px] md:px-8 lg:px-14">
         <Link href="/" className="flex items-center flex-shrink-0">
-          <Image src="/primarylogo.png" alt="Recurv" width={160} height={48} style={{ width: 160, height: "auto" }} priority />
+          <Image src="/primarylogo.png" alt="Recurv" width={160} height={48} style={{ width: 160, height: "auto" }} />
         </Link>
 
         {/* Desktop nav — hidden below md */}

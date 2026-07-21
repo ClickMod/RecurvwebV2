@@ -1,5 +1,10 @@
 import Image from "next/image";
-import { type BlockNode, type InlineNode, type ListItemNode } from "@/lib/strapi";
+import {
+  type BlockNode,
+  type InlineNode,
+  type ListItemNode,
+  strapiImageUrl,
+} from "@/lib/strapi";
 import { theme as t } from "@/components/theme";
 
 // ── Inline nodes ──────────────────────────────────────────────────────────────
@@ -149,18 +154,32 @@ function renderBlock(block: BlockNode, idx: number): React.ReactNode {
           {block.children.map((item, i) => renderListItem(item, i))}
         </ul>
       );
-    case "image":
+    case "image": {
+      const src = strapiImageUrl(block.image.url);
+      if (!src) return null;
       return (
         <figure key={idx} style={{ margin: "2em 0" }}>
-          <Image
-            src={block.image.url}
-            alt={block.image.alternativeText ?? ""}
-            width={block.image.width}
-            height={block.image.height}
-            style={{ width: "100%", height: "auto", borderRadius: 8 }}
-          />
+          <div
+            className="relative w-full overflow-hidden"
+            style={{
+              borderRadius: 8,
+              aspectRatio:
+                block.image.width && block.image.height
+                  ? `${block.image.width} / ${block.image.height}`
+                  : "16 / 9",
+            }}
+          >
+            <Image
+              src={src}
+              alt={block.image.alternativeText ?? ""}
+              fill
+              sizes="(max-width: 768px) 100vw, 740px"
+              className="object-cover"
+            />
+          </div>
         </figure>
       );
+    }
     case "code":
       return (
         <pre

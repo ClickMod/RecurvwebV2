@@ -1,3 +1,4 @@
+import { FileCheck, GitMerge, Plug, TrendingUp, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Button } from "@/components/Button";
@@ -5,34 +6,41 @@ import { DashboardMock } from "@/components/DashboardMock";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
-import { theme as t } from "@/components/theme";
+import { SiteIcon } from "@/components/ui/SiteIcon";
+import { theme as t, iconSize } from "@/components/theme";
 
-const BULLETS: [string, ReactNode][] = [
-  [
-    "Billing cycle insights",
-    "See the outcome of every billing cycle at a glance, with failed transactions clearly prioritised so your team knows exactly where to take action.",
-  ],
-  [
-    "Automated reconciliation",
-    "Recurv automatically matches collections and payment outcomes, reducing manual back-office work and removing the need for spreadsheets and VLOOKUPs.",
-  ],
-  [
-    "Reports and integrations",
-    <>
-      Export collection data for your accounting or CRM system, or connect through our{" "}
-      <Link
-        href="/api-docs"
-        style={{ color: t.primary, textDecoration: "underline", textUnderlineOffset: 2 }}
-      >
-        API
-      </Link>{" "}
-      for real-time data synchronisation.
-    </>,
-  ],
-  [
-    "Mandate monitoring",
-    "Track mandate statuses and identify issues before collections are submitted, helping you avoid unnecessary rejections and banking penalty fees.",
-  ],
+const FEATURES: { icon: LucideIcon; title: string; desc: ReactNode }[] = [
+  {
+    icon: TrendingUp,
+    title: "Billing cycle insights",
+    desc: "See the outcome of every billing cycle at a glance, with failed transactions clearly prioritised so your team knows exactly where to take action.",
+  },
+  {
+    icon: GitMerge,
+    title: "Automated reconciliation",
+    desc: "Recurv automatically matches collections and payment outcomes, reducing manual back-office work and removing the need for spreadsheets and VLOOKUPs.",
+  },
+  {
+    icon: Plug,
+    title: "Reports and integrations",
+    desc: (
+      <>
+        Export collection data for your accounting or CRM system, or connect through our{" "}
+        <Link
+          href="/api-docs"
+          style={{ color: t.primary, textDecoration: "underline", textUnderlineOffset: 2 }}
+        >
+          API
+        </Link>{" "}
+        for real-time data synchronisation.
+      </>
+    ),
+  },
+  {
+    icon: FileCheck,
+    title: "Mandate monitoring",
+    desc: "Track mandate statuses and identify issues before collections are submitted, helping you avoid unnecessary rejections and banking penalty fees.",
+  },
 ];
 
 export function DashboardSection() {
@@ -68,25 +76,16 @@ export function DashboardSection() {
               </p>
             </Reveal>
 
-            <div className="mt-8 flex flex-col gap-3.5">
-              {BULLETS.map(([h, d], i) => (
-                <Reveal key={h} delay={STAGGER * (i + 2)}>
+            <div className="mt-8 flex flex-col gap-4">
+              {FEATURES.map((f, i) => (
+                <Reveal key={f.title} delay={STAGGER * (i + 2)}>
                   <div className="grid grid-cols-[20px_1fr] gap-3.5">
-                    <div style={{
-                      width: 16,
-                      height: 16,
-                      borderRadius: 999,
-                      border: `2px solid ${t.primary}`,
-                      marginTop: 4,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}>
-                      <span style={{ width: 6, height: 6, background: t.primary, borderRadius: 999, display: "block" }} />
+                    <div className="shrink-0" style={{ marginTop: 2 }}>
+                      <SiteIcon icon={f.icon} color={t.primary} size={iconSize.compact} />
                     </div>
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 600 }}>{h}</div>
-                      <div style={{ fontSize: 14, color: t.inkSoft, lineHeight: 1.55, marginTop: 2 }}>{d}</div>
+                      <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.3 }}>{f.title}</div>
+                      <div style={{ fontSize: 14, color: t.inkSoft, lineHeight: 1.55, marginTop: 2 }}>{f.desc}</div>
                     </div>
                   </div>
                 </Reveal>

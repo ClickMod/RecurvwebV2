@@ -33,7 +33,7 @@
   /* Typography */
   --font-display:     "Geist", system-ui, sans-serif;
   --font-body:        "Geist", system-ui, sans-serif;
-  --font-mono:        "JetBrains Mono", ui-monospace, monospace;
+  --font-mono:        var(--font-jetbrains-mono), ui-monospace, monospace;
 
   /*
    * Fluid type scale — use these for all heading font-sizes.
@@ -69,7 +69,7 @@ body {
 }
 
 .mono {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-feature-settings: "zero" 1, "ss01" 1;
 }
 

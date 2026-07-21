@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { HeroSection } from "@/components/home/HeroSection";
 import { RecurvCoreSection } from "@/components/home/RecurvCoreSection";
 import { CollectionTypesSection } from "@/components/home/CollectionTypesSection";
@@ -8,6 +9,13 @@ import { SecuritySection } from "@/components/home/SecuritySection";
 import { StatsSection } from "@/components/home/StatsSection";
 import { CtaSection } from "@/components/home/CtaSection";
 import { getFeaturedIndustriesForHomepage, getFeaturedBlogPostsForHomepage } from "@/lib/strapi";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "Recurv — Stop chasing payments. Start running your business.",
+  },
+  alternates: { canonical: "/" },
+};
 
 export default async function Home() {
   const [industries, blogPosts] = await Promise.all([

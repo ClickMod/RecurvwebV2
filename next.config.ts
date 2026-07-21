@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
       // Strapi on Railway (production)
       {
         protocol: "https",
-        hostname: "*.up.railway.app",
+        hostname: "**.up.railway.app",
         pathname: "/uploads/**",
       },
       // Strapi local dev — kept so TypeScript types resolve correctly

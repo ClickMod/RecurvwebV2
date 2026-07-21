@@ -2,7 +2,7 @@
 
 import { DynamicIcon as LucideDynamicIcon } from "lucide-react/dynamic";
 import type { IndustryIconName } from "@/lib/strapi";
-import { iconSize } from "@/components/theme";
+import { iconSize, iconStroke } from "@/components/theme";
 
 interface DynamicIconProps {
   /** Lucide kebab-case icon name as stored in the Strapi IndustryIconName enum. */
@@ -26,7 +26,7 @@ export function DynamicIcon({
   size = iconSize.card,
   className,
   color,
-  strokeWidth,
+  strokeWidth = iconStroke.lucide,
 }: DynamicIconProps) {
   // fallback must be a render function (() => JSX.Element | null) per lucide-react types
   const fallback = () => (

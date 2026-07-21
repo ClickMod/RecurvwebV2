@@ -8,6 +8,8 @@ import {
   strapiImageUrl,
 } from "@/lib/strapi";
 import { toSentenceCase } from "@/lib/text-format";
+import { buildBreadcrumbListJsonLd, buildFaqPageJsonLd, getShareImageUrl, sanitizeTitle } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 import { iconSize } from "@/components/theme";
 import { RichText } from "@/components/RichText";
 import { DynamicIcon } from "@/components/ui/DynamicIcon";
@@ -71,8 +73,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!industry) return {};
 
     const seo = industry.seo;
-    const title =
-      seo?.metaTitle ?? `${industry.industryName} — Recurv`;
+    const title = sanitizeTitle(seo?.metaTitle ?? industry.industryName);
     const description =
       seo?.metaDescription ??
       (typeof industry.heroIntro === "string"
@@ -87,31 +88,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         : undefined) ??
       undefined;
 
-    const ogImage =
-      seo?.metaSocial?.find((s) => s.socialNetwork === "OpenGraph")?.image?.url ??
-      industry.heroImage?.url;
+    // Strapi metaSocial uses "Facebook" for Open Graph (plugin enum).
+    const facebook = seo?.metaSocial?.find((s) => s.socialNetwork === "Facebook");
+    const twitter = seo?.metaSocial?.find((s) => s.socialNetwork === "Twitter");
+
+    const shareImage = getShareImageUrl({
+      seo,
+      heroImage: industry.heroImage,
+      cardImage: industry.cardImage,
+    });
 
     return {
       title,
       description: description || undefined,
+      alternates: { canonical: `/industries/${slug}` },
       openGraph: {
-        title: seo?.metaSocial?.find((s) => s.socialNetwork === "OpenGraph")?.title ?? title,
-        description:
-          seo?.metaSocial?.find((s) => s.socialNetwork === "OpenGraph")?.description ??
-          description ??
-          undefined,
-        images: ogImage ? [{ url: ogImage }] : undefined,
+        title: facebook?.title ?? title,
+        description: facebook?.description ?? description ?? undefined,
+        images: [{ url: shareImage }],
       },
       twitter: {
-        title: seo?.metaSocial?.find((s) => s.socialNetwork === "Twitter")?.title ?? title,
-        description:
-          seo?.metaSocial?.find((s) => s.socialNetwork === "Twitter")?.description ??
-          description ??
-          undefined,
-        images:
-          seo?.metaSocial?.find((s) => s.socialNetwork === "Twitter")?.image?.url
-            ? [seo!.metaSocial!.find((s) => s.socialNetwork === "Twitter")!.image!.url]
-            : undefined,
+        card: "summary_large_image",
+        title: twitter?.title ?? title,
+        description: twitter?.description ?? description ?? undefined,
+        images: [shareImage],
       },
     };
   } catch {
@@ -145,8 +145,33 @@ export default async function IndustryPage({ params }: Props) {
         .filter(Boolean)
     : [];
 
+  const faqItems =
+    industry.faqItems?.map((f) => ({
+      q: f.question,
+      a: f.answer,
+    })) ?? [];
+
+  const breadcrumbJsonLd = buildBreadcrumbListJsonLd([
+    { name: "Home", url: SITE_URL },
+    { name: "Industries", url: `${SITE_URL}/industries` },
+    { name: industry.industryName, url: `${SITE_URL}/industries/${slug}` },
+  ]);
+
+  const faqJsonLd =
+    faqItems.length > 0 ? buildFaqPageJsonLd(faqItems) : null;
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <IndustryHeroSection
         industryName={industry.industryName}
@@ -282,16 +307,13 @@ export default async function IndustryPage({ params }: Props) {
       />
 
       {/* ── FAQ ───────────────────────────────────────────────────────────── */}
-      {industry.faqItems && industry.faqItems.length > 0 && (
+      {faqItems.length > 0 && (
         <FaqSection
           eyebrow={industry.faqEyebrow ?? undefined}
           headingBefore={faqHeading.headingBefore.join(" ") || undefined}
           headingAccent={faqHeading.headingAccent || undefined}
           subtext={industry.faqIntro ?? undefined}
-          items={industry.faqItems.map((f) => ({
-            q: f.question,
-            a: f.answer,
-          }))}
+          items={faqItems}
         />
       )}
 

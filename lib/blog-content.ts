@@ -40,7 +40,7 @@ export function extractTableOfContents(
   body: BlockNode[] | null | undefined,
   levels: ReadonlyArray<1 | 2 | 3 | 4 | 5 | 6> = [2]
 ): TocItem[] {
-  if (!body) return [];
+  if (!body || !Array.isArray(body)) return [];
   const headingBlocks = body.filter(
     (b): b is Extract<BlockNode, { type: "heading" }> =>
       b.type === "heading" && levels.includes(b.level)
@@ -60,7 +60,7 @@ export function extractTableOfContents(
 export function calculateReadTime(
   body: BlockNode[] | null | undefined
 ): string {
-  if (!body || body.length === 0) return "1 min read";
+  if (!body || !Array.isArray(body) || body.length === 0) return "1 min read";
 
   let wordCount = 0;
 

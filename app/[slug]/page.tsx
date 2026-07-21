@@ -37,7 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!page) return {};
 
     return {
-      title: `${page.title} — Recurv`,
+      title: page.title,
+      description: `${page.title} for Recurv.`,
+      alternates: { canonical: `/${slug}` },
+      robots: { index: false, follow: false },
     };
   } catch {
     return {};

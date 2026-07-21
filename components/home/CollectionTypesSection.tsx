@@ -1,15 +1,16 @@
-import { CarbonIcon } from "@/components/CarbonIcon";
+import { Calendar, CreditCard, FileCheck, Repeat, TrendingUp, Wallet, Zap } from "lucide-react";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
+import { SiteIcon } from "@/components/ui/SiteIcon";
 import { theme as t, iconSize } from "@/components/theme";
 
 const COLLECTION_TYPES = [
-  { icon: "bolt", title: "Once-off collection", desc: "Collect a single payment and close the instruction. Ideal for deposits, registration fees or any charge that only needs to happen once.", use: "Deposit · registration fee" },
-  { icon: "schedule", title: "Fixed-term collections", desc: "Set a defined number of collections, say 10 monthly instalments and Recurv stops automatically when the term ends.", use: "10 monthly instalments" },
-  { icon: "cycle", title: "Ongoing collections", desc: "Set it once. Collect automatically. With no end date required, collections continue on schedule until cancelled, eliminating the need to recreate payment plans or manage renewals manually.", use: "Memberships · Rent" },
-  { icon: "wallet", title: "Ad hoc fees", desc: "Add a once-off charge to any active collection. For a callout fee, admin cost or event ticket without disrupting the schedule. It collects once, then drops off.", use: "admin fee · event fee" },
-  { icon: "graph", title: "Variable amounts", desc: "Collect a different amount each month. Set a variable rate and update it before each collection run. Useful for usage-based billing and levy adjustments.", use: "Levy adjustments · utilities" },
+  { icon: Zap, title: "Once-off collection", desc: "Collect a single payment and close the instruction. Ideal for deposits, registration fees or any charge that only needs to happen once.", use: "Deposit · registration fee" },
+  { icon: Calendar, title: "Fixed-term collections", desc: "Set a defined number of collections, say 10 monthly installments and Recurv stops automatically when the term ends.", use: "10 monthly installments" },
+  { icon: Repeat, title: "Ongoing collections", desc: "Set it once. Collect automatically. With no end date required, collections continue on schedule until cancelled, eliminating the need to recreate payment plans or manage renewals manually.", use: "Memberships · Rent" },
+  { icon: Wallet, title: "Ad hoc fees", desc: "Add a once-off charge to any active collection. For a callout fee, admin cost or event ticket without disrupting the schedule. It collects once, then drops off.", use: "admin fee · event fee" },
+  { icon: TrendingUp, title: "Variable amounts", desc: "Collect a different amount each month. Set a variable rate and update it before each collection run. Useful for usage-based billing and levy adjustments.", use: "Levy adjustments · utilities" },
 ] as const;
 
 export function CollectionTypesSection() {
@@ -59,7 +60,7 @@ export function CollectionTypesSection() {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="transition-transform duration-200 group-hover:scale-110">
-                    <CarbonIcon name={c.icon} color={t.primary} size={iconSize.section} />
+                    <SiteIcon icon={c.icon} color={t.primary} size={iconSize.card} />
                   </div>
                   <div style={{ fontFamily: t.fontDisplay, fontSize: "var(--fs-h3)", fontWeight: 500, letterSpacing: "-0.025em", lineHeight: 1.05 }}>
                     {c.title}
@@ -117,8 +118,8 @@ export function CollectionTypesSection() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {([
-              { icon: "wallet", title: "Card payments", desc: "Fast authorisation, broad customer reach. Customers authorise via card, revenue collected against card with intelligent retry logic." },
-              { icon: "mandate", title: "EFT Debit orders", desc: "The trusted South African standard. SARB-compliant debit order rails and intelligent retry logic." },
+              { icon: CreditCard, title: "Card payments", desc: "Fast authorisation, broad customer reach. Customers authorise via card, revenue collected against card with intelligent retry logic." },
+              { icon: FileCheck, title: "EFT Debit orders", desc: "The trusted South African standard. SARB-compliant debit order rails and intelligent retry logic." },
             ] as const).map((r) => (
               <div
                 key={r.title}
@@ -128,7 +129,7 @@ export function CollectionTypesSection() {
                   border: "1px solid rgba(246,245,240,0.14)",
                 }}
               >
-                <CarbonIcon name={r.icon} color="#A89BF0" size={iconSize.display} />
+                <SiteIcon icon={r.icon} color="#A89BF0" size={iconSize.card} />
                 <div style={{ fontFamily: t.fontDisplay, fontSize: 19, fontWeight: 500, letterSpacing: "-0.02em" }}>
                   {r.title}
                 </div>

@@ -1,41 +1,42 @@
-import { CarbonIcon } from "@/components/CarbonIcon";
+import { Calendar, FileCheck, TrendingUp, Users, Wallet, Zap } from "lucide-react";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
+import { SiteIcon } from "@/components/ui/SiteIcon";
 import { theme as t, iconSize } from "@/components/theme";
 
 const CAPABILITIES = [
   {
-    icon: "mandate" as const,
+    icon: FileCheck,
     title: "Mandates",
     desc: "Create, amend and cancel debit-order mandates. Capture consent and store tokenised banking details.",
     route: "/v1/mandates",
   },
   {
-    icon: "schedule" as const,
+    icon: Calendar,
     title: "Collections",
     desc: "Schedule one-off or recurring collections, set retry logic and track every status transition.",
     route: "/v1/collections",
   },
   {
-    icon: "people" as const,
+    icon: Users,
     title: "Customers",
     desc: "Manage payers, payment methods and contact details with full history and search.",
     route: "/v1/customers",
   },
   {
-    icon: "wallet" as const,
+    icon: Wallet,
     title: "Payouts",
     desc: "Reconcile settled funds, fees and refunds pulled straight into your own ledger.",
     route: "/v1/payouts",
   },
   {
-    icon: "bolt" as const,
+    icon: Zap,
     title: "Webhooks",
     desc: "Subscribe to 30+ signed event types. Replay, filter and inspect every delivery.",
     route: "/v1/webhooks",
   },
   {
-    icon: "graph" as const,
+    icon: TrendingUp,
     title: "Reporting",
     desc: "Query collected, failed and forecast revenue. Export to your BI tool or data warehouse.",
     route: "/v1/reporting",
@@ -89,7 +90,7 @@ export function ApiCapabilitiesSection() {
                 borderBottom: i < 3 ? `1px solid ${t.line}` : undefined,
               }}
             >
-              <CarbonIcon name={cap.icon} color={t.primary} size={iconSize.section} />
+              <SiteIcon icon={cap.icon} color={t.primary} size={iconSize.card} />
               <div>
                 <div
                   style={{

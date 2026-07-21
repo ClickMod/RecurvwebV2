@@ -1,15 +1,16 @@
-import { CarbonIcon } from "@/components/CarbonIcon";
+import { FileCheck, GitMerge, ShieldCheck, TrendingUp, Wallet } from "lucide-react";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
+import { SiteIcon } from "@/components/ui/SiteIcon";
 import { theme as t, iconSize } from "@/components/theme";
 
 const FEATURES = [
-  { num: "01", icon: "mandate", title: "Cut the admin", desc: "Stop wrestling with spreadsheets, paperwork, and manual follow-ups. Recurv enables customers to authorise payments digitally and allows your team to create flexible collection schedules for any business model. Whether you bill once, monthly, indefinitely or based on changing amounts, we make revenue collection effortless." },
-  { num: "02", icon: "wallet", title: "Collect with confidence", desc: "Move beyond spreadsheets and batch files. Recurv automates recurring revenue collections from end to end, handling payment processing, status updates, retries and reconciliation in real time. Your team gets instant visibility into collection outcomes without lifting a finger." },
-  { num: "03", icon: "reconcile", title: "From reconciliation to resolution", desc: "Recurv automatically matches and reconciles collection outcomes, allowing your back-office team to focus on resolving failed payments instead of processing successful ones. Real-time dashboards provide complete visibility into collection performance without the spreadsheets and manual effort." },
-  { num: "04", icon: "shield", title: "Digital mandates in minutes", desc: "Let customers securely authorise recurring or once-off collections through a simple digital mandate. Send approval links via email, SMS, WhatsApp or QR code, or embed the experience directly into your website. Customers can complete the process from any device, eliminating paperwork, reducing delays and removing manual administration." },
-  { num: "05", icon: "graph", title: "Know your revenue", desc: "See upcoming collections, expected revenue, success rates, failed payments and collection trends in real time. Recurv gives your team complete visibility into future cash flow, helping you forecast accurately and act before revenue problems become cash flow problems." },
+  { num: "01", icon: FileCheck, title: "Cut the admin", desc: "Stop wrestling with spreadsheets, paperwork, and manual follow-ups. Recurv enables customers to authorise payments digitally and allows your team to create flexible collection schedules for any business model. Whether you bill once, monthly, indefinitely or based on changing amounts, we make revenue collection effortless." },
+  { num: "02", icon: Wallet, title: "Collect with confidence", desc: "Move beyond spreadsheets and batch files. Recurv automates recurring revenue collections from end to end, handling payment processing, status updates, retries and reconciliation in real time. Your team gets instant visibility into collection outcomes without lifting a finger." },
+  { num: "03", icon: GitMerge, title: "From reconciliation to resolution", desc: "Recurv automatically matches and reconciles collection outcomes, allowing your back-office team to focus on resolving failed payments instead of processing successful ones. Real-time dashboards provide complete visibility into collection performance without the spreadsheets and manual effort." },
+  { num: "04", icon: ShieldCheck, title: "Digital mandates in minutes", desc: "Let customers securely authorise recurring or once-off collections through a simple digital mandate. Send approval links via email, SMS, WhatsApp or QR code, or embed the experience directly into your website. Customers can complete the process from any device, eliminating paperwork, reducing delays and removing manual administration." },
+  { num: "05", icon: TrendingUp, title: "Know your revenue", desc: "See upcoming collections, expected revenue, success rates, failed payments and collection trends in real time. Recurv gives your team complete visibility into future cash flow, helping you forecast accurately and act before revenue problems become cash flow problems." },
 ] as const;
 
 export function RecurvCoreSection() {
@@ -53,13 +54,13 @@ export function RecurvCoreSection() {
             {FEATURES.map((f, i) => (
               <Reveal key={f.num} delay={i * STAGGER}>
                 <div
-                  className="flex flex-col gap-4 p-6 lg:p-8 h-full transition-[background-color] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[var(--surface-alt)]"
+                  className="flex flex-col gap-4 p-7 md:p-8 h-full transition-[background-color] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[var(--surface-alt)]"
                   style={{
                     borderBottom: `1px solid ${t.line}`,
                     borderRight: `1px solid ${t.line}`,
                   }}
                 >
-                  <CarbonIcon name={f.icon} color={t.primary} size={iconSize.display} />
+                  <SiteIcon icon={f.icon} color={t.primary} size={iconSize.card} />
                   <div className="mono" style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1.5 }}>{f.num}</div>
                   <div style={{ fontFamily: t.fontDisplay, fontSize: 20, fontWeight: 500, letterSpacing: "-0.02em", lineHeight: 1.15 }}>
                     {f.title}

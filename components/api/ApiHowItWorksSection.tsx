@@ -1,23 +1,24 @@
-import { CarbonIcon } from "@/components/CarbonIcon";
+import { Lock, Plug, Repeat } from "lucide-react";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
+import { SiteIcon } from "@/components/ui/SiteIcon";
 import { theme as t, iconSize } from "@/components/theme";
 
 const STEPS = [
   {
-    icon: "lock" as const,
+    icon: Lock,
     step: "01 · AUTHENTICATE",
     title: "Drop in your API key",
     desc: "Bearer-token auth over TLS. Separate sandbox and live keys, scoped to your account, rotatable at any time.",
   },
   {
-    icon: "plug" as const,
+    icon: Plug,
     step: "02 · CALL",
     title: "Create mandates & plans",
     desc: "RESTful resources for customers, mandates, collections and payouts. Idempotency keys make every write safe to retry.",
   },
   {
-    icon: "cycle" as const,
+    icon: Repeat,
     step: "03 · LISTEN",
     title: "Subscribe to webhooks",
     desc: "Signed, real-time events push every status change back to your platform so your records stay in lockstep with the bank.",
@@ -71,7 +72,7 @@ export function ApiHowItWorksSection() {
             >
               {/* Icon row */}
               <div className="flex items-center justify-between">
-                <CarbonIcon name={step.icon} color={t.primary} size={iconSize.section} />
+                <SiteIcon icon={step.icon} color={t.primary} size={iconSize.card} />
                 <span
                   className="mono"
                   style={{ fontSize: 11, color: t.inkSoft, letterSpacing: 1.5 }}

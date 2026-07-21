@@ -1,11 +1,12 @@
-import { CarbonIcon } from "@/components/CarbonIcon";
+import { ShieldCheck, Users, Wallet } from "lucide-react";
 import { Container } from "@/components/Container";
+import { SiteIcon } from "@/components/ui/SiteIcon";
 import { theme as t, iconSize } from "@/components/theme";
 
 const DOORS = [
   {
     num: "01",
-    icon: "wallet" as const,
+    icon: Wallet,
     tag: "SALES",
     title: "Talk to sales",
     desc: "You're evaluating Recurv for your business, want pricing, or need a tailored demo for your team.",
@@ -15,7 +16,7 @@ const DOORS = [
   },
   {
     num: "02",
-    icon: "shield" as const,
+    icon: ShieldCheck,
     tag: "SUPPORT",
     title: "Customer support",
     desc: "You already run Recurv and need help with mandates, collections, reconciliation, or your dashboard.",
@@ -25,7 +26,7 @@ const DOORS = [
   },
   {
     num: "03",
-    icon: "people" as const,
+    icon: Users,
     tag: "PARTNERS & PRESS",
     title: "Partnerships & press",
     desc: "You're a banking, accounting, or technology partner, or a journalist with questions about Recurv.",
@@ -80,7 +81,7 @@ export function ContactDoorsSection() {
                 }}
               >
                 <div className="flex justify-between items-center">
-                  <CarbonIcon name={door.icon} color={t.primary} size={iconSize.display} />
+                  <SiteIcon icon={door.icon} color={t.primary} size={iconSize.card} />
                   <span className="mono" style={{ fontSize: 10, color: t.inkSoft, letterSpacing: 1.5 }}>
                     {door.num} · {door.tag}
                   </span>

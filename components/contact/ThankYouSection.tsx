@@ -1,10 +1,10 @@
-import { Button } from "@/components/Button";
+import { ShieldCheck } from "lucide-react";
 import { Container } from "@/components/Container";
-import { theme as t } from "@/components/theme";
+import { SiteIcon } from "@/components/ui/SiteIcon";
+import { theme as t, iconSize } from "@/components/theme";
 
-const PHONE_DISPLAY = "082 416 8273";
-const PHONE_TEL = "0824168273";
-const EMAIL = "riaan@clickmod.co.za";
+const CEO_EMAIL = "riaan@clickmod.co.za";
+const CEO_PHONE = "+27 82 416 8273";
 
 export function ThankYouSection() {
   return (
@@ -29,7 +29,8 @@ export function ThankYouSection() {
             margin: 0,
           }}
         >
-          We&rsquo;ve got{" "}
+          We&rsquo;ve got
+          <br />
           <span style={{ color: t.primary }}>your message.</span>
         </h1>
 
@@ -40,46 +41,64 @@ export function ThankYouSection() {
           One of our payments experts will be in touch with you soon.
         </p>
 
-        <div
-          className="mt-12 max-w-[560px] rounded-2xl p-8 md:p-10"
-          style={{
-            background: t.surfaceAlt,
-            border: `1px solid ${t.line}`,
-          }}
-        >
+        <div className="mt-12 max-w-[560px]" style={{ borderTop: `1px solid ${t.line}` }}>
           <div
-            className="mono mb-3"
-            style={{ fontSize: 11, color: t.primary, letterSpacing: 1.5 }}
+            className="flex flex-col gap-3.5 p-7 md:p-8"
+            style={{ borderBottom: `1px solid ${t.line}` }}
           >
-            NEED A FASTER RESPONSE?
+            <div className="flex items-center justify-between">
+              <SiteIcon icon={ShieldCheck} color={t.primary} size={iconSize.card} />
+              <span className="mono" style={{ fontSize: 10, color: t.inkSoft, letterSpacing: 1.5 }}>
+                CEO · DIRECT LINE
+              </span>
+            </div>
+            <div
+              className="mt-1"
+              style={{
+                fontFamily: t.fontDisplay,
+                fontSize: 24,
+                fontWeight: 500,
+                letterSpacing: "-0.02em",
+                lineHeight: 1.1,
+              }}
+            >
+              Need a faster response?
+            </div>
+            <div style={{ fontSize: 14, color: t.inkSoft, lineHeight: 1.55 }}>
+              If you haven&rsquo;t heard from us, reach out to our CEO Riaan Backer directly.
+            </div>
+            <div
+              className="mt-auto flex flex-col gap-2 pt-4"
+              style={{ borderTop: `1px dashed ${t.line}` }}
+            >
+              <a
+                href={`mailto:${CEO_EMAIL}`}
+                style={{ fontSize: 14, fontWeight: 600, color: t.ink, textDecoration: "none" }}
+              >
+                {CEO_EMAIL}
+              </a>
+              <a
+                href="tel:+27824168273"
+                className="mono"
+                style={{ fontSize: 12, color: t.inkSoft, letterSpacing: 0.5, textDecoration: "none" }}
+              >
+                {CEO_PHONE}
+              </a>
+              <div className="mt-1.5 flex items-center gap-2">
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: 999,
+                    background: t.success,
+                    display: "inline-block",
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ fontSize: 12, color: t.inkSoft }}>Reply within 4 business hours</span>
+              </div>
+            </div>
           </div>
-          <p style={{ fontSize: 16, lineHeight: 1.6, color: t.ink, margin: 0 }}>
-            If you haven&rsquo;t heard from us, call our CEO{" "}
-            <span style={{ fontWeight: 600 }}>Riaan Backer</span> on{" "}
-            <a
-              href={`tel:${PHONE_TEL}`}
-              style={{ color: t.primary, fontWeight: 600, textDecoration: "none" }}
-            >
-              {PHONE_DISPLAY}
-            </a>{" "}
-            or email{" "}
-            <a
-              href={`mailto:${EMAIL}`}
-              style={{ color: t.primary, fontWeight: 600, textDecoration: "none" }}
-            >
-              {EMAIL}
-            </a>
-            .
-          </p>
-        </div>
-
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-          <Button href="/" size="lg" variant="accent" icon={<span>→</span>} className="justify-center">
-            Back to home
-          </Button>
-          <Button href="/contactus" size="lg" variant="secondary" className="justify-center">
-            Return to contact
-          </Button>
         </div>
       </Container>
     </section>

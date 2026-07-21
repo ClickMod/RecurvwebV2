@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getAllIndustriesForListing, strapiImageUrl } from "@/lib/strapi";
+import { SITE_URL } from "@/lib/site";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
@@ -12,12 +13,11 @@ import { CtaSection } from "@/components/home/CtaSection";
 import { theme as t } from "@/components/theme";
 
 export const metadata: Metadata = {
-  title: "Industries — Recurv",
+  title: "Industries",
   description:
     "Recurv adapts to every recurring billing pattern, from school fees and rent to membership dues and medical payment plans.",
+  alternates: { canonical: "/industries" },
 };
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://recurv.tech";
 
 export default async function IndustriesPage() {
   const industries = await getAllIndustriesForListing().catch(() => []);
@@ -108,95 +108,101 @@ export default async function IndustriesPage() {
         >
           <Container>
             <Reveal className="mt-8">
-              <Link href={`/industries/${featured.slug}`} style={{ textDecoration: "none" }}>
-                <div className="relative rounded-2xl overflow-hidden min-h-[420px] md:min-h-[520px] transition-[transform,box-shadow] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-lg">
-                  <div className="absolute inset-0">
-                    {featured.cardImage ? (
-                      <Image
-                        src={strapiImageUrl(featured.cardImage.url)!}
-                        alt={featured.cardImage.alternativeText || featured.industryName}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 90vw"
-                        priority
-                      />
-                    ) : (
-                      <PhotoSlot
-                        tint="#4A6E8A"
-                        bg="#141E2E"
-                        variant="spotlight"
-                        rounded={0}
-                        style={{ height: "100%", aspectRatio: "auto" }}
-                      />
-                    )}
-                  </div>
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, rgba(15,14,20,0.10) 0%, transparent 30%, rgba(15,14,20,0.55) 75%, rgba(15,14,20,0.85) 100%)",
-                    }}
-                  />
-                  <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-10">
-                    <div className="flex items-start justify-between">
-                      <div
-                        className="mono"
-                        style={{
-                          fontSize: 10,
-                          letterSpacing: 1.5,
-                          color: "rgba(255,255,255,0.55)",
-                        }}
-                      >
-                        FEATURED INDUSTRY
-                      </div>
-                      <div
-                        className="mono px-2 py-1 rounded"
-                        style={{
-                          fontSize: 10,
-                          letterSpacing: 1.5,
-                          background: "rgba(79,51,217,0.85)",
-                          color: "#fff",
-                        }}
-                      >
-                        USE CASE LIVE
-                      </div>
+              {/*
+                rounded + overflow must live on the same element that receives
+                hover:transform — an ancestor transform breaks corner clipping.
+              */}
+              <Link
+                href={`/industries/${featured.slug}`}
+                className="relative block min-h-[420px] overflow-hidden rounded-2xl transition-transform duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 md:min-h-[520px]"
+                style={{ textDecoration: "none" }}
+              >
+                <div className="absolute inset-0">
+                  {featured.cardImage ? (
+                    <Image
+                      src={strapiImageUrl(featured.cardImage.url)!}
+                      alt={featured.cardImage.alternativeText || featured.industryName}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 90vw"
+                      priority
+                    />
+                  ) : (
+                    <PhotoSlot
+                      tint="#4A6E8A"
+                      bg="#141E2E"
+                      variant="spotlight"
+                      rounded={0}
+                      style={{ height: "100%", aspectRatio: "auto" }}
+                    />
+                  )}
+                </div>
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(15,14,20,0.10) 0%, transparent 30%, rgba(15,14,20,0.55) 75%, rgba(15,14,20,0.85) 100%)",
+                  }}
+                />
+                <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-10">
+                  <div className="flex items-start justify-between">
+                    <div
+                      className="mono"
+                      style={{
+                        fontSize: 10,
+                        letterSpacing: 1.5,
+                        color: "rgba(255,255,255,0.55)",
+                      }}
+                    >
+                      FEATURED INDUSTRY
                     </div>
-                    <div>
-                      <div
+                    <div
+                      className="mono px-2 py-1 rounded"
+                      style={{
+                        fontSize: 10,
+                        letterSpacing: 1.5,
+                        background: "rgba(79,51,217,0.85)",
+                        color: "#fff",
+                      }}
+                    >
+                      USE CASE LIVE
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontFamily: t.fontDisplay,
+                        fontSize: "var(--fs-h2-md)",
+                        fontWeight: 500,
+                        letterSpacing: "-0.03em",
+                        lineHeight: 1,
+                        color: "#fff",
+                      }}
+                    >
+                      {featured.industryName}
+                    </div>
+                    {featured.cardTagline && (
+                      <p
+                        className="mt-3 mb-5 max-w-[480px]"
                         style={{
-                          fontFamily: t.fontDisplay,
-                          fontSize: "var(--fs-h2-md)",
-                          fontWeight: 500,
-                          letterSpacing: "-0.03em",
-                          lineHeight: 1,
-                          color: "#fff",
+                          fontSize: 17,
+                          color: "rgba(255,255,255,0.82)",
+                          lineHeight: 1.5,
                         }}
                       >
-                        {featured.industryName}
-                      </div>
-                      {featured.cardTagline && (
-                        <p
-                          className="mt-3 mb-5 max-w-[480px]"
-                          style={{
-                            fontSize: 17,
-                            color: "rgba(255,255,255,0.82)",
-                            lineHeight: 1.5,
-                          }}
-                        >
-                          {featured.cardTagline}
-                        </p>
-                      )}
-                      <div
-                        className="flex items-center pt-5"
-                        style={{ borderTop: "1px solid rgba(255,255,255,0.18)" }}
+                        {featured.cardTagline}
+                      </p>
+                    )}
+                    <div
+                      className="flex items-center pt-5"
+                      style={{ borderTop: "1px solid rgba(255,255,255,0.18)" }}
+                    >
+                      <span
+                        className="underline underline-offset-4"
+                        style={{ fontSize: 14, color: "rgba(255,255,255,0.9)" }}
                       >
-                        <span
-                          className="underline underline-offset-4"
-                          style={{ fontSize: 14, color: "rgba(255,255,255,0.9)" }}
-                        >
-                          View use case →
-                        </span>
-                      </div>
+                        View use case →
+                      </span>
                     </div>
                   </div>
                 </div>

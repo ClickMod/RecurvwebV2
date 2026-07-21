@@ -47,12 +47,21 @@ export function Reveal({ delay = 0, children, className = "", ...props }: Reveal
             el.style.transition = `opacity ${DURATION_REVEAL}ms ${EASE} ${delay}ms, transform ${DURATION_REVEAL}ms ${EASE} ${delay}ms`;
             el.style.opacity = "1";
             el.style.transform = "translateY(0)";
-            // Clean up will-change after animation completes.
+            // After the animation, fully drop transform/transition.
+            // Leaving an identity matrix still creates a containing block and
+            // breaks overflow:hidden + border-radius clipping on descendants
+            // (black corners behind rounded images).
+            let cleaned = false;
             const cleanup = () => {
+              if (cleaned) return;
+              cleaned = true;
               el.style.willChange = "auto";
+              el.style.transition = "";
+              el.style.transform = "";
               el.removeEventListener("transitionend", cleanup);
             };
-            el.addEventListener("transitionend", cleanup, { once: true });
+            el.addEventListener("transitionend", cleanup);
+            window.setTimeout(cleanup, DURATION_REVEAL + delay + 50);
             observer.unobserve(el);
           }
         });

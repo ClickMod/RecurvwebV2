@@ -125,6 +125,7 @@ export interface StrapiMetaSocial {
 export interface StrapiSeo {
   metaTitle?: string | null;
   metaDescription?: string | null;
+  shareImage?: StrapiImage | null;
   metaSocial?: StrapiMetaSocial[] | null;
 }
 
@@ -483,30 +484,43 @@ export async function getAllBlogTagsWithCounts(): Promise<StrapiBlogTagWithCount
  * seo, body). Returns null if no post with the given slug is found.
  */
 export async function getBlogPostBySlug(slug: string): Promise<StrapiBlogPost | null> {
-  const populate = [
+  const base = [
+    `filters[slug][$eq]=${encodeURIComponent(slug)}`,
+    "status=published",
     "populate[cardImage]=true",
     "populate[heroImage]=true",
     "populate[category][fields][0]=name",
     "populate[category][fields][1]=slug",
     "populate[tags][fields][0]=name",
     "populate[tags][fields][1]=slug",
-    "populate[seo][populate][metaSocial][populate]=image",
   ].join("&");
 
-  const res = await strapiGet<StrapiListResponse<StrapiBlogPost>>(
-    `/blog-posts?filters[slug][$eq]=${encodeURIComponent(slug)}&${populate}`
-  );
-  return res.data[0] ?? null;
+  const seoPopulate =
+    "populate[seo][populate][shareImage]=true&populate[seo][populate][metaSocial][populate]=image";
+
+  // Try full populate first; fall back without SEO if Strapi rejects nested populate.
+  for (const qs of [`${base}&${seoPopulate}`, base]) {
+    try {
+      const res = await strapiGet<StrapiListResponse<StrapiBlogPost>>(`/blog-posts?${qs}`);
+      return res.data[0] ?? null;
+    } catch (err) {
+      if (qs === base) throw err;
+    }
+  }
+
+  return null;
 }
 
 /**
  * Fetches all blog post slugs — used in generateStaticParams for the
  * /blog/[slug] route. Minimal payload (slug only).
  */
-export async function getAllBlogSlugsForStaticParams(): Promise<{ slug: string }[]> {
-  const res = await strapiGet<StrapiListResponse<Pick<StrapiBlogPost, "slug">>>(
-    "/blog-posts?fields[0]=slug&pagination[pageSize]=1000"
-  );
+export async function getAllBlogSlugsForStaticParams(): Promise<
+  { slug: string; updatedAt: string }[]
+> {
+  const res = await strapiGet<
+    StrapiListResponse<Pick<StrapiBlogPost, "slug" | "updatedAt">>
+  >("/blog-posts?fields[0]=slug&fields[1]=updatedAt&pagination[pageSize]=1000");
   return res.data;
 }
 
@@ -599,10 +613,12 @@ export async function getIndustries(): Promise<StrapiIndustry[]> {
 }
 
 /** Fetches only slugs — for use in generateStaticParams (minimal payload). */
-export async function getAllIndustrySlugs(): Promise<{ slug: string }[]> {
-  const res = await strapiGet<StrapiListResponse<Pick<StrapiIndustry, "slug">>>(
-    "/industries?fields[0]=slug&pagination[pageSize]=100"
-  );
+export async function getAllIndustrySlugs(): Promise<
+  { slug: string; updatedAt: string }[]
+> {
+  const res = await strapiGet<
+    StrapiListResponse<Pick<StrapiIndustry, "slug" | "updatedAt">>
+  >("/industries?fields[0]=slug&fields[1]=updatedAt&pagination[pageSize]=100");
   return res.data;
 }
 
@@ -655,7 +671,8 @@ export async function getAllIndustriesForListing(): Promise<StrapiIndustryCard[]
 export async function getIndustryBySlug(slug: string): Promise<StrapiIndustry | null> {
   // Build deep populate in a single request — avoids N+1 calls.
   const populate = [
-    // Hero
+    // Card + hero
+    "populate[cardImage]=true",
     "populate[heroHeadline]=true",
     "populate[heroPrimaryCta]=true",
     "populate[heroSecondaryCta]=true",
@@ -681,6 +698,7 @@ export async function getIndustryBySlug(slug: string): Promise<StrapiIndustry | 
     "populate[faqHeading]=true",
     "populate[faqItems]=true",
     // SEO
+    "populate[seo][populate][shareImage]=true",
     "populate[seo][populate][metaSocial][populate]=image",
   ].join("&");
 

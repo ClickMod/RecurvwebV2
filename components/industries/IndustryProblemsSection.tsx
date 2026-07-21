@@ -5,7 +5,7 @@ import { STAGGER } from "@/components/motion";
 import { theme as t } from "@/components/theme";
 
 export interface IndustryProblemItem {
-  /** Rendered icon — pass <CarbonIcon> for static pages, <DynamicIcon> for CMS pages. */
+  /** Rendered icon — pass <SiteIcon> for static pages, <DynamicIcon> for CMS pages. */
   icon: ReactNode;
   /** Card heading — the problem in plain terms */
   heading: string;

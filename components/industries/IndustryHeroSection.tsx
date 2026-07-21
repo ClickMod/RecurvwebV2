@@ -184,21 +184,21 @@ export function IndustryHeroSection({
           </div>
 
           {/* ── Right: actual image or placeholder ── */}
-          <Reveal delay={STAGGER} className="w-full">
+          {/* rounded + overflow live on Reveal so clipping shares the animated layer */}
+          <Reveal
+            delay={STAGGER}
+            className="relative w-full overflow-hidden rounded-2xl"
+            style={{ aspectRatio: "4 / 5", background: t.bg }}
+          >
             {actualImage ? (
-              <div
-                className="w-full overflow-hidden rounded-2xl"
-                style={{ aspectRatio: "4 / 5", position: "relative" }}
-              >
-                <Image
-                  src={actualImage.url}
-                  alt={actualImage.alt ?? industryName}
-                  width={actualImage.width}
-                  height={actualImage.height}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  priority
-                />
-              </div>
+              <Image
+                src={actualImage.url}
+                alt={actualImage.alt ?? industryName}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
+              />
             ) : (
               <PhotoSlot
                 label={image.label ?? `Editorial photo — ${industryName.toLowerCase()} scene`}
@@ -206,7 +206,9 @@ export function IndustryHeroSection({
                 tint={image.tint ?? t.primary}
                 bg={image.bg ?? "#0F0E14"}
                 ratio="4 / 5"
+                rounded={0}
                 variant="spotlight"
+                style={{ height: "100%", aspectRatio: "auto" }}
               />
             )}
           </Reveal>

@@ -5,7 +5,7 @@ import { STAGGER } from "@/components/motion";
 import { theme as t } from "@/components/theme";
 
 export interface IndustrySolutionFeature {
-  /** Rendered icon — pass <CarbonIcon> for static pages, <DynamicIcon> for CMS pages. */
+  /** Rendered icon — pass <SiteIcon> for static pages, <DynamicIcon> for CMS pages. */
   icon: ReactNode;
   /** Feature heading */
   heading: string;
