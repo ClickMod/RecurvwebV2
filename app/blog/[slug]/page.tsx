@@ -15,7 +15,7 @@ import {
 } from "@/lib/blog-content";
 import { getShareImageUrl, buildBreadcrumbListJsonLd, sanitizeTitle } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
-import { RichText } from "@/components/RichText";
+import { BlogContent } from "@/components/BlogContent";
 import { theme as t } from "@/components/theme";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
@@ -419,9 +419,12 @@ export default async function BlogPostPage({ params }: Props) {
                 </details>
               )}
 
-              {/* Body blocks — RichText injects id attributes on H2 headings */}
+              {/* Body blocks — BlogContent injects id attributes on H2 headings */}
               <div style={{ maxWidth: 740 }}>
-                <RichText blocks={post.body} />
+                <BlogContent
+                  content={post.body}
+                  strapiBaseUrl={process.env.STRAPI_API_URL}
+                />
               </div>
 
               {matchedIndustry && (

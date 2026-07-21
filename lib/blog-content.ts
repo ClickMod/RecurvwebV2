@@ -7,12 +7,12 @@
 
 import type { BlockNode } from "@/lib/strapi";
 
-// ── Slugify (must match RichText.tsx id generation exactly) ───────────────────
+// ── Slugify (must match BlogContent.tsx id generation exactly) ──────────────
 
 /**
  * Converts a heading string to a URL-safe id for use as an HTML anchor.
- * This MUST match the slugify logic in RichText.tsx and [slug]/page.tsx so
- * that TOC links actually jump to the correct heading in the rendered body.
+ * This MUST match the slugify logic in BlogContent.tsx so that TOC links
+ * actually jump to the correct heading in the rendered body.
  */
 export function slugifyHeading(text: string): string {
   return text

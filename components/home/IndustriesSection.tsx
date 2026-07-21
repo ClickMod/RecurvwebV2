@@ -56,29 +56,40 @@ export function IndustriesSection({ industries }: IndustriesSectionProps) {
 
         {featured && (
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.12fr_1fr] items-stretch min-w-0">
-            {/* Featured tile */}
-            <Reveal className="relative rounded-2xl overflow-hidden min-h-[360px] md:min-h-[520px]">
-              <Link href={`/industries/${featured.slug}`} style={{ textDecoration: "none", display: "block", height: "100%" }}>
-                <div className="absolute inset-0">
-                  {featured.cardImage ? (
-                    <Image
-                      src={strapiImageUrl(featured.cardImage.url)!}
-                      alt={featured.cardImage.alternativeText || featured.industryName}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 60vw"
-                    />
-                  ) : (
-                    <PhotoSlot tint="#6E4A2A" bg="#241813" variant="spotlight" rounded={0} style={{ height: "100%", aspectRatio: "auto" }}>
-                      <span />
-                    </PhotoSlot>
-                  )}
-                </div>
+            {/* Featured tile — radius on each layer; no overflow:hidden (avoids dark corner bleed) */}
+            <Reveal className="relative min-h-[360px] md:min-h-[520px]">
+              <Link
+                href={`/industries/${featured.slug}`}
+                className="absolute inset-0 block rounded-2xl"
+                style={{ textDecoration: "none" }}
+              >
+                {featured.cardImage ? (
+                  <Image
+                    src={strapiImageUrl(featured.cardImage.url)!}
+                    alt={featured.cardImage.alternativeText || featured.industryName}
+                    fill
+                    className="rounded-2xl object-cover"
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                  />
+                ) : (
+                  <PhotoSlot
+                    tint="#6E4A2A"
+                    bg="#241813"
+                    variant="spotlight"
+                    rounded={16}
+                    style={{ height: "100%", aspectRatio: "auto" }}
+                  >
+                    <span />
+                  </PhotoSlot>
+                )}
                 <div
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(180deg, rgba(15,14,20,0.12) 0%, transparent 32%, rgba(15,14,20,0.55) 78%, rgba(15,14,20,0.82) 100%)" }}
+                  className="absolute inset-0 rounded-2xl"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(15,14,20,0.12) 0%, transparent 32%, rgba(15,14,20,0.55) 78%, rgba(15,14,20,0.82) 100%)",
+                  }}
                 />
-                <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8">
+                <div className="absolute inset-0 flex flex-col justify-between rounded-2xl p-6 md:p-8">
                   <div className="mono" style={{ fontSize: 10, letterSpacing: 1.5, color: "rgba(255,255,255,0.55)" }}>
                     FEATURED INDUSTRY
                   </div>
@@ -108,21 +119,25 @@ export function IndustriesSection({ industries }: IndustriesSectionProps) {
                       className="h-full grid grid-cols-[100px_1fr] sm:grid-cols-[132px_1fr] gap-4 sm:gap-5 items-center rounded-[14px] p-3.5 transition-[border-color,box-shadow,transform] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-sm"
                       style={{ background: t.surface, border: `1px solid ${t.line}` }}
                     >
-                      <div className="relative self-stretch min-h-[120px] rounded-[10px] overflow-hidden">
+                      <div className="relative self-stretch min-h-[120px]">
                         {ind.cardImage ? (
                           <Image
                             src={strapiImageUrl(ind.cardImage.url)!}
                             alt={ind.cardImage.alternativeText || ind.industryName}
                             fill
-                            className="object-cover"
+                            className="rounded-[10px] object-cover"
                             sizes="132px"
                           />
                         ) : (
-                          <div className="absolute inset-0">
-                            <PhotoSlot tint="#4A6E8A" bg="#141E2E" variant="spotlight" rounded={10} style={{ height: "100%", aspectRatio: "auto" }}>
-                              <span />
-                            </PhotoSlot>
-                          </div>
+                          <PhotoSlot
+                            tint="#4A6E8A"
+                            bg="#141E2E"
+                            variant="spotlight"
+                            rounded={10}
+                            style={{ height: "100%", aspectRatio: "auto" }}
+                          >
+                            <span />
+                          </PhotoSlot>
                         )}
                       </div>
                       <div className="flex flex-col gap-1 pr-2 min-w-0">

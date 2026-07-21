@@ -108,43 +108,37 @@ export default async function IndustriesPage() {
         >
           <Container>
             <Reveal className="mt-8">
-              {/*
-                rounded + overflow must live on the same element that receives
-                hover:transform — an ancestor transform breaks corner clipping.
-              */}
               <Link
                 href={`/industries/${featured.slug}`}
-                className="relative block min-h-[420px] overflow-hidden rounded-2xl transition-transform duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 md:min-h-[520px]"
+                className="relative block min-h-[420px] rounded-2xl transition-transform duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 md:min-h-[520px]"
                 style={{ textDecoration: "none" }}
               >
-                <div className="absolute inset-0">
-                  {featured.cardImage ? (
-                    <Image
-                      src={strapiImageUrl(featured.cardImage.url)!}
-                      alt={featured.cardImage.alternativeText || featured.industryName}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 90vw"
-                      priority
-                    />
-                  ) : (
-                    <PhotoSlot
-                      tint="#4A6E8A"
-                      bg="#141E2E"
-                      variant="spotlight"
-                      rounded={0}
-                      style={{ height: "100%", aspectRatio: "auto" }}
-                    />
-                  )}
-                </div>
+                {featured.cardImage ? (
+                  <Image
+                    src={strapiImageUrl(featured.cardImage.url)!}
+                    alt={featured.cardImage.alternativeText || featured.industryName}
+                    fill
+                    className="rounded-2xl object-cover"
+                    sizes="(max-width: 768px) 100vw, 90vw"
+                    priority
+                  />
+                ) : (
+                  <PhotoSlot
+                    tint="#4A6E8A"
+                    bg="#141E2E"
+                    variant="spotlight"
+                    rounded={16}
+                    style={{ height: "100%", aspectRatio: "auto" }}
+                  />
+                )}
                 <div
-                  className="absolute inset-0"
+                  className="absolute inset-0 rounded-2xl"
                   style={{
                     background:
                       "linear-gradient(180deg, rgba(15,14,20,0.10) 0%, transparent 30%, rgba(15,14,20,0.55) 75%, rgba(15,14,20,0.85) 100%)",
                   }}
                 />
-                <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-10">
+                <div className="absolute inset-0 flex flex-col justify-between rounded-2xl p-6 md:p-10">
                   <div className="flex items-start justify-between">
                     <div
                       className="mono"

@@ -184,33 +184,31 @@ export function IndustryHeroSection({
           </div>
 
           {/* ── Right: actual image or placeholder ── */}
-          {/* rounded + overflow live on Reveal so clipping shares the animated layer */}
-          <Reveal
-            delay={STAGGER}
-            className="relative w-full overflow-hidden rounded-2xl"
-            style={{ aspectRatio: "4 / 5", background: t.bg }}
-          >
-            {actualImage ? (
-              <Image
-                src={actualImage.url}
-                alt={actualImage.alt ?? industryName}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                priority
-              />
-            ) : (
-              <PhotoSlot
-                label={image.label ?? `Editorial photo — ${industryName.toLowerCase()} scene`}
-                caption={image.caption}
-                tint={image.tint ?? t.primary}
-                bg={image.bg ?? "#0F0E14"}
-                ratio="4 / 5"
-                rounded={0}
-                variant="spotlight"
-                style={{ height: "100%", aspectRatio: "auto" }}
-              />
-            )}
+          {/* Radius on the media itself — avoid overflow:hidden clipping (dark corner bleed) */}
+          <Reveal delay={STAGGER} className="w-full">
+            <div className="relative w-full" style={{ aspectRatio: "4 / 5" }}>
+              {actualImage ? (
+                <Image
+                  src={actualImage.url}
+                  alt={actualImage.alt ?? industryName}
+                  fill
+                  className="rounded-2xl object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  priority
+                />
+              ) : (
+                <PhotoSlot
+                  label={image.label ?? `Editorial photo — ${industryName.toLowerCase()} scene`}
+                  caption={image.caption}
+                  tint={image.tint ?? t.primary}
+                  bg={image.bg ?? "#0F0E14"}
+                  ratio="4 / 5"
+                  rounded={16}
+                  variant="spotlight"
+                  style={{ height: "100%", aspectRatio: "auto" }}
+                />
+              )}
+            </div>
           </Reveal>
         </div>
       </Container>
