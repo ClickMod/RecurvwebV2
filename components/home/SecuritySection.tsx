@@ -1,4 +1,4 @@
-import { PhotoSlot } from "@/components/PhotoSlot";
+import Image from "next/image";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
@@ -54,15 +54,18 @@ export function SecuritySection() {
           </div>
 
           <Reveal>
-            <PhotoSlot
-              label="Security ops — server rack / lock close-up"
-              caption="SECURE · ZA · 1200 × 900"
-              tint={t.primary}
-              bg="#08070F"
-              ratio="4 / 3"
-              rounded={12}
-              variant="spotlight"
-            />
+            <div
+              className="relative w-full overflow-hidden rounded-xl"
+              style={{ aspectRatio: "4 / 3", background: "#08070F" }}
+            >
+              <Image
+                src="/recurv_PCI_compliance.png"
+                alt="PCI DSS Level 1 compliant — highest security standards"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 45vw"
+              />
+            </div>
           </Reveal>
         </div>
       </Container>
