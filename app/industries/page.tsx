@@ -80,9 +80,11 @@ export default async function IndustriesPage() {
               className="mt-7 max-w-[560px]"
               style={{ fontSize: 18, color: t.inkSoft, lineHeight: 1.6 }}
             >
-              Membership dues, term fees, rent, retainers, payment plans.
-              Recurv adapts to your billing cycle, not the other way around.
-              Select your industry below to see exactly how it works.
+              Membership dues, school fees, rent, retainers, subscriptions,
+              payment plans, whatever you collect, Recurv adapts to your billing
+              cycle, not the other way around. Explore the industries below, and
+              if yours isn&apos;t listed, contact us. Recurv can be configured to
+              support virtually any recurring revenue model.
             </p>
           </Reveal>
           <Reveal delay={STAGGER * 2}>

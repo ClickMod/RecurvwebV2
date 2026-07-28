@@ -92,16 +92,6 @@ export function PhotoSlot({
           <>
             <div
               style={{
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: 11,
-                letterSpacing: 1.5,
-                color: 'rgba(255,255,255,0.6)',
-              }}
-            >
-              PLACEHOLDER · DROP IMAGE
-            </div>
-            <div
-              style={{
                 fontSize: 16,
                 fontWeight: 500,
                 color: 'rgba(255,255,255,0.9)',
