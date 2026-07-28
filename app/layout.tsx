@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getIndustryNavList } from "@/lib/strapi";
 import { DEFAULT_OG_IMAGE, SITE_LOGO, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
+
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -72,6 +75,7 @@ export default async function RootLayout({
         {children}
         <SiteFooter industryNavList={industryNavList} />
       </body>
+      {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
     </html>
   );
 }
