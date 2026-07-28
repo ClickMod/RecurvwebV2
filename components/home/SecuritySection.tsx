@@ -59,7 +59,7 @@ export function SecuritySection() {
               style={{ aspectRatio: "4 / 3", background: "#08070F" }}
             >
               <Image
-                src="/recurv_PCI_compliance.png"
+                src="/recurvpcicompliance.png"
                 alt="PCI DSS Level 1 compliant — highest security standards"
                 fill
                 className="object-cover"
