@@ -1,0 +1,14 @@
+---
+description: Do not open localhost in the browser after changes. The user verifies the running app themselves.
+alwaysApply: true
+---
+
+# Do not open localhost
+
+After implementing or fixing UI, layout, styling, routing, or data changes, do not open the local app in the browser.
+
+- Do not navigate to `localhost`, `127.0.0.1`, or any local dev URL.
+- Do not take screenshots of the running site or click through it to verify a change.
+- Finish the code change, report what changed, and leave visual checks to the user.
+
+Static checks (types, lint, unit tests) are still fine when they do not open a browser.

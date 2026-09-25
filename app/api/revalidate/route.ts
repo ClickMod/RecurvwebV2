@@ -6,7 +6,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
  *
  * Called by the Strapi webhook on entry.publish / entry.update / entry.unpublish.
  * Strapi sends a JSON body with the shape:
- *   { model: "blog-post" | "blog-category" | "blog-tag" | "industry" | "legal-page", entry: { slug: string, ... } }
+ *   { model: "blog-post" | "blog-category" | "blog-tag" | "industry" | "legal-page" | "homepage" | "campaign-page", entry: { slug: string, ... } }
  *
  * The handler invalidates the affected route(s) so the next request re-renders
  * from Strapi and the fresh result is cached.
@@ -78,6 +78,12 @@ export async function POST(req: NextRequest) {
     revalidateTag("/industries", NOW);
     revalidateTag("industries-nav", NOW);
     revalidateTag("industries-listing", NOW);
+  } else if (model === "homepage") {
+    revalidatePath("/", "page");
+    revalidateTag("homepage", NOW);
+  } else if (model === "campaign-page") {
+    revalidatePath("/start", "page");
+    revalidateTag("campaign-page", NOW);
   } else if (model === "legal-page") {
     const slug = entry?.slug;
     if (slug) {

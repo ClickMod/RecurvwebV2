@@ -36,6 +36,7 @@ export interface StrapiImage {
   url: string;
   width: number;
   height: number;
+  mime?: string | null;
   alternativeText?: string | null;
   formats?: {
     thumbnail?: { url: string; width: number; height: number };
@@ -148,6 +149,74 @@ export interface StrapiIndustryCard {
   isFeatured?: boolean | null;
 }
 
+// ── Homepage single type ───────────────────────────────────────────────────────
+
+export interface StrapiHomepage {
+  videoLabel?: string | null;
+  videoHeadline?: StrapiHeadlineSegment[] | null;
+  videoBody?: string | null;
+  video?: StrapiImage | null;
+}
+
+export interface StrapiCampaignBenefit {
+  id: number;
+  title: string;
+  body: string;
+}
+
+export interface StrapiCampaignStep {
+  id: number;
+  title: string;
+  body?: string | null;
+}
+
+export type CampaignCtaAction = "book_demo" | "request_quote" | "full_demo";
+
+export interface StrapiCampaignCtaCard {
+  id: number;
+  title: string;
+  body: string;
+  supportingText?: string | null;
+  ctaLabel: string;
+  action: CampaignCtaAction;
+}
+
+export interface StrapiCampaignPage {
+  heroEyebrow?: string | null;
+  heroHeadline?: StrapiHeadlineSegment[] | null;
+  heroBody?: string | null;
+  heroVideoCaption?: string | null;
+  introVideo?: StrapiImage | null;
+  introPoster?: StrapiImage | null;
+  valueEyebrow?: string | null;
+  valueHeadline?: StrapiHeadlineSegment[] | null;
+  valueBody?: string | null;
+  benefits?: StrapiCampaignBenefit[] | null;
+  conversionEyebrow?: string | null;
+  conversionHeadline?: StrapiHeadlineSegment[] | null;
+  conversionBody?: string | null;
+  conversionCards?: StrapiCampaignCtaCard[] | null;
+  gettingStartedEyebrow?: string | null;
+  gettingStartedHeadline?: StrapiHeadlineSegment[] | null;
+  gettingStartedBody?: string | null;
+  steps?: StrapiCampaignStep[] | null;
+  trustHeadline?: string | null;
+  trustBody?: string | null;
+  finalHeadline?: StrapiHeadlineSegment[] | null;
+  finalBody?: string | null;
+  finalPrimaryLabel?: string | null;
+  finalSecondaryLabel?: string | null;
+  finalTertiaryLabel?: string | null;
+  headerCtaLabel?: string | null;
+  bookDemoUrl?: string | null;
+  fullDemoUrl?: string | null;
+  seo?: StrapiSeo | null;
+}
+
+interface StrapiSingleResponse<T> {
+  data: T | null;
+}
+
 // ── Industry content type ──────────────────────────────────────────────────────
 
 export interface StrapiIndustry {
@@ -169,6 +238,12 @@ export interface StrapiIndustry {
   heroSecondaryCta?: StrapiLink | null;
   heroStats?: StrapiStat[] | null;
   heroImage?: StrapiImage | null;
+
+  // Video section — omitted on the page when `video` is empty
+  videoLabel?: string | null;
+  videoHeadline?: StrapiHeadlineSegment[] | null;
+  videoBody?: string | null;
+  video?: StrapiImage | null;
 
   // Trusted-by strip
   trustedNames?: string | null;
@@ -248,6 +323,8 @@ const TOKEN = process.env.STRAPI_API_TOKEN;
 interface StrapiGetOptions {
   revalidate?: number;
   tags?: string[];
+  /** Single types return 404 until the first entry is published. */
+  allowNotFound?: boolean;
 }
 
 async function strapiGet<T>(path: string, options?: StrapiGetOptions): Promise<T> {
@@ -274,6 +351,9 @@ async function strapiGet<T>(path: string, options?: StrapiGetOptions): Promise<T
   });
 
   if (!res.ok) {
+    if (options?.allowNotFound && res.status === 404) {
+      return { data: null } as T;
+    }
     throw new Error(`Strapi API error ${res.status} for ${url}`);
   }
 
@@ -667,6 +747,39 @@ export async function getAllIndustriesForListing(): Promise<StrapiIndustryCard[]
   return res.data;
 }
 
+/** Outbound campaign landing page. Null until the single type is published. */
+export async function getCampaignPage(): Promise<StrapiCampaignPage | null> {
+  const populate = [
+    "populate[heroHeadline]=true",
+    "populate[introVideo]=true",
+    "populate[introPoster]=true",
+    "populate[valueHeadline]=true",
+    "populate[benefits]=true",
+    "populate[conversionHeadline]=true",
+    "populate[conversionCards]=true",
+    "populate[gettingStartedHeadline]=true",
+    "populate[steps]=true",
+    "populate[finalHeadline]=true",
+    "populate[seo][populate][shareImage]=true",
+    "populate[seo][populate][metaSocial][populate]=image",
+  ].join("&");
+
+  const res = await strapiGet<StrapiSingleResponse<StrapiCampaignPage>>(
+    `/campaign-page?${populate}`,
+    { tags: ["campaign-page"], allowNotFound: true }
+  );
+  return res.data ?? null;
+}
+
+/** Homepage singleton — video section is omitted when `video` is empty. */
+export async function getHomepage(): Promise<StrapiHomepage | null> {
+  const res = await strapiGet<StrapiSingleResponse<StrapiHomepage>>(
+    "/homepage?populate[video]=true&populate[videoHeadline]=true",
+    { tags: ["homepage"], allowNotFound: true }
+  );
+  return res.data ?? null;
+}
+
 /** Full deep-populate fetch for a single industry page. */
 export async function getIndustryBySlug(slug: string): Promise<StrapiIndustry | null> {
   // Build deep populate in a single request — avoids N+1 calls.
@@ -678,6 +791,8 @@ export async function getIndustryBySlug(slug: string): Promise<StrapiIndustry | 
     "populate[heroSecondaryCta]=true",
     "populate[heroStats]=true",
     "populate[heroImage]=true",
+    "populate[videoHeadline]=true",
+    "populate[video]=true",
     // Problems
     "populate[problemsHeading]=true",
     "populate[problems][populate]=*",

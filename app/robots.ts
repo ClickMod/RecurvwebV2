@@ -3,7 +3,7 @@ import { SITE_URL } from "@/lib/site";
 import { getAllLegalPageSlugs } from "@/lib/strapi";
 
 /**
- * Allows crawling of public pages; blocks noindex routes (/thank-you, legal).
+ * Allows crawling of public pages; blocks noindex routes (/thank-you, /start, legal).
  */
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const legalSlugs = await getAllLegalPageSlugs().catch(() => []);
@@ -14,6 +14,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       allow: "/",
       disallow: [
         "/thank-you",
+        "/start",
         ...legalSlugs.map(({ slug }) => `/${slug}`),
       ],
     },

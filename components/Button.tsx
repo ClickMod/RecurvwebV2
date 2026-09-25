@@ -77,6 +77,7 @@ export function Button({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={onClick}
           className={sharedClassName}
           style={sharedStyle}
         >
@@ -86,7 +87,7 @@ export function Button({
     }
 
     return (
-      <Link href={href} className={sharedClassName} style={sharedStyle}>
+      <Link href={href} onClick={onClick} className={sharedClassName} style={sharedStyle}>
         {content}
       </Link>
     );

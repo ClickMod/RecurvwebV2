@@ -14,6 +14,7 @@ import { iconSize } from "@/components/theme";
 import { RichText } from "@/components/RichText";
 import { DynamicIcon } from "@/components/ui/DynamicIcon";
 import { IndustryHeroSection } from "@/components/industries/IndustryHeroSection";
+import { IndustryVideoSection } from "@/components/industries/IndustryVideoSection";
 import { IndustryTrustedBySection } from "@/components/industries/IndustryTrustedBySection";
 import { IndustryProblemsSection } from "@/components/industries/IndustryProblemsSection";
 import { IndustrySolutionSection } from "@/components/industries/IndustrySolutionSection";
@@ -130,6 +131,8 @@ export default async function IndustryPage({ params }: Props) {
 
   // ── Heading adapters ────────────────────────────────────────────────────────
   const heroHeading = segmentsToProps(industry.heroHeadline);
+  const videoHeading = segmentsToProps(industry.videoHeadline);
+  const videoSrc = strapiImageUrl(industry.video?.url);
   const problemsHeading = segmentsToProps(industry.problemsHeading);
   const featuresHeading = segmentsToProps(industry.featuresHeading);
   const dashboardHeading = segmentsToProps(industry.dashboardHeading);
@@ -211,6 +214,17 @@ export default async function IndustryPage({ params }: Props) {
       {/* ── Trusted-by strip ──────────────────────────────────────────────── */}
       {trustedNames.length > 0 && (
         <IndustryTrustedBySection names={trustedNames} />
+      )}
+
+      {videoSrc && (
+        <IndustryVideoSection
+          label={industry.videoLabel}
+          headingBefore={videoHeading.headingBefore}
+          headingAccent={videoHeading.headingAccent}
+          body={industry.videoBody}
+          src={videoSrc}
+          mime={industry.video?.mime}
+        />
       )}
 
       {/* ── Problems ──────────────────────────────────────────────────────── */}

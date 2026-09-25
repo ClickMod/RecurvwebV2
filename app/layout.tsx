@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
-import { getIndustryNavList } from "@/lib/strapi";
 import { DEFAULT_OG_IMAGE, SITE_LOGO, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -51,15 +48,11 @@ const organizationJsonLd = {
   logo: `${SITE_URL}${SITE_LOGO}`,
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Fetched once here and passed down — avoids duplicate fetches from both
-  // SiteHeader and SiteFooter requesting the same data independently.
-  const industryNavList = await getIndustryNavList().catch(() => []);
-
   return (
     <html
       lang="en"
@@ -71,9 +64,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
-        <SiteHeader industryNavList={industryNavList} />
         {children}
-        <SiteFooter industryNavList={industryNavList} />
       </body>
       {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
     </html>

@@ -7,7 +7,7 @@ import {
 
 /**
  * Sitemap for indexable public pages only.
- * Excludes /thank-you and legal pages (noindex).
+ * Excludes /thank-you, /start, and legal pages (noindex).
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [blogSlugs, industrySlugs] = await Promise.all([

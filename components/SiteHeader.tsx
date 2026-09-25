@@ -121,7 +121,7 @@ export function SiteHeader({ industryNavList }: SiteHeaderProps) {
 
         {/* Desktop CTA — hidden below md */}
         <div className="hidden md:flex items-center gap-3.5">
-          <Button size="sm" variant="secondary" href="https://portal.recurv.tech/">Sign in</Button>
+          <Button size="sm" variant="secondary" href="https://app.recurv.tech/register">Sign up</Button>
           <Button size="sm" href="https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv">Book a live demo</Button>
         </div>
 
@@ -223,7 +223,7 @@ export function SiteHeader({ industryNavList }: SiteHeaderProps) {
             </span>
           </Link>
           <div className="flex flex-col gap-3 pt-4">
-            <Button size="md" variant="secondary" className="w-full justify-center" href="https://portal.recurv.tech/">Sign in</Button>
+            <Button size="md" variant="secondary" className="w-full justify-center" href="https://app.recurv.tech/register">Sign up</Button>
             <Button size="md" className="w-full justify-center" href="https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv">Book a live demo</Button>
           </div>
         </div>
