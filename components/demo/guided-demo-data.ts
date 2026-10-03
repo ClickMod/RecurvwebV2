@@ -3,8 +3,9 @@ export interface GuidedDemoVideo {
   title: string;
   duration: string;
   description: string;
-  /** Absolute URL of the video file uploaded in Strapi. */
+  /** Same-origin playback URL for the file uploaded in Strapi. */
   videoUrl: string;
+  mime?: string;
 }
 
 export interface FeatureVideo {
@@ -14,6 +15,7 @@ export interface FeatureVideo {
   description: string;
   duration: string;
   videoUrl: string;
+  mime?: string;
 }
 
 export function featureCategories(videos: FeatureVideo[]): string[] {

@@ -863,7 +863,10 @@ export interface StrapiDemoFeatureVideo {
 
 function demoPlaybackUrl(group: "guided" | "feature", slug: string, file?: StrapiImage | null): string {
   if (!file?.url) return "PLACEHOLDER";
-  return `/demo/media/${group}/${encodeURIComponent(slug)}`;
+  // The filename changes when the upload is replaced. A failed response for the
+  // previous URL must not keep the new file from loading.
+  const fileName = file.url.split("?")[0]?.split("/").pop() || "file";
+  return `/demo/media/${group}/${encodeURIComponent(slug)}?v=${encodeURIComponent(fileName)}`;
 }
 
 /** Strapi file behind a demo video. The public player URL is same-origin and noindex. */
@@ -899,6 +902,7 @@ export async function getGuidedDemoVideos(): Promise<GuidedDemoVideo[]> {
       duration: entry.duration?.trim() || "0:00",
       description: entry.description?.trim() ?? "",
       videoUrl: demoPlaybackUrl("guided", entry.slug.trim(), entry.video),
+      mime: entry.video?.mime?.trim() || "video/mp4",
     }));
 }
 
@@ -925,6 +929,7 @@ export async function getFeatureVideos(): Promise<FeatureVideo[]> {
       description: entry.description?.trim() ?? "",
       duration: entry.duration?.trim() || "0:00",
       videoUrl: demoPlaybackUrl("feature", entry.slug.trim(), entry.video),
+      mime: entry.video?.mime?.trim() || "video/mp4",
     }));
 }
 

@@ -77,7 +77,7 @@ export function FeatureLibrary({ videos }: { videos: FeatureVideo[] }) {
             className="overflow-hidden rounded-xl"
             style={{ border: `1px solid ${t.line}`, background: t.surface, fontFamily: t.fontBody }}
           >
-            <DemoVideoPlayer src={video.videoUrl} title={video.title} rounded={false} onPlay={() => trackPlay(video)} />
+            <DemoVideoPlayer src={video.videoUrl} title={video.title} mime={video.mime} rounded={false} onPlay={() => trackPlay(video)} />
             <div className="p-4">
               <div className="flex items-start justify-between gap-3">
                 <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.35 }}>{video.title}</div>

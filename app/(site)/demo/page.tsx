@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { cookies } from "next/headers";
+import { DemoAccessGate } from "@/components/demo/DemoAccessGate";
 import { GuidedDemoExperience } from "@/components/demo/GuidedDemoExperience";
+import { DEMO_ACCESS_COOKIE, hasDemoAccessCookie } from "@/lib/demo-access";
 import { getFeatureVideos, getGuidedDemoVideos } from "@/lib/strapi";
 
 export const metadata: Metadata = {
@@ -20,6 +23,10 @@ export const metadata: Metadata = {
 };
 
 export default async function DemoPage() {
+  const cookieStore = await cookies();
+  const unlocked = await hasDemoAccessCookie(cookieStore.get(DEMO_ACCESS_COOKIE)?.value);
+  if (!unlocked) return <DemoAccessGate />;
+
   const [guidedVideos, featureVideos] = await Promise.all([
     getGuidedDemoVideos().catch(() => []),
     getFeatureVideos().catch(() => []),

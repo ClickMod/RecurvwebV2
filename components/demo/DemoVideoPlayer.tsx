@@ -7,6 +7,7 @@ import { theme as t } from "@/components/theme";
 export function DemoVideoPlayer({
   src,
   title,
+  mime = "video/mp4",
   autoPlay = false,
   rounded = true,
   onEnded,
@@ -14,6 +15,7 @@ export function DemoVideoPlayer({
 }: {
   src: string;
   title: string;
+  mime?: string;
   autoPlay?: boolean;
   rounded?: boolean;
   onEnded?: () => void;
@@ -56,7 +58,7 @@ export function DemoVideoPlayer({
           onEnded={onEnded}
           onPlay={onPlay}
         >
-          <source src={src.includes("#") ? src : `${src}#t=0.001`} />
+          <source src={src.includes("#") ? src : `${src}#t=0.001`} type={mime} />
         </video>
       ) : (
         <div

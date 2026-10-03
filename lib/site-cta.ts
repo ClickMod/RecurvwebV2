@@ -8,9 +8,7 @@ export const SIGN_UP_URL = "https://app.recurv.tech/register";
 /** Guided product demo on this site. */
 export const VIEW_DEMO_PATH = "/demo";
 
-/**
- * Kept for the Pipedrive lead form. The guided demo page does not embed it.
- */
+/** Pipedrive lead form embedded on /demo until the visitor has access. */
 export const VIEW_DEMO_FORM_URL =
   "https://webforms.pipedrive.com/f/6iJLX5BQuOpLggLxh3WwXz92NBQY7EOuapGUNk6cfRzMb8hBEHcDCPx0z7VAOJiCm7";
 

@@ -168,6 +168,7 @@ function GuidedDemoStage({
             key={`${active.videoUrl}-${replayKey}`}
             src={active.videoUrl}
             title={active.title}
+            mime={active.mime}
             autoPlay={autoPlay || replayKey > 0}
             onEnded={handleEnded}
           />
