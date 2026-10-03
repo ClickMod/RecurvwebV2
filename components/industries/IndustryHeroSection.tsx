@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/Button";
+import { SiteCtaTrio } from "@/components/SiteCtaTrio";
 import { Container } from "@/components/Container";
 import { PhotoSlot } from "@/components/PhotoSlot";
 import { Reveal } from "@/components/Reveal";
@@ -10,11 +10,6 @@ import { theme as t } from "@/components/theme";
 
 export interface IndustryStatBadge {
   label: string;
-}
-
-export interface IndustryCta {
-  label: string;
-  href: string;
 }
 
 export interface IndustryHeroImage {
@@ -50,12 +45,6 @@ export interface IndustryHeroProps {
   /** Body copy below the heading */
   body: string | ReactNode;
 
-  /** Primary CTA — dark filled button */
-  primaryCta: IndustryCta;
-
-  /** Secondary CTA — outlined button with arrow */
-  secondaryCta: IndustryCta;
-
   /**
    * Stat badges shown in the mono row below the CTAs,
    * e.g. [{ label: "12G+ SCHOOLS LIVE" }, { label: "180 000 PUPILS BILLED" }]
@@ -77,8 +66,6 @@ export function IndustryHeroSection({
   headingBefore,
   headingAccent,
   body,
-  primaryCta,
-  secondaryCta,
   stats,
   actualImage,
   image = {},
@@ -147,19 +134,8 @@ export function IndustryHeroSection({
 
             {/* CTAs */}
             <Reveal delay={STAGGER * 2}>
-              <div className="flex flex-col sm:flex-row gap-3 mt-9">
-                <Button size="lg" href={primaryCta.href} className="w-full sm:w-auto justify-center">
-                  {primaryCta.label}
-                </Button>
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  href={secondaryCta.href}
-                  icon={<span>→</span>}
-                  className="w-full sm:w-auto justify-center"
-                >
-                  {secondaryCta.label}
-                </Button>
+              <div className="mt-9">
+                <SiteCtaTrio />
               </div>
             </Reveal>
 

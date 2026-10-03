@@ -11,8 +11,14 @@ interface ButtonProps {
   style?: CSSProperties;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
   /** When provided the button renders as a Next.js <Link> */
   href?: string;
+  /**
+   * External links open in a new tab. Set "_self" when the destination
+   * should replace this page, such as a form that redirects back here.
+   */
+  externalTarget?: "_self" | "_blank";
 }
 
 // All color tokens referenced as CSS vars so hover: can override them without specificity conflicts.
@@ -39,6 +45,8 @@ export function Button({
   onClick,
   type = 'button',
   href,
+  externalTarget = '_blank',
+  disabled = false,
 }: ButtonProps) {
   const isGhost = variant === 'ghost';
 
@@ -47,6 +55,7 @@ export function Button({
     'transition-[background-color,border-color,color,transform] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
     isGhost ? 'p-0' : sizeClasses[size],
     variantClasses[variant],
+    disabled ? 'opacity-40 pointer-events-none' : '',
     className,
   ].join(' ');
 
@@ -75,8 +84,8 @@ export function Button({
       return (
         <a
           href={href}
-          target="_blank"
-          rel="noopener noreferrer"
+          target={externalTarget}
+          rel={externalTarget === "_blank" ? "noopener noreferrer" : undefined}
           onClick={onClick}
           className={sharedClassName}
           style={sharedStyle}
@@ -97,6 +106,7 @@ export function Button({
     <button
       type={type}
       onClick={onClick}
+      disabled={disabled}
       className={sharedClassName}
       style={sharedStyle}
     >

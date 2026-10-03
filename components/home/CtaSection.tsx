@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Button } from "@/components/Button";
+import { SiteCtaTrio } from "@/components/SiteCtaTrio";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
@@ -27,14 +26,9 @@ export function CtaSection() {
             </p>
           </Reveal>
           <Reveal delay={STAGGER}>
-            <div className="flex flex-col gap-3">
-              <Button size="lg" className="w-full justify-center" href="https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv">Book a live demo</Button>
-              <Link href="/contactus" className="w-full" style={{ textDecoration: "none" }}>
-                <Button size="lg" variant="secondary" icon={<span>→</span>} className="w-full justify-center">Speak to sales</Button>
-              </Link>
-              <div className="mt-3" style={{ fontSize: 13, color: t.inkSoft }}>
-                Or email <span style={{ color: t.ink, fontWeight: 600 }}>sales@recurv.tech</span>
-              </div>
+            <SiteCtaTrio layout="stack" />
+            <div className="mt-3" style={{ fontSize: 13, color: t.inkSoft }}>
+              Or email <span style={{ color: t.ink, fontWeight: 600 }}>sales@recurv.tech</span>
             </div>
           </Reveal>
         </div>

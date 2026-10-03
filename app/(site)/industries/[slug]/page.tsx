@@ -185,17 +185,6 @@ export default async function IndustryPage({ params }: Props) {
             ? industry.heroIntro
             : <RichText blocks={industry.heroIntro} />
         }
-        primaryCta={{
-          label: toSentenceCase(industry.heroPrimaryCta?.label ?? "Book a demo"),
-          href: normalizeUrl(
-            industry.heroPrimaryCta?.url,
-            "https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv",
-          ),
-        }}
-        secondaryCta={{
-          label: toSentenceCase(industry.heroSecondaryCta?.label ?? "Talk to our team"),
-          href: normalizeUrl(industry.heroSecondaryCta?.url),
-        }}
         stats={(industry.heroStats ?? []).map((s) => ({
           label: s.value,
         }))}

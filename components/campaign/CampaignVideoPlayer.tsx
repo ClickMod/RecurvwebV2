@@ -38,12 +38,12 @@ export function CampaignVideoPlayer({
 
   return (
     <div
-      className="group relative w-full overflow-hidden rounded-xl"
+      className="group relative mx-auto w-full max-w-[min(100%,calc((100svh-8rem)*16/9))] overflow-hidden rounded-xl"
       style={{ background: t.bg }}
     >
       <video
         ref={ref}
-        className="block aspect-video w-full origin-center scale-[1.02]"
+        className="block aspect-video h-auto w-full origin-center scale-[1.02]"
         playsInline
         preload="metadata"
         poster={poster || undefined}

@@ -6,6 +6,8 @@
  *   STRAPI_API_TOKEN — read-only API token generated in Strapi admin
  */
 
+import type { FeatureVideo, GuidedDemoVideo } from "@/components/demo/guided-demo-data";
+
 // ── Strapi Blocks rich-text node types ────────────────────────────────────────
 
 export type BlockNode =
@@ -828,6 +830,103 @@ export async function getIndustryBySlug(slug: string): Promise<StrapiIndustry | 
  * any code that imported the old function name.
  */
 export const getIndustry = getIndustryBySlug;
+
+export interface StrapiGuidedDemoVideo {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  duration?: string | null;
+  sortOrder?: number | null;
+  video?: StrapiImage | null;
+}
+
+export interface StrapiDemoFeatureCategory {
+  id: number;
+  documentId: string;
+  name: string;
+  sortOrder?: number | null;
+}
+
+export interface StrapiDemoFeatureVideo {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  duration?: string | null;
+  sortOrder?: number | null;
+  video?: StrapiImage | null;
+  category?: StrapiDemoFeatureCategory | null;
+}
+
+function demoPlaybackUrl(group: "guided" | "feature", slug: string, file?: StrapiImage | null): string {
+  if (!file?.url) return "PLACEHOLDER";
+  return `/demo/media/${group}/${encodeURIComponent(slug)}`;
+}
+
+/** Strapi file behind a demo video. The public player URL is same-origin and noindex. */
+export async function getDemoMediaSource(
+  group: string,
+  slug: string,
+): Promise<{ url: string; mime: string } | null> {
+  const collection = group === "guided" ? "demo-videos" : group === "feature" ? "demo-feature-videos" : null;
+  if (!collection || !slug.trim()) return null;
+
+  const res = await strapiGet<StrapiListResponse<{ video?: StrapiImage | null }>>(
+    `/${collection}?filters[slug][$eq]=${encodeURIComponent(slug)}&fields[0]=slug&populate[video]=true&pagination[pageSize]=1`,
+    { tags: [collection] },
+  );
+  const file = res.data[0]?.video;
+  const url = strapiImageUrl(file?.url);
+  if (!url) return null;
+  return { url, mime: file?.mime?.trim() || "video/mp4" };
+}
+
+/** Ordered guided-demo sequence. The first published video is the welcome. */
+export async function getGuidedDemoVideos(): Promise<GuidedDemoVideo[]> {
+  const res = await strapiGet<StrapiListResponse<StrapiGuidedDemoVideo>>(
+    "/demo-videos?fields[0]=title&fields[1]=slug&fields[2]=description&fields[3]=duration&fields[4]=sortOrder&populate[video]=true&sort[0]=sortOrder:asc&sort[1]=title:asc&pagination[pageSize]=100",
+    { tags: ["demo-videos"] },
+  );
+
+  return res.data
+    .filter((entry) => entry.title?.trim() && entry.slug?.trim())
+    .map((entry) => ({
+      id: entry.slug.trim(),
+      title: entry.title.trim(),
+      duration: entry.duration?.trim() || "0:00",
+      description: entry.description?.trim() ?? "",
+      videoUrl: demoPlaybackUrl("guided", entry.slug.trim(), entry.video),
+    }));
+}
+
+/** Optional Explore More videos, ordered by category then sort order. */
+export async function getFeatureVideos(): Promise<FeatureVideo[]> {
+  const res = await strapiGet<StrapiListResponse<StrapiDemoFeatureVideo>>(
+    "/demo-feature-videos?fields[0]=title&fields[1]=slug&fields[2]=description&fields[3]=duration&fields[4]=sortOrder&populate[video]=true&populate[category]=true&pagination[pageSize]=100",
+    { tags: ["demo-feature-videos"] },
+  );
+
+  return res.data
+    .filter((entry) => entry.title?.trim() && entry.slug?.trim() && entry.category?.name?.trim())
+    .sort((a, b) => {
+      const categoryOrder = (a.category?.sortOrder ?? 0) - (b.category?.sortOrder ?? 0);
+      if (categoryOrder !== 0) return categoryOrder;
+      const categoryName = (a.category?.name ?? "").localeCompare(b.category?.name ?? "");
+      if (categoryName !== 0) return categoryName;
+      return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+    })
+    .map((entry) => ({
+      id: entry.slug.trim(),
+      category: entry.category!.name.trim(),
+      title: entry.title.trim(),
+      description: entry.description?.trim() ?? "",
+      duration: entry.duration?.trim() || "0:00",
+      videoUrl: demoPlaybackUrl("feature", entry.slug.trim(), entry.video),
+    }));
+}
 
 // ── Heading segment helpers ───────────────────────────────────────────────────
 

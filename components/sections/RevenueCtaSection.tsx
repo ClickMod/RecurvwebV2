@@ -1,19 +1,13 @@
-import Link from "next/link";
-import { Button } from "@/components/Button";
+import { SiteCtaTrio } from "@/components/SiteCtaTrio";
 import { Container } from "@/components/Container";
 import { Section } from "@/components/Section";
 import { theme as t } from "@/components/theme";
-
-const DEMO_URL =
-  "https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv";
 
 export interface RevenueCtaSectionProps {
   eyebrow?: string;
   headingBefore?: string;
   headingAccent?: string;
   body?: string;
-  primaryLabel?: string;
-  secondaryLabel?: string;
 }
 
 const DEFAULTS: Required<RevenueCtaSectionProps> = {
@@ -21,8 +15,6 @@ const DEFAULTS: Required<RevenueCtaSectionProps> = {
   headingBefore: "The leading platform for",
   headingAccent: "revenue collections.",
   body: "Bring every revenue stream together in one platform. Whether you collect subscriptions, instalments, invoices, memberships, levies, rent or ad hoc charges, Recurv centralises your collections, automates reconciliation and gives your team complete visibility over every billing cycle. Discover how Recurv can simplify the way your organisation collects revenue.",
-  primaryLabel: "Book a live demo",
-  secondaryLabel: "Contact sales",
 };
 
 export function RevenueCtaSection(props: RevenueCtaSectionProps = {}) {
@@ -65,20 +57,8 @@ export function RevenueCtaSection(props: RevenueCtaSectionProps = {}) {
             </p>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <Button size="lg" className="w-full justify-center" href={DEMO_URL}>
-              {p.primaryLabel}
-            </Button>
-            <Link href="/contactus" className="w-full" style={{ textDecoration: "none" }}>
-              <Button
-                size="lg"
-                variant="secondary"
-                icon={<span>→</span>}
-                className="w-full justify-center"
-              >
-                {p.secondaryLabel}
-              </Button>
-            </Link>
+          <div>
+            <SiteCtaTrio layout="stack" />
             <div className="mt-3" style={{ fontSize: 13, color: t.inkSoft }}>
               Or email{" "}
               <span style={{ color: t.ink, fontWeight: 600 }}>sales@recurv.tech</span>

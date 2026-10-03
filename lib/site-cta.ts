@@ -1,0 +1,22 @@
+/** Pipedrive scheduler for a live walkthrough with the team. */
+export const BOOK_DEMO_URL =
+  "https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv";
+
+/** Recurv app registration. */
+export const SIGN_UP_URL = "https://app.recurv.tech/register";
+
+/** Guided product demo on this site. */
+export const VIEW_DEMO_PATH = "/demo";
+
+/**
+ * Kept for the Pipedrive lead form. The guided demo page does not embed it.
+ */
+export const VIEW_DEMO_FORM_URL =
+  "https://webforms.pipedrive.com/f/6iJLX5BQuOpLggLxh3WwXz92NBQY7EOuapGUNk6cfRzMb8hBEHcDCPx0z7VAOJiCm7";
+
+export const VIEW_DEMO_LABEL = "View online demo";
+export const BOOK_DEMO_LABEL = "Book a Live Demo";
+export const SPEAK_TO_SALES_LABEL = "Speak to sales";
+export const SIGN_UP_LABEL = "Sign up";
+
+export const SPEAK_TO_SALES_HREF = "/contactus";

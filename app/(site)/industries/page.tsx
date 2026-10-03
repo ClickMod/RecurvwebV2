@@ -6,7 +6,7 @@ import { SITE_URL } from "@/lib/site";
 import { Container } from "@/components/Container";
 import { Reveal } from "@/components/Reveal";
 import { STAGGER } from "@/components/motion";
-import { Button } from "@/components/Button";
+import { SiteCtaTrio } from "@/components/SiteCtaTrio";
 import { PhotoSlot } from "@/components/PhotoSlot";
 import { CallSection } from "@/components/sections/CallSection";
 import { CtaSection } from "@/components/home/CtaSection";
@@ -361,30 +361,16 @@ export default async function IndustriesPage() {
                     color: t.ink,
                   }}
                 >
-                  Book a 30-min
+                  See Recurv
                   <br />
-                  live demo
+                  in your own time
                 </div>
                 <p style={{ fontSize: 14, color: t.inkSoft, lineHeight: 1.5 }}>
-                  Tell us your billing cycle and we&apos;ll show you exactly how
-                  Recurv automates it,no obligation.
+                  Watch a walkthrough of the platform, or book a live session
+                  and we&apos;ll map it to your billing cycle.
                 </p>
-                <div className="flex flex-col gap-3 mt-1">
-                  <Button
-                    href="https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv"
-                    variant="accent"
-                    className="w-full justify-center"
-                  >
-                    Book a live demo
-                  </Button>
-                  <Button
-                    href="/contactus"
-                    variant="secondary"
-                    icon={<span>→</span>}
-                    className="w-full justify-center"
-                  >
-                    Talk to sales
-                  </Button>
+                <div className="mt-1">
+                  <SiteCtaTrio layout="stack" size="md" />
                 </div>
               </div>
             </Reveal>

@@ -6,6 +6,14 @@ import Link from "next/link";
 import { Button } from "@/components/Button";
 import { theme as t } from "@/components/theme";
 import type { StrapiIndustryNavItem } from "@/lib/strapi";
+import {
+  BOOK_DEMO_LABEL,
+  BOOK_DEMO_URL,
+  SIGN_UP_LABEL,
+  SIGN_UP_URL,
+  VIEW_DEMO_LABEL,
+  VIEW_DEMO_PATH,
+} from "@/lib/site-cta";
 
 interface SiteHeaderProps {
   industryNavList: StrapiIndustryNavItem[];
@@ -121,8 +129,9 @@ export function SiteHeader({ industryNavList }: SiteHeaderProps) {
 
         {/* Desktop CTA — hidden below md */}
         <div className="hidden md:flex items-center gap-3.5">
-          <Button size="sm" variant="secondary" href="https://app.recurv.tech/register">Sign up</Button>
-          <Button size="sm" href="https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv">Book a live demo</Button>
+          <Button size="sm" variant="ghost" href={SIGN_UP_URL}>{SIGN_UP_LABEL}</Button>
+          <Button size="sm" variant="secondary" href={BOOK_DEMO_URL}>{BOOK_DEMO_LABEL}</Button>
+          <Button size="sm" href={VIEW_DEMO_PATH}>{VIEW_DEMO_LABEL}</Button>
         </div>
 
         {/* Mobile hamburger — visible below md */}
@@ -223,8 +232,9 @@ export function SiteHeader({ industryNavList }: SiteHeaderProps) {
             </span>
           </Link>
           <div className="flex flex-col gap-3 pt-4">
-            <Button size="md" variant="secondary" className="w-full justify-center" href="https://app.recurv.tech/register">Sign up</Button>
-            <Button size="md" className="w-full justify-center" href="https://clickmoddevptyltd.pipedrive.com/scheduler/1evWEpiG/clickmoddev-pty-ltd-recurv">Book a live demo</Button>
+            <Button size="md" className="w-full justify-center" href={VIEW_DEMO_PATH}>{VIEW_DEMO_LABEL}</Button>
+            <Button size="md" variant="secondary" className="w-full justify-center" href={BOOK_DEMO_URL}>{BOOK_DEMO_LABEL}</Button>
+            <Button size="md" variant="ghost" className="w-full justify-center" href={SIGN_UP_URL}>{SIGN_UP_LABEL}</Button>
           </div>
         </div>
       )}

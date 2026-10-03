@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { theme as t } from "@/components/theme";
 import type { StrapiIndustryNavItem } from "@/lib/strapi";
+import { VIEW_DEMO_LABEL, VIEW_DEMO_PATH } from "@/lib/site-cta";
 
 const COLLECTION_TYPE_ITEMS = [
   "Once-off collection",
@@ -96,6 +97,11 @@ export function SiteFooter({ industryNavList }: SiteFooterProps) {
                 RESOURCES
               </div>
               <ul className="flex flex-col gap-2.5 p-0 list-none">
+                <li style={{ fontSize: 14, color: t.ink }}>
+                  <Link href={VIEW_DEMO_PATH} style={{ color: "inherit", textDecoration: "none" }}>
+                    {VIEW_DEMO_LABEL}
+                  </Link>
+                </li>
                 {(["API Docs", "Privacy", "Terms"] as const).map((item) => (
                   <li key={item} style={{ fontSize: 14, color: t.ink }}>
                     {item === "API Docs" ? (
