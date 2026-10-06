@@ -9,11 +9,14 @@ import type { StrapiIndustryNavItem } from "@/lib/strapi";
 import {
   BOOK_DEMO_LABEL,
   BOOK_DEMO_URL,
+  DASHBOARD_LABEL,
+  DASHBOARD_URL,
   SIGN_UP_LABEL,
   SIGN_UP_URL,
   VIEW_DEMO_LABEL,
   VIEW_DEMO_PATH,
 } from "@/lib/site-cta";
+import { hasLoggedInSession } from "@/lib/session";
 
 interface SiteHeaderProps {
   industryNavList: StrapiIndustryNavItem[];
@@ -23,7 +26,13 @@ export function SiteHeader({ industryNavList }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [industriesOpen, setIndustriesOpen] = useState(false);
   const [mobileIndustriesOpen, setMobileIndustriesOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Presence cookie is shared from the app on *.recurv.tech; read it after mount.
+  useEffect(() => {
+    setLoggedIn(hasLoggedInSession());
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -129,7 +138,11 @@ export function SiteHeader({ industryNavList }: SiteHeaderProps) {
 
         {/* Desktop CTA — hidden below md */}
         <div className="hidden md:flex items-center gap-3.5">
-          <Button size="sm" variant="ghost" href={SIGN_UP_URL}>{SIGN_UP_LABEL}</Button>
+          {loggedIn ? (
+            <Button size="sm" variant="ghost" href={DASHBOARD_URL}>{DASHBOARD_LABEL}</Button>
+          ) : (
+            <Button size="sm" variant="ghost" href={SIGN_UP_URL}>{SIGN_UP_LABEL}</Button>
+          )}
           <Button size="sm" variant="secondary" href={BOOK_DEMO_URL}>{BOOK_DEMO_LABEL}</Button>
           <Button size="sm" href={VIEW_DEMO_PATH}>{VIEW_DEMO_LABEL}</Button>
         </div>
@@ -234,7 +247,11 @@ export function SiteHeader({ industryNavList }: SiteHeaderProps) {
           <div className="flex flex-col gap-3 pt-4">
             <Button size="md" className="w-full justify-center" href={VIEW_DEMO_PATH}>{VIEW_DEMO_LABEL}</Button>
             <Button size="md" variant="secondary" className="w-full justify-center" href={BOOK_DEMO_URL}>{BOOK_DEMO_LABEL}</Button>
-            <Button size="md" variant="ghost" className="w-full justify-center" href={SIGN_UP_URL}>{SIGN_UP_LABEL}</Button>
+            {loggedIn ? (
+              <Button size="md" variant="ghost" className="w-full justify-center" href={DASHBOARD_URL}>{DASHBOARD_LABEL}</Button>
+            ) : (
+              <Button size="md" variant="ghost" className="w-full justify-center" href={SIGN_UP_URL}>{SIGN_UP_LABEL}</Button>
+            )}
           </div>
         </div>
       )}

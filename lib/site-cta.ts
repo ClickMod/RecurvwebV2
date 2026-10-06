@@ -5,6 +5,10 @@ export const BOOK_DEMO_URL =
 /** Recurv app registration. */
 export const SIGN_UP_URL = "https://app.recurv.tech/register";
 
+/** Recurv app dashboard — shown when a shared session cookie is present. */
+export const DASHBOARD_URL = "https://app.recurv.tech/dashboard";
+export const DASHBOARD_LABEL = "Dashboard";
+
 /** Guided product demo on this site. */
 export const VIEW_DEMO_PATH = "/demo";
 
