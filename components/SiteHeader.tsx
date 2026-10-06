@@ -139,12 +139,14 @@ export function SiteHeader({ industryNavList }: SiteHeaderProps) {
         {/* Desktop CTA — hidden below md */}
         <div className="hidden md:flex items-center gap-3.5">
           {loggedIn ? (
-            <Button size="sm" variant="ghost" href={DASHBOARD_URL}>{DASHBOARD_LABEL}</Button>
+            <Button size="sm" href={DASHBOARD_URL}>{DASHBOARD_LABEL}</Button>
           ) : (
-            <Button size="sm" variant="ghost" href={SIGN_UP_URL}>{SIGN_UP_LABEL}</Button>
+            <>
+              <Button size="sm" variant="ghost" href={SIGN_UP_URL}>{SIGN_UP_LABEL}</Button>
+              <Button size="sm" variant="secondary" href={BOOK_DEMO_URL}>{BOOK_DEMO_LABEL}</Button>
+              <Button size="sm" href={VIEW_DEMO_PATH}>{VIEW_DEMO_LABEL}</Button>
+            </>
           )}
-          <Button size="sm" variant="secondary" href={BOOK_DEMO_URL}>{BOOK_DEMO_LABEL}</Button>
-          <Button size="sm" href={VIEW_DEMO_PATH}>{VIEW_DEMO_LABEL}</Button>
         </div>
 
         {/* Mobile hamburger — visible below md */}
@@ -245,12 +247,14 @@ export function SiteHeader({ industryNavList }: SiteHeaderProps) {
             </span>
           </Link>
           <div className="flex flex-col gap-3 pt-4">
-            <Button size="md" className="w-full justify-center" href={VIEW_DEMO_PATH}>{VIEW_DEMO_LABEL}</Button>
-            <Button size="md" variant="secondary" className="w-full justify-center" href={BOOK_DEMO_URL}>{BOOK_DEMO_LABEL}</Button>
             {loggedIn ? (
-              <Button size="md" variant="ghost" className="w-full justify-center" href={DASHBOARD_URL}>{DASHBOARD_LABEL}</Button>
+              <Button size="md" className="w-full justify-center" href={DASHBOARD_URL}>{DASHBOARD_LABEL}</Button>
             ) : (
-              <Button size="md" variant="ghost" className="w-full justify-center" href={SIGN_UP_URL}>{SIGN_UP_LABEL}</Button>
+              <>
+                <Button size="md" className="w-full justify-center" href={VIEW_DEMO_PATH}>{VIEW_DEMO_LABEL}</Button>
+                <Button size="md" variant="secondary" className="w-full justify-center" href={BOOK_DEMO_URL}>{BOOK_DEMO_LABEL}</Button>
+                <Button size="md" variant="ghost" className="w-full justify-center" href={SIGN_UP_URL}>{SIGN_UP_LABEL}</Button>
+              </>
             )}
           </div>
         </div>
